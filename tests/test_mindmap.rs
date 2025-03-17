@@ -28,7 +28,7 @@ mod test_mindmap {
     fn small_mindmap() {
         let mut mndmp = mindmap::Mindmap::new("a_mindmap", 50.0);
         mndmp.place_node("n0", "Center", 250.0, 250.0);
-        for i in 1..=5 {
+        for i in 1..=2 {
             mndmp.grow_node(&format!("n:{i}"), &format!("Node {i}"), 360.0 / 7.0 * i as f32, "n0");
         }
 

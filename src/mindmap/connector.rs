@@ -8,8 +8,8 @@ pub(crate) fn connector(node_a: &Node, node_b: &Node, foot_angle_deg: f32, bar_w
     let foot_angle_rad = foot_angle_deg.to_radians();
     // ---------- polar coordinates of node a as seen from node b ----------
     let (r, theta_rad) = cartesian_to_polar(node_a.cx, node_a.cy, node_b.cx, node_b.cy);
-    let foot_a = foot_path(node_a.cx, node_a.cy, node_a.radius, theta_rad, foot_angle_rad, bar_width);
-    let foot_b = foot_path(node_b.cx, node_b.cy, node_b.radius, std::f32::consts::PI + theta_rad, foot_angle_rad, bar_width);
+    let foot_a = foot_path(&format!("c:{}:{}", &node_a.id, &node_b.id), node_a.cx, node_a.cy, node_a.radius, theta_rad, foot_angle_rad, bar_width);
+    let foot_b = foot_path(&format!("c:{}:{}", &node_b.id, &node_a.id), node_b.cx, node_b.cy, node_b.radius, std::f32::consts::PI + theta_rad, foot_angle_rad, bar_width);
 
     let (x1a, y1a, x2a, y2a) = ankle_endpoints(node_a.cx, node_a.cy, node_a.radius, theta_rad, bar_width);
     let (x1b, y1b, x2b, y2b) = ankle_endpoints(node_b.cx, node_b.cy, node_b.radius, std::f32::consts::PI + theta_rad, bar_width);
@@ -38,7 +38,7 @@ fn ankle_endpoints(cx: f32, cy: f32, r: f32, foot_direction_rad: f32, bar_width:
     return calculate_perpendicular_segment(lx, ly, mx, my, bar_width);
 }
 
-fn foot_path(cx: f32, cy: f32, r: f32, foot_direction_rad: f32, foot_angle_rad: f32, bar_width: f32) -> Path {
+fn foot_path(id: &str, cx: f32, cy: f32, r: f32, foot_direction_rad: f32, foot_angle_rad: f32, bar_width: f32) -> Path {
 
     // ---------- foot endpoints
     let (a1xb, a1yb) = polar_to_cartesian(r, foot_direction_rad - 0.5 * foot_angle_rad, cx, cy);
@@ -55,7 +55,7 @@ fn foot_path(cx: f32, cy: f32, r: f32, foot_direction_rad: f32, foot_angle_rad: 
     let (a1c3x, a1c3y) = polar_to_cartesian(0.15 * r, foot_direction_rad - pi / 2.5, a1xe, a1ye);
     let (a1c4x, a1c4y) = polar_to_cartesian(0.25 * r, foot_direction_rad + pi, x2, y2);
 
-    let foot_path = Path::new("").move_to(x1, y1)
+    let foot_path = Path::new(id).move_to(x1, y1)
         .curve_to(a1c2x, a1c2y, a1c1x, a1c1y,  a1xb, a1yb)
         .elliptical_arc_to(r, r, 0.0, false, true, a1xe, a1ye)
         .curve_to(a1c3x, a1c3y, a1c4x, a1c4y, x2, y2);
