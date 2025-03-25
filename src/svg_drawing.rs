@@ -1,21 +1,29 @@
 use crate::basic_shapes::SvgElement;
-use crate::{StyleManager, ToSvg};
+use crate::{StyleManager};
 
 pub struct SvgDrawing {
     width: f32,
     height: f32,
-    elements: Vec<SvgElement>
+    styles: StyleManager,
+    elements: Vec<SvgElement>,
 }
 
 impl SvgDrawing {
     pub fn new(width: f32, height: f32) -> Self {
-        SvgDrawing { width, height, elements: vec![] }
+        SvgDrawing { width, height, styles: StyleManager::new(), elements: vec![] }
     }
 
-    pub fn draw(&mut self, style_manager: &StyleManager) {
+    pub fn width(&self) -> f32 { self.width }
+    pub fn height(&self) -> f32 { self.width }
+
+    pub fn styles(&self) -> &StyleManager { &self.styles }
+
+    pub fn styles_mut(&mut self) -> &mut StyleManager { &mut self.styles }
+
+    pub fn draw(&mut self) {
         println!("{}", self.svg_header());
         for element in &self.elements {
-            println!("{}", element.to_svg(style_manager));
+            println!("{}", element.to_svg(&self.styles));
         }
         println!("</svg>");
     }

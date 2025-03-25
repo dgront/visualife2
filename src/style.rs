@@ -94,15 +94,15 @@ impl Style {
         }
 
         if let Some(opacity) = self.opacity {
-            style_string.push_str(&format!("opacity:{};", opacity));
+            style_string.push_str(&format!("opacity:{:.3};", opacity));
         }
 
         if let Some(fill_opacity) = self.fill_opacity {
-            style_string.push_str(&format!("fill-opacity:{};", fill_opacity));
+            style_string.push_str(&format!("fill-opacity:{:.3};", fill_opacity));
         }
 
         if let Some(stroke_opacity) = self.stroke_opacity {
-            style_string.push_str(&format!("stroke-opacity:{};", stroke_opacity));
+            style_string.push_str(&format!("stroke-opacity:{:.3};", stroke_opacity));
         }
         style_string.push_str("\"");
 

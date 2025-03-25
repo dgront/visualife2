@@ -18,10 +18,10 @@ pub fn hex_to_rgb(hex: &str) -> Result<(u8, u8, u8), &'static str> {
 
 /// Darkens a hexadecimal color by a given fraction.
 pub fn darker(color_hex: &str, fraction: f32) -> Result<String, &'static str> {
+
     if fraction < 0.0 || fraction > 1.0 {
         return Err("Fraction must be between 0.0 and 1.0");
     }
-
     let (r, g, b) = hex_to_rgb(color_hex)?;
 
     let new_r = (r as f32 * (1.0 - fraction)).clamp(0.0, 255.0) as u8;
