@@ -1,7 +1,7 @@
 use std::env;
 use rand::Rng;
 use visualife::colors::darker;
-use visualife::shapes::{Circle, Rect};
+use visualife::elements::{Circle, Rect};
 use visualife::style::{rgb_to_hex, Style};
 use visualife::SvgDrawing;
 

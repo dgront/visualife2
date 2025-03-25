@@ -7,7 +7,7 @@ pub trait ToSvg {
 pub(crate) fn close_element(style: &Style, svg_string: &mut String) {
 
     if !style.is_empty() {
-        svg_string.push_str(&format!(r#" style="{}""#, style.to_string()));
+        svg_string.push_str(&format!(r#" style="{}""#, style.to_svg()));
     }
     svg_string.push_str(r#" />"#);
 }

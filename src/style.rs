@@ -25,30 +25,48 @@ impl Style {
         }
     }
 
-    pub fn set_fill(&mut self, fill: &str) {
+
+    pub fn fill(mut self, fill: &str) -> Self {
         self.fill = Some(fill.to_string());
+        self
     }
 
-    pub fn set_stroke(&mut self, stroke: &str) {
+    pub fn stroke(mut self, stroke: &str) -> Self {
         self.stroke = Some(stroke.to_string());
+        self
     }
 
-    pub fn set_stroke_width(&mut self, stroke_width: f32) {
+    pub fn stroke_width(mut self, stroke_width: f32) -> Self {
         self.stroke_width = Some(stroke_width);
+        self
     }
 
-    pub fn set_opacity(&mut self, opacity: f32) {
+    pub fn opacity(mut self, opacity: f32) -> Self {
         self.opacity = Some(opacity);
+        self
     }
 
-    pub fn set_fill_opacity(&mut self, fill_opacity: f32) {
+    pub fn fill_opacity(mut self, fill_opacity: f32) -> Self {
         self.fill_opacity = Some(fill_opacity);
+        self
     }
 
-    pub fn set_stroke_opacity(&mut self, stroke_opacity: f32) {
+    pub fn stroke_opacity(mut self, stroke_opacity: f32) -> Self {
         self.stroke_opacity = Some(stroke_opacity);
+        self
     }
 
+    /// Returns true if all fields are None.
+    /// This is used to determine if a style is empty, and it doesn't need to be written to the SVG element
+    ///
+    /// # Examples
+    /// ```
+    /// use visualife::style::Style;
+    /// let mut style = Style::new();
+    /// assert!(style.is_empty());
+    /// style.fill = Some("red".to_string());
+    /// assert!(! style.is_empty());
+    /// ```
     pub fn is_empty(&self) -> bool {
             self.fill.is_none()
             && self.stroke.is_none()
@@ -58,8 +76,10 @@ impl Style {
             && self.stroke_opacity.is_none()
     }
 
-    pub fn to_string(&self) -> String {
-        let mut style_string = String::new();
+    pub fn to_svg(&self) -> String {
+        if self.is_empty() { return String::new(); }
+
+        let mut style_string = String::from(" style=\"");
 
         if let Some(ref fill) = self.fill {
             style_string.push_str(&format!("fill:{};", fill));
@@ -84,6 +104,7 @@ impl Style {
         if let Some(stroke_opacity) = self.stroke_opacity {
             style_string.push_str(&format!("stroke-opacity:{};", stroke_opacity));
         }
+        style_string.push_str("\"");
 
         style_string
     }
