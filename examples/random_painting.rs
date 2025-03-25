@@ -1,9 +1,8 @@
-use std::env;
 use rand::Rng;
 use visualife::colors::darker;
-use visualife::elements::{Circle, Rect};
 use visualife::style::{rgb_to_hex, Style};
-use visualife::SvgDrawing;
+use visualife::{StyleManager, SvgDrawing};
+use visualife::basic_shapes::{SvgElement, ElementID};
 
 fn main() {
     let draw_width = 1000.0;
@@ -12,40 +11,34 @@ fn main() {
     let mut rng = rand::thread_rng();
     let mut drawing = SvgDrawing::new(draw_width, draw_width);
     let max_noise: f32 = 0.5;
+    let mut style_mgr = StyleManager::new();
     for i in 0..n_x {
         let mut max_drop = i as f32 / 100.0 + 1.0;
         max_drop = max_drop * max_drop * max_drop;
         for j in 0..n_y {
-            let mut style = Style::new();
             let fill = rgb_to_hex(255, i * 255 / n_x, j * 255 / n_y);
-            style.set_stroke(&darker(&fill, 0.3).ok().unwrap());
-            style.set_fill(&fill);
-            style.set_opacity(rng.gen_range(0.6..=1.0));
-            style.set_stroke_width(rng.gen_range(0.5..=2.0));
+            let style = Style::new()
+                .stroke(&darker(&fill, 0.3).ok().unwrap())
+                .fill(&fill)
+                .opacity(rng.gen_range(0.6..=1.0))
+                .stroke_width(rng.gen_range(0.5..=2.0));
+            let style_id = style_mgr.add_style(style);
             let noise_x = rng.gen_range(-max_noise..max_noise);
             let noise_y = rng.gen_range(-max_noise..max_noise) + rng.gen_range(max_drop/2.0..max_drop);
             let x = i as f32 * draw_width / (n_x as f32) + noise_x;
             let y = j as f32 * draw_width / (n_y as f32) + noise_y;
-            let id = format!("el_{i}_{j}");
+            let id = ElementID::from(format!("el_{i}_{j}"));
+            style_mgr.style_element(style_id, &id);
             if rng.gen_range(0.0..1.0) < 0.1 {
-                let mut circ = Circle::new(&id, x, y, box_width);
-                circ.style = style;
-                drawing.add_element(Box::new(circ));
-                // separated_approach.push(Box::new(circ));
+                drawing.add_element(SvgElement::Circle { id, cx:x, cy:y, r: box_width / 2.0, });
             } else {
-                let mut rect = Rect::new(&id, x, y, box_width, box_width);
-                rect.style = style;
-                let angle = rng.gen_range(0.0..=i as f32 * j as f32 * 60.0 / (n_x * n_y) as f32);
-                rect.angle = angle;
-                drawing.add_element(Box::new(rect));
-                // separated_approach.push(Box::new(rect));
+                let rect = SvgElement::Rect { id, x, y, width: box_width, height: box_width };
+                // let angle = rng.gen_range(0.0..=i as f32 * j as f32 * 60.0 / (n_x * n_y) as f32);
+                // rect.angle = angle;
+                drawing.add_element(rect);
             }
         }
     }
-    drawing.draw();
-    // println!(r##"<svg width="#{draw_width}" height="{draw_width}" xmlns="http://www.w3.org/2000/svg">"##);
-    // for r in separated_approach {
-    //     println!("{}", &r.to_svg());
-    // }
-    // println!("</svg>");
+
+    drawing.draw(&style_mgr);
 }

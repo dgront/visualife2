@@ -1,9 +1,10 @@
-use crate::ToSvg;
+use crate::basic_shapes::SvgElement;
+use crate::{StyleManager, ToSvg};
 
 pub struct SvgDrawing {
     width: f32,
     height: f32,
-    elements: Vec<Box<dyn ToSvg>>
+    elements: Vec<SvgElement>
 }
 
 impl SvgDrawing {
@@ -11,15 +12,15 @@ impl SvgDrawing {
         SvgDrawing { width, height, elements: vec![] }
     }
 
-    pub fn draw(&mut self) {
+    pub fn draw(&mut self, style_manager: &StyleManager) {
         println!("{}", self.svg_header());
         for element in &self.elements {
-            println!("{}", element.to_svg());
+            println!("{}", element.to_svg(style_manager));
         }
         println!("</svg>");
     }
 
-    pub fn add_element(&mut self, el: Box<dyn ToSvg>) {
+    pub fn add_element(&mut self, el: SvgElement) {
         self.elements.push(el);
     }
 
