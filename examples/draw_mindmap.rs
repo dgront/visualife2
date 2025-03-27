@@ -1,8 +1,8 @@
 
 use visualife::{mindmap, SvgDrawing};
 use visualife::basic_shapes::{ElementID};
-use visualife::colors::darker;
-use visualife::style::Style;
+use visualife::styling::darker;
+use visualife::styling::Style;
 
 fn main() {
     let draw_width = 1000.0;

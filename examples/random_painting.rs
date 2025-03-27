@@ -1,7 +1,6 @@
 use rand::Rng;
-use visualife::colors::darker;
-use visualife::style::{rgb_to_hex, Style};
-use visualife::{StyleManager, SvgDrawing};
+use visualife::styling::{rgb_to_hex, Style, darker};
+use visualife::{SvgDrawing};
 use visualife::basic_shapes::{SvgElement, ElementID};
 
 fn main() {

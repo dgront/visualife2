@@ -1,5 +1,5 @@
 use pyo3::prelude::*;
-use visualife::colors;
+
 /// Python module definition
 #[pymodule]
 fn visualife_py(_py: Python, m: &PyModule) -> PyResult<()> {
@@ -9,5 +9,5 @@ fn visualife_py(_py: Python, m: &PyModule) -> PyResult<()> {
 
 #[pyfunction]
 fn rgb_to_hex(r: u8, g: u8, b: u8) -> PyResult<String> {
-    Ok(visualife::colors::rgb_to_hex(r, g, b))
+    Ok(visualife::styling::rgb_to_hex(r, g, b))
 }

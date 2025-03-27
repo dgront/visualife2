@@ -4,7 +4,7 @@ use crate::mindmap::connector::connector;
 use crate::mindmap::node::Node;
 use crate::mindmap::polar_to_cartesian;
 use crate::basic_shapes::SvgElement::{Group};
-use crate::style::Style;
+use crate::styling::Style;
 use crate::SvgDrawing;
 
 // #[derive(Clone)]

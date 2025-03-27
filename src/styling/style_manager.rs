@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use crate::basic_shapes::ElementID;
-use crate::style::Style;
+use crate::styling::Style;
 
 /// Manages styles and style bindings for SVG elements.
 pub struct StyleManager {

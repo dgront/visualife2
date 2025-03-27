@@ -1,5 +1,5 @@
 use std::fmt::{Display, Formatter};
-use crate::{StyleManager};
+use crate::styling::{StyleManager};
 use crate::basic_shapes::ElementID;
 
 /// Enum representing various SVG elements.

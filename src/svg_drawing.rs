@@ -1,5 +1,5 @@
 use crate::basic_shapes::SvgElement;
-use crate::{StyleManager};
+use crate::styling::{StyleManager};
 
 pub struct SvgDrawing {
     width: f32,
