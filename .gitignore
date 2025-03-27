@@ -3,6 +3,9 @@
 pkg/
 target/
 venv-maturin/
+.venv-maturin/
+.venv/
+venv/
 .idea/
 Cargo.lock
 *.pdb
@@ -15,5 +18,5 @@ ll
 oo
 ooo
 lll
-venv/
 python/Cargo.lock
+?.svg
