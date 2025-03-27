@@ -59,7 +59,7 @@ impl Mindmap {
     }
 
     /// Defines a new style.
-    pub fn add_style(&mut self, style: Style) -> u32 {
+    pub fn define_style(&mut self, style: Style) -> u32 {
         self.drawing.styles_mut().add_style(style)
     }
 

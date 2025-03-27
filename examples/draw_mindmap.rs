@@ -16,7 +16,7 @@ fn main() {
             .fill(&colors[i % colors.len()])
             .stroke_width(2.0)
             .stroke(&darker(&colors[i % colors.len()], 0.1).unwrap());
-        let style_id = mndmp.add_style(style);
+        let style_id = mndmp.define_style(style);
         mndmp.style_node(style_id, &el_id);
     }
 
