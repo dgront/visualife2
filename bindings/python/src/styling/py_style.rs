@@ -1,5 +1,7 @@
+use visualife::styling::Style;
+use pyo3::prelude::*;
 
-#[pyclass]
+#[pyclass(name = "Style")]
 #[derive(Clone)]
 pub struct PyStyle { inner: Style, }
 

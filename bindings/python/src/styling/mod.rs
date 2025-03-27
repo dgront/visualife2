@@ -1,7 +1,7 @@
 use pyo3::prelude::*;
 
-use visualife::styling::Style;
-
+pub mod py_style;
+use crate::styling::py_style::PyStyle;
 
 #[pyfunction]
 fn rgb_to_hex(r: u8, g: u8, b: u8) -> PyResult<String> {
