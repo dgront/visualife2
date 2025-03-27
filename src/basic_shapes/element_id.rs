@@ -20,29 +20,6 @@ impl Hash for ElementID {
     }
 }
 
-// impl TryFrom<&str> for ElementID {
-//     type Error = &'static str;
-//
-//     fn try_from(value: &str) -> Result<Self, Self::Error> {
-//         let bytes = value.as_bytes();
-//         if bytes.len() > 8 {
-//             return Err("String too long");
-//         }
-//
-//         let mut id = [0u8; 8];
-//         id[..bytes.len()].copy_from_slice(bytes);
-//         Ok(ElementID { id })
-//     }
-// }
-//
-// impl TryFrom<i32> for ElementID {
-//     type Error = &'static str;
-//
-//     fn try_from(value: i32) -> Result<Self, Self::Error> {
-//         ElementID::try_from(value.to_string().as_str())
-//     }
-// }
-
 impl From<&str> for ElementID {
     fn from(value: &str) -> Self {
         let bytes = value.as_bytes();
