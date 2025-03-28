@@ -15,8 +15,8 @@ pub enum ElementType {
     Group,
 }
 
-impl<'source> FromPyObject<'source> for ElementType {
-    fn extract(ob: &'source PyAny) -> PyResult<Self> {
+impl<'py> FromPyObject<'py> for ElementType {
+    fn extract_bound(ob: &Bound<'py, PyAny>) -> PyResult<Self> {
         let s = ob.extract::<&str>()?;
         match s.to_lowercase().as_str() {
             "line" => Ok(ElementType::Line),

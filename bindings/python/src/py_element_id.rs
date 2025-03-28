@@ -1,7 +1,6 @@
 use pyo3::prelude::*;
 use pyo3::exceptions::PyTypeError;
-use pyo3::types::PyAny;
-
+use pyo3::types::{PyAny, PyAnyMethods};
 use visualife::basic_shapes::ElementID;
 
 #[pyclass(name = "ElementID")]
@@ -14,7 +13,7 @@ pub struct PyElementID {
 impl PyElementID {
     /// Creates an ElementID from a string or an integer.
     #[new]
-    fn new(value: &PyAny) -> PyResult<Self> {
+    fn new<'py>(value: &Bound<'py, PyAny>) -> PyResult<Self> {
         if let Ok(s) = value.extract::<&str>() {
             Ok(PyElementID { inner: ElementID::from(s) })
         } else if let Ok(i) = value.extract::<i32>() {
@@ -41,19 +40,9 @@ impl PyElementID {
         format!("ElementID('{}')", self.inner.to_string())
     }
 
-    /// Optional: compare equality
-    fn __richcmp__(&self, other: PyRef<PyElementID>, op: pyo3::basic::CompareOp) -> Py<PyAny> {
-        Python::with_gil(|py| {
-            match op {
-                pyo3::basic::CompareOp::Eq => (self.inner.id == other.inner.id).into_py(py),
-                pyo3::basic::CompareOp::Ne => (self.inner.id != other.inner.id).into_py(py),
-                _ => py.NotImplemented(),
-            }
-        })
-    }
 }
 
-pub(crate) fn extract_element_id(obj: &PyAny) -> PyResult<ElementID> {
+pub(crate) fn extract_element_id<'py>(obj: &Bound<'py, PyAny>) -> PyResult<ElementID> {
     if let Ok(s) = obj.extract::<&str>() {
         Ok(ElementID::from(s))
     } else if let Ok(id_obj) = obj.extract::<PyElementID>() {

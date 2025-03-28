@@ -52,18 +52,19 @@ pub fn mix_colors(color1: &str, color2: &str, fraction: f32) -> PyResult<String>
     }
 }
 
-pub fn init_submodule(py: Python, parent: &PyModule) -> PyResult<()> {
-    let m = PyModule::new(py, "styling")?;
-    m.add_function(wrap_pyfunction!(rgb_to_hex, m)?)?;
-    m.add_function(wrap_pyfunction!(hex_to_rgb, m)?)?;
-    m.add_function(wrap_pyfunction!(darker, m)?)?;
-    m.add_function(wrap_pyfunction!(lighter, m)?)?;
-    m.add_function(wrap_pyfunction!(mix_colors, m)?)?;
-    m.add_function(wrap_pyfunction!(tableau10, m)?)?;
+pub fn init_submodule(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
+
+    let m = PyModule::new(parent_module.py(), "styling")?;
+
+    m.add_function(wrap_pyfunction!(rgb_to_hex, &m)?)?;
+    m.add_function(wrap_pyfunction!(hex_to_rgb, &m)?)?;
+    m.add_function(wrap_pyfunction!(darker, &m)?)?;
+    m.add_function(wrap_pyfunction!(lighter, &m)?)?;
+    m.add_function(wrap_pyfunction!(mix_colors, &m)?)?;
+    m.add_function(wrap_pyfunction!(tableau10, &m)?)?;
 
     m.add_class::<PyStyle>()?;
     m.add_class::<PyStyleManager>()?;
 
-    parent.add_submodule(m)?;
-    Ok(())
+    parent_module.add_submodule(&m)
 }

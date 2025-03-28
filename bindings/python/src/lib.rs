@@ -13,9 +13,9 @@ use element_type::ElementType;
 
 /// Python module definition
 #[pymodule]
-fn visualife(_py: Python, m: &PyModule) -> PyResult<()> {
-    styling::init_submodule(_py, m)?;
+fn visualife(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<PyElementID>()?;
     m.add_class::<PySvgDrawing>()?;
+    styling::init_submodule(m)?;
     Ok(())
 }
