@@ -3,7 +3,7 @@ use pyo3::prelude::*;
 
 #[pyclass(name = "Style")]
 #[derive(Clone)]
-pub struct PyStyle { inner: Style, }
+pub struct PyStyle { pub(crate) inner: Style, }
 
 #[pymethods]
 impl PyStyle {

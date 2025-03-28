@@ -1,4 +1,4 @@
-use crate::basic_shapes::SvgElement;
+use crate::basic_shapes::{ElementID, SvgElement};
 use crate::styling::{StyleManager};
 
 pub struct SvgDrawing {
@@ -32,7 +32,33 @@ impl SvgDrawing {
         self.elements.push(el);
     }
 
+    pub fn add_element_to_group(&mut self, el: SvgElement, group_id: ElementID) -> Result<(), String> {
+        if Self::add_to_group_recursive(&mut self.elements, &group_id, el) {
+            Ok(())
+        } else {
+            Err(format!("Group with ID '{}' not found", group_id))
+        }
+    }
+
     pub fn svg_header(&self) -> String {
         format!(r#"<svg width="{}" height="{}" xmlns="http://www.w3.org/2000/svg">"#, self.width, self.height).to_string()
+    }
+
+    /// Recursively searches for the group and adds the element.
+    fn add_to_group_recursive(elements: &mut Vec<SvgElement>, group_id: &ElementID, el: SvgElement) -> bool {
+        for element in elements.iter_mut() {
+            match element {
+                SvgElement::Group { id, elements: group_elements } => {
+                    if id == group_id {
+                        group_elements.push(el);
+                        return true;
+                    } else if Self::add_to_group_recursive(group_elements, group_id, el.clone()) {
+                        return true;
+                    }
+                }
+                _ => {}
+            }
+        }
+        false
     }
 }

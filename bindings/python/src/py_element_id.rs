@@ -1,6 +1,7 @@
 use pyo3::prelude::*;
-use pyo3::types::{PyString, PyLong};
 use pyo3::exceptions::PyTypeError;
+use pyo3::types::PyAny;
+
 use visualife::basic_shapes::ElementID;
 
 #[pyclass(name = "ElementID")]
@@ -49,5 +50,15 @@ impl PyElementID {
                 _ => py.NotImplemented(),
             }
         })
+    }
+}
+
+pub(crate) fn extract_element_id(obj: &PyAny) -> PyResult<ElementID> {
+    if let Ok(s) = obj.extract::<&str>() {
+        Ok(ElementID::from(s))
+    } else if let Ok(id_obj) = obj.extract::<PyElementID>() {
+        Ok(id_obj.inner.clone())
+    } else {
+        Err(PyTypeError::new_err("Expected str or ElementID"))
     }
 }

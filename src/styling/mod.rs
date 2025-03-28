@@ -6,3 +6,5 @@ pub use colors::*;
 
 mod style;
 pub use style::*;
+
+pub mod palettes;
