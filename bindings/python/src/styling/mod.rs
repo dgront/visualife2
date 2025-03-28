@@ -10,6 +10,9 @@ use crate::styling::py_style_manager::PyStyleManager;
 pub mod py_palettes;
 use crate::styling::py_palettes::{tableau10};
 
+pub(crate) mod py_color_map;
+use crate::styling::py_color_map::PyColorMap;
+
 #[pyfunction]
 pub fn rgb_to_hex(r: u8, g: u8, b: u8) -> PyResult<String> {
     Ok(visualife::styling::rgb_to_hex(r, g, b))
@@ -63,6 +66,7 @@ pub fn init_submodule(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(mix_colors, &m)?)?;
     m.add_function(wrap_pyfunction!(tableau10, &m)?)?;
 
+    m.add_class::<PyColorMap>()?;
     m.add_class::<PyStyle>()?;
     m.add_class::<PyStyleManager>()?;
 

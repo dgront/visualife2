@@ -9,21 +9,6 @@ use crate::styling::{PyStyle};
 use visualife::{SvgDrawing};
 use visualife::basic_shapes::{SvgElement, ElementID};
 
-// macro_rules! assign_f32_args {
-//     ($args:ident, $expected:expr, ( $( $var:ident ),+ )) => {
-//         if $args.len() != $expected {
-//             return Err(pyo3::exceptions::PyValueError::new_err(
-//                 format!("Expected {} arguments, got {}", $expected, $args.len())
-//             ));
-//         }
-//         let mut i = 0;
-//         $(
-//             let $var = $args.get_item(i)?.extract::<f32>()?;
-//             i += 1;
-//         )+
-//     };
-// }
-
 #[pyclass(name = "SvgDrawing")]
 pub struct PySvgDrawing {
     inner: SvgDrawing,

@@ -8,3 +8,6 @@ mod style;
 pub use style::*;
 
 pub mod palettes;
+
+mod color_map;
+pub use color_map::*;
