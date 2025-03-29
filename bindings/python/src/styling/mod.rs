@@ -8,7 +8,7 @@ pub(crate) mod py_style_manager;
 use crate::styling::py_style_manager::PyStyleManager;
 
 pub mod py_palettes;
-use crate::styling::py_palettes::{tableau10};
+use crate::styling::py_palettes::*;
 
 pub(crate) mod py_color_map;
 use crate::styling::py_color_map::PyColorMap;
@@ -65,6 +65,12 @@ pub fn init_submodule(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(lighter, &m)?)?;
     m.add_function(wrap_pyfunction!(mix_colors, &m)?)?;
     m.add_function(wrap_pyfunction!(tableau10, &m)?)?;
+    m.add_function(wrap_pyfunction!(tableau20, &m)?)?;
+    m.add_function(wrap_pyfunction!(viridis, &m)?)?;
+    m.add_function(wrap_pyfunction!(pastel, &m)?)?;
+    m.add_function(wrap_pyfunction!(accent, &m)?)?;
+    m.add_function(wrap_pyfunction!(paired, &m)?)?;
+    m.add_function(wrap_pyfunction!(red_blue, &m)?)?;
 
     m.add_class::<PyColorMap>()?;
     m.add_class::<PyStyle>()?;
