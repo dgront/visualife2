@@ -2,17 +2,34 @@ use std::fmt::{Display, Formatter};
 use crate::styling::{StyleManager};
 use crate::basic_shapes::ElementID;
 
-/// Enum representing various SVG elements.
+/// Enum representing available SVG elements with associated geometric and style information.
 #[derive(Clone)]
 pub enum SvgElement {
+    /// Represents an SVG line element, defined by its start (x1, y1) and end (x2, y2) points.
     Line { id: ElementID, x1: f32, y1: f32, x2: f32, y2: f32 },
+
+    /// Represents an SVG rectangle element, with its position, width, and height.
     Rect { id: ElementID, x: f32, y: f32, width: f32, height: f32 },
+
+    /// Represents an SVG circle element, defined by its center (cx, cy) and radius `r`.
     Circle { id: ElementID, cx: f32, cy: f32, r: f32 },
+
+    /// Represents an SVG ellipse element, defined by its center (cx, cy) and radii (rx, ry).
     Ellipse { id: ElementID, cx: f32, cy: f32, rx: f32, ry: f32 },
+
+    /// Represents an SVG polygon element, defined by a list of 2D points.
     Polygon { id: ElementID, points: Vec<(f32, f32)> },
+
+    /// Represents an SVG polyline element, similar to a polygon but not closed.
     Polyline { id: ElementID, points: Vec<(f32, f32)> },
+
+    /// Represents an SVG path element, defined by a `d` attribute (path data string).
     Path { id: ElementID, d: String },
+
+    /// Represents an SVG text element, placed at (x, y) with the specified string content.
     Text { id: ElementID, x: f32, y: f32, content: String },
+
+    /// Represents an SVG group element, which can contain multiple child elements.
     Group { id: ElementID, elements: Vec<SvgElement> },
 }
 

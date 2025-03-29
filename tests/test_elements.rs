@@ -2,8 +2,7 @@
 mod test_elements {
     use visualife::basic_shapes::{ElementID, SvgElement};
     use visualife::basic_shapes::SvgElement::{Circle, Path, Rect};
-    use visualife::{StyleManager};
-    use visualife::style::Style;
+    use visualife::styling::{Style, StyleManager};
 
     #[test]
     fn test_circle() {

@@ -9,6 +9,8 @@ pub struct SvgDrawing {
 }
 
 impl SvgDrawing {
+
+    /// Create a new SVG drawing with the given width and height.
     pub fn new(width: f32, height: f32) -> Self {
         SvgDrawing { width, height, styles: StyleManager::new(), elements: vec![] }
     }
