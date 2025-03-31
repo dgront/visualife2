@@ -1,4 +1,5 @@
-use crate::basic_shapes::{ElementID, SvgElement};
+use crate::basic_shapes::{SvgElement};
+use crate::{ElementID};
 use crate::styling::{StyleManager};
 
 pub struct SvgDrawing {
@@ -44,6 +45,11 @@ impl SvgDrawing {
 
     pub fn svg_header(&self) -> String {
         format!(r#"<svg width="{}" height="{}" xmlns="http://www.w3.org/2000/svg">"#, self.width, self.height).to_string()
+    }
+
+    /// Binds a style to an element by ID.
+    pub fn style_element(&mut self, style_id: u32, element_id: impl Into<ElementID>) {
+        self.styles.style_element(style_id, element_id);
     }
 
     /// Recursively searches for the group and adds the element.

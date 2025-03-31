@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use crate::basic_shapes::ElementID;
+use crate::ElementID;
 use crate::styling::Style;
 
 /// Manages styles and style bindings for SVG elements.
@@ -19,8 +19,8 @@ impl StyleManager {
     }
 
     /// Binds a style to an element by ID.
-    pub fn style_element(&mut self, style_id: u32, element_id: &ElementID) {
-        self.element_styles.insert(element_id.clone(), style_id as usize);
+    pub fn style_element(&mut self, style_id: u32, element_id: impl Into<ElementID>) {
+        self.element_styles.insert((element_id).into(), style_id as usize);
     }
 
     /// Retrieves the style for a given element, or `None` if unstyled.

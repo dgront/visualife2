@@ -1,7 +1,8 @@
-use crate::basic_shapes::{ElementID, PathBuilder, SvgElement};
+use crate::basic_shapes::{PathBuilder, SvgElement};
 use crate::mindmap::node::Node;
 use crate::mindmap::{cartesian_to_polar, FOOT_LENGTH_R_FRACTION, polar_to_cartesian};
 use crate::basic_shapes::SvgElement::{Group};
+use crate::element_id::ElementID;
 
 pub(crate) fn connector(node_a: &Node, node_b: &Node, foot_angle_deg: f32, bar_width: f32) -> SvgElement {
 
@@ -86,11 +87,10 @@ fn  calculate_perpendicular_segment(vx: f32, vy: f32, px: f32, py: f32, l: f32) 
 
 #[cfg(test)]
 mod test_connector {
-    use crate::basic_shapes::ElementID;
+    use crate::ElementID;
     use crate::mindmap::connector::{ankle_endpoints, connector};
     use crate::mindmap::node::Node;
     use crate::mindmap::FOOT_LENGTH_R_FRACTION;
-    use crate::ToSvg;
 
     #[test]
     fn test_ankle() {

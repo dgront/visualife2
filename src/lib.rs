@@ -5,5 +5,19 @@ pub mod basic_shapes;
 pub mod mindmap;
 pub mod styling;
 
+mod element_id;
+pub use element_id::*;
+
 mod svg_drawing;
 pub use svg_drawing::SvgDrawing;
+
+
+/// Normalizes whitespace in a string, replacing all whitespace character blocks with a single space.
+/// This function is used to compare strings in unit tests.
+pub(crate) fn normalize_whitespace(input: &str) -> String {
+    input
+        .split(|c| c == ' ' || c == '\t')
+        .filter(|s| !s.is_empty())
+        .collect::<Vec<_>>()
+        .join(" ")
+}
