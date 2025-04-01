@@ -1,0 +1,22 @@
+<svg width="250" height="30" xmlns="http://www.w3.org/2000/svg">
+<rect id="r0" x="5" y="5" width="10" height="20"  style="fill:#440154;stroke:#360043;stroke-width:1.5;"/>
+<rect id="r1" x="17" y="5" width="10" height="20"  style="fill:#481567;stroke:#391052;stroke-width:1.5;"/>
+<rect id="r2" x="29" y="5" width="10" height="20"  style="fill:#482677;stroke:#391E5F;stroke-width:1.5;"/>
+<rect id="r3" x="41" y="5" width="10" height="20"  style="fill:#453781;stroke:#372C67;stroke-width:1.5;"/>
+<rect id="r4" x="53" y="5" width="10" height="20"  style="fill:#404788;stroke:#33386C;stroke-width:1.5;"/>
+<rect id="r5" x="65" y="5" width="10" height="20"  style="fill:#39568C;stroke:#2D4470;stroke-width:1.5;"/>
+<rect id="r6" x="77" y="5" width="10" height="20"  style="fill:#33638D;stroke:#284F70;stroke-width:1.5;"/>
+<rect id="r7" x="89" y="5" width="10" height="20"  style="fill:#2D708E;stroke:#245971;stroke-width:1.5;"/>
+<rect id="r8" x="101" y="5" width="10" height="20"  style="fill:#287D8E;stroke:#206471;stroke-width:1.5;"/>
+<rect id="r9" x="113" y="5" width="10" height="20"  style="fill:#238A8D;stroke:#1C6E70;stroke-width:1.5;"/>
+<rect id="r10" x="125" y="5" width="10" height="20"  style="fill:#1F968B;stroke:#18786F;stroke-width:1.5;"/>
+<rect id="r11" x="137" y="5" width="10" height="20"  style="fill:#20A387;stroke:#19826C;stroke-width:1.5;"/>
+<rect id="r12" x="149" y="5" width="10" height="20"  style="fill:#29AF7F;stroke:#208C65;stroke-width:1.5;"/>
+<rect id="r13" x="161" y="5" width="10" height="20"  style="fill:#3CBB75;stroke:#30955D;stroke-width:1.5;"/>
+<rect id="r14" x="173" y="5" width="10" height="20"  style="fill:#55C667;stroke:#449E52;stroke-width:1.5;"/>
+<rect id="r15" x="185" y="5" width="10" height="20"  style="fill:#73D055;stroke:#5CA644;stroke-width:1.5;"/>
+<rect id="r16" x="197" y="5" width="10" height="20"  style="fill:#95D840;stroke:#77AC33;stroke-width:1.5;"/>
+<rect id="r17" x="209" y="5" width="10" height="20"  style="fill:#B8DE29;stroke:#93B120;stroke-width:1.5;"/>
+<rect id="r18" x="221" y="5" width="10" height="20"  style="fill:#DCE319;stroke:#B0B514;stroke-width:1.5;"/>
+<rect id="r19" x="233" y="5" width="10" height="20"  style="fill:#FDE725;stroke:#CAB81D;stroke-width:1.5;"/>
+</svg>

@@ -57,13 +57,28 @@ impl Mindmap {
         self.connections.push((from_id.into(), to_id.into()));
     }
 
-    pub fn style_node(&mut self, style_id: u32, element_id: impl Into<ElementID>) {
-        self.drawing.styles_mut().style_element(style_id, element_id);
+    /// Assigns a style to a mindmap's node given by its id.
+    pub fn style_node(&mut self, style_id: usize, element_id: impl Into<ElementID>) {
+        let circle_id = element_id.into().new_with_prefix("c:");
+        self.drawing.styles_mut().style_element(style_id, circle_id);
+    }
+
+    /// Assigns a style to the text of a mindmap's node given by its id.
+    pub fn style_node_text(&mut self, style_id: usize, element_id: impl Into<ElementID>) {
+        let circle_id = element_id.into().new_with_prefix("t:");
+        let text_style =  self.drawing.styles_mut().get_style_mut(style_id);
+        if text_style.text_anchor.is_none() {
+            text_style.text_anchor = Some("middle".to_string());
+        }
+        if text_style.dominant_baseline.is_none() {
+            text_style.dominant_baseline = Some("middle".to_string());
+        }
+        self.drawing.styles_mut().style_element(style_id, circle_id);
     }
 
     /// Defines a new style.
-    pub fn define_style(&mut self, style: Style) -> u32 {
-        self.drawing.styles_mut().add_style(style)
+    pub fn define_style(&mut self, style: Style) -> usize {
+        self.drawing.styles_mut().define_style(style)
     }
 
     pub fn create_elements(&self) -> Vec<SvgElement> {
@@ -95,6 +110,6 @@ impl Mindmap {
         for el in self.create_elements() {
             self.drawing.add_element(el)
         }
-        self.drawing.draw();
+        self.drawing.to_svg();
     }
 }

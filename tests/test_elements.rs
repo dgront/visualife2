@@ -1,7 +1,6 @@
 #[cfg(test)]
 mod test_elements {
     use visualife::basic_shapes::SvgElement;
-    use visualife::ElementID;
     use visualife::styling::{Style, StyleManager};
 
     #[test]
@@ -23,8 +22,8 @@ mod test_elements {
         let mut mgr = StyleManager::new();
         let p = SvgElement::path("p1", "M 100 100 L 300 100 L 200 300 Z");
         assert_eq!(p.to_svg(&mgr), r#"<path id="p1" d="M 100 100 L 300 100 L 200 300 Z" />"#);
-        let style_id = mgr.add_style(Style::new().stroke("#000000"));
-        mgr.style_element(style_id, p.id());
+        let style_id = mgr.define_style(Style::new().stroke("#000000"));
+        mgr.style_element(style_id, p.id().clone());
         assert_eq!(p.to_svg(&mgr), r#"<path id="p1" d="M 100 100 L 300 100 L 200 300 Z" style="stroke:#000000;" />"#);
     }
 

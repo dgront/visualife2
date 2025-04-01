@@ -6,6 +6,10 @@ use visualife::styling::palettes::*;
 #[pyfunction]
 pub fn tableau10() -> Vec<String> { TABLEAU10.iter().map(|s| s.to_string()).collect() }
 
+/// Returns the "Categorical Accent" palettes used in modern data visualization tools, as a list of hex strings.
+#[pyfunction]
+pub fn categorical_accent() -> Vec<String> { CATEGORICAL_ACCENT.iter().map(|s| s.to_string()).collect() }
+
 /// Returns the Tableau 20 color palette as a list of hex strings.
 #[pyfunction]
 pub fn tableau20() -> Vec<String> { TABLEAU20.iter().map(|s| s.to_string()).collect() }

@@ -17,6 +17,33 @@ pub fn hex_to_rgb(hex: &str) -> Result<(u8, u8, u8), &'static str> {
 }
 
 /// Darkens a hexadecimal color by a given fraction.
+///
+/// # Examples
+/// ```
+/// # use std::fs;
+/// # use visualife::basic_shapes::SvgElement;
+/// # use visualife::styling::{darker, Style};
+/// # use visualife::SvgDrawing;
+/// # fn main() -> Result<(), Box<dyn std::error::Error>> {
+/// let color = "#fbb4ae";
+/// let darker_color = darker(color, 0.25)?;
+/// assert_eq!(&darker_color, "#BC8782");
+/// let mut fig = SvgDrawing::new(160.0, 60.0);
+/// # let original = SvgElement::rect("original",10.0, 10.0, 60.0, 40.0).with_style(&mut fig, Style::new().fill(color));
+/// # let darker = SvgElement::rect("darker",80.0, 10.0, 60.0, 40.0).with_style(&mut fig, Style::new().fill(&darker_color));
+/// # fig.add_element(original);
+/// # fig.add_element(darker);
+/// # let output_svg = fig.to_svg();
+/// # // fs::write("colors_darker.svg", &output_svg).map_err(|e| e.to_string())?;
+/// # let expected = include_str!("../../tests/expected_drawings/styling/colors_darker.svg");
+/// # assert_eq!(output_svg, expected);
+/// # Ok(())
+/// # }
+/// ```
+/// The result is as follows (original on the left, darker on the right):
+///
+#[doc = include_str!("../../tests/expected_drawings/styling/colors_darker.svg")]
+///
 pub fn darker(color_hex: &str, fraction: f32) -> Result<String, &'static str> {
 
     if fraction < 0.0 || fraction > 1.0 {
@@ -31,7 +58,34 @@ pub fn darker(color_hex: &str, fraction: f32) -> Result<String, &'static str> {
     Ok(rgb_to_hex(new_r, new_g, new_b))
 }
 
-/// Darkens a hexadecimal color by a given fraction.
+/// Makes a hexadecimal color brighter by a given fraction.
+///
+/// # Examples
+/// ```
+/// # use std::fs;
+/// # use visualife::basic_shapes::SvgElement;
+/// # use visualife::styling::{lighter, Style};
+/// # use visualife::SvgDrawing;
+/// # fn main() -> Result<(), Box<dyn std::error::Error>> {
+/// let color = "#fbb4ae";
+/// let lighter_color = lighter(color, 0.25)?;
+/// assert_eq!(&lighter_color, "#FFE1D9");
+/// # let mut fig = SvgDrawing::new(160.0, 60.0);
+/// # let original = SvgElement::rect("original",10.0, 10.0, 60.0, 40.0).with_style(&mut fig, Style::new().fill(color));
+/// # let lighter = SvgElement::rect("lighter",80.0, 10.0, 60.0, 40.0).with_style(&mut fig, Style::new().fill(&lighter_color));
+/// # fig.add_element(original);
+/// # fig.add_element(lighter);
+/// # let output_svg = fig.to_svg();
+/// # let expected = include_str!("../../tests/expected_drawings/styling/colors_lighter.svg");
+/// # assert_eq!(output_svg, expected);
+/// # // fs::write("colors_lighter.svg", &output_svg).map_err(|e| e.to_string())?;
+/// # Ok(())
+/// # }
+/// ```
+/// The result is as follows (original on the left, lighter on the right):
+///
+#[doc = include_str!("../../tests/expected_drawings/styling/colors_lighter.svg")]
+///
 pub fn lighter(color_hex: &str, fraction: f32) -> Result<String, &'static str> {
     if fraction < 0.0 || fraction > 1.0 {
         return Err("Fraction must be between 0.0 and 1.0");

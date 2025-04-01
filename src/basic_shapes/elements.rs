@@ -81,7 +81,8 @@ mod internal {
 
         /// Registers the style with the drawing and applies it to this element.
         ///
-        /// Returns the style ID so it can be reused.
+        /// Returns the modified element to allow chaining.
+        /// If the style is to be reused, find the style ID and use it with `style_element`.
         ///
         /// # Examples
         /// ```
@@ -90,14 +91,15 @@ mod internal {
         /// use visualife::SvgDrawing;
         /// let mut drawing = SvgDrawing::new(100.0, 100.0);
         /// let style = Style::new().fill("#a6cee3").stroke("#1f78b4");
-        /// let  style_id = SvgElement::circle("circle1", 25.0, 25.0, 20.0).with_style(&mut drawing, style);
+        /// let circle = SvgElement::circle("circle1", 25.0, 25.0, 20.0).with_style(&mut drawing, style);
+        /// let style_id = drawing.get_style_id(&"circle1".into()).unwrap();
         /// drawing.add_element(SvgElement::circle("circle2", 75.0, 75.0, 20.0));
         /// drawing.style_element(style_id, "circle2");
         /// ```
-        pub fn with_style(&self, drawing: &mut SvgDrawing, style: Style) -> u32 {
-            let style_id = drawing.styles_mut().add_style(style);
+        pub fn with_style(self, drawing: &mut SvgDrawing, style: Style) -> Self {
+            let style_id = drawing.styles_mut().define_style(style);
             drawing.styles_mut().style_element(style_id, self.id().clone());
-            style_id
+            self
         }
 
         /// Returns a reference to the element's ID.
@@ -116,8 +118,8 @@ mod internal {
         }
 
         pub fn to_svg(&self, style_mgr: &StyleManager) -> String {
-            let style = style_mgr.get_style(self.id());
-            let style_str = style.map_or_else(String::new, |s| s.to_svg());
+            let style = style_mgr.get_style_id(self.id());
+            let style_str = style.map_or_else(String::new, |s| style_mgr.get_style(s).to_svg());
             match self {
                 SvgElement::Line { id, x1, y1, x2, y2 } => format!("<line id=\"{}\" x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" {}/>", id, x1, y1, x2, y2, style_str),
                 SvgElement::Rect { id, x, y, width, height } => format!("<rect id=\"{}\" x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" {}/>", id, x, y, width, height, style_str),
@@ -132,7 +134,7 @@ mod internal {
                     format!(r#"<polyline points="{}"{} />"#, points_str, style_str)
                 },
                 SvgElement::Path { id, d, .. } => format!(r#"<path id="{}" d="{}"{} />"#, id, d, style_str),
-                SvgElement::Text { x, y, content, .. } => format!(r#"<text x="{}" y="{}"{}>{}</text>"#, x, y, style_str, content),
+                SvgElement::Text { id, x, y, content, .. } => format!(r#"<text id="{}" x="{}" y="{}"{}>{}</text>"#, id, x, y, style_str, content),
                 SvgElement::Group { id, elements } => {
                     let inner_svg = elements
                         .iter()
@@ -146,6 +148,6 @@ mod internal {
         }
     }
 }
-// ✅ Expose only the type and its constructor API (not the variants)
+// Expose only the type and its constructor API (not the variants)
 pub use internal::SvgElement;
 

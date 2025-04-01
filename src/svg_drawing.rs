@@ -1,6 +1,8 @@
+use std::fmt::Write;
+
 use crate::basic_shapes::{SvgElement};
 use crate::{ElementID};
-use crate::styling::{StyleManager};
+use crate::styling::{Style, StyleManager};
 
 pub struct SvgDrawing {
     width: f32,
@@ -23,12 +25,35 @@ impl SvgDrawing {
 
     pub fn styles_mut(&mut self) -> &mut StyleManager { &mut self.styles }
 
-    pub fn draw(&mut self) {
-        println!("{}", self.svg_header());
+    /// Renders the SVG drawing and returns it as a String.
+    ///
+    /// This method is made efficient for large outputs by using a preallocated buffer.
+    ///
+    /// # Example
+    /// ```
+    /// use visualife::basic_shapes::SvgElement;
+    /// use visualife::styling::Style;
+    /// use visualife::SvgDrawing;
+    /// let mut drawing = SvgDrawing::new(200.0, 30.0);
+    /// for i in 0..9 {
+    ///     let circle = SvgElement::circle(format!("circle{}", i), 20.0 * i as f32 + 15.0, 15.0, 9.0)
+    ///        .with_style(&mut drawing, Style::new());
+    ///     drawing.add_element(circle);
+    /// }
+    /// let svg_string = drawing.to_svg();
+    /// std::fs::write("output.svg", svg_string).unwrap();
+    /// ```
+    pub fn to_svg(&self) -> String {
+        // Estimate capacity: header + K elements * average line size
+        let mut svg = String::with_capacity(1024 + self.elements.len() * 256);
+
+        writeln!(svg, "{}", self.svg_header()).unwrap();
         for element in &self.elements {
-            println!("{}", element.to_svg(&self.styles));
+            writeln!(svg, "{}", element.to_svg(&self.styles)).unwrap();
         }
-        println!("</svg>");
+        svg.push_str("</svg>\n");
+
+        svg
     }
 
     pub fn add_element(&mut self, el: SvgElement) {
@@ -47,9 +72,39 @@ impl SvgDrawing {
         format!(r#"<svg width="{}" height="{}" xmlns="http://www.w3.org/2000/svg">"#, self.width, self.height).to_string()
     }
 
-    /// Binds a style to an element by ID.
-    pub fn style_element(&mut self, style_id: u32, element_id: impl Into<ElementID>) {
+    /// Defines a new style in a [`StyleManager`](StyleManager).
+    ///
+    /// See [`StyleManager::define_style()`](StyleManager::define_style()) for more information.
+    pub fn define_style(&mut self, style: Style) -> usize {
+        self.styles.define_style(style)
+    }
+
+    /// Applies an already defined style to an element by their ``id``.
+    ///
+    /// See [`StyleManager::style_element()`](StyleManager::style_element()) for more information.
+    pub fn style_element(&mut self, style_id: usize, element_id: impl Into<ElementID>) {
         self.styles.style_element(style_id, element_id);
+    }
+
+    /// Retrieves the `id` of the style for a given element, or `None` if unstyled.
+    ///
+    /// See [`StyleManager::get_style_id()`](StyleManager::get_style_id()) for more information.
+    pub fn get_style_id(&self, element_id: &ElementID) -> Option<usize> {
+        self.styles.get_style_id(element_id)
+    }
+
+    /// Provide access to the style registered under a given index
+    ///
+    /// See [`StyleManager::get_style()`](StyleManager::get_style()) for more information.
+    pub fn get_style(&self, style_id: usize) -> &Style {
+        self.styles.get_style(style_id)
+    }
+
+    /// Provide mutable access to the style registered under a given index
+    ///
+    /// See [`StyleManager::get_style_mut()`](StyleManager::get_style_mut()) for more information.
+    pub fn get_style_mut(&mut self, style_id: usize) -> &mut Style {
+        self.styles.get_style_mut(style_id)
     }
 
     /// Recursively searches for the group and adds the element.

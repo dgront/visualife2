@@ -1,5 +1,17 @@
+
+
 /// Tableau 10 palette (10 discrete categorical colors)
+///
+/// ...also known as Plotly 10 / D3 Category10 / Matplotlib tab10 palette (10 categorical colors)
+/// <svg>
+#[doc = include_str!("../../tests/expected_drawings/styling/tableau10.svg")]
+/// </svg>
 pub const TABLEAU10: [&str; 10] = [
+    "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
+    "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"
+];
+
+pub const CATEGORICAL_ACCENT: [&str; 10] = [
     "#4e79a7", "#f28e2c", "#e15759", "#76b7b2", "#59a14f",
     "#edc949", "#af7aa1", "#ff9da7", "#9c755f", "#bab0ab"
 ];
@@ -31,6 +43,42 @@ pub const PAIRED: [&str; 12] =  [
     "#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99",
     "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a",
     "#ffff99", "#b15928"];
+
+/// Okabe-Ito palette (8 colors, colorblind-safe)
+pub const OKABE_ITO: [&str; 8] = [
+    "#E69F00", "#56B4E9", "#009E73", "#F0E442",
+    "#0072B2", "#D55E00", "#CC79A7", "#000000"
+];
+
+/// ggplot2 default discrete palette (8 colors)
+pub const GGPLOT2_DEFAULT: [&str; 8] = [
+    "#F8766D", "#7CAE00", "#00BFC4", "#C77CFF",
+    "#E58700", "#00AFBB", "#FF61C3", "#A3A500"
+];
+
+/// IBM Design Language palette (8 categorical colors)
+pub const IBM_COLORS: [&str; 8] = [
+    "#648FFF", "#785EF0", "#DC267F", "#FE6100",
+    "#FFB000", "#009E73", "#00BFC4", "#A3A500"
+];
+
+/// ColorBrewer Set1 palette (9 vibrant, colorblind-safe colors)
+pub const COLORBREWER_SET1: [&str; 9] = [
+    "#E41A1C", "#377EB8", "#4DAF4A", "#984EA3",
+    "#FF7F00", "#FFFF33", "#A65628", "#F781BF", "#999999"
+];
+
+/// Generic dark categorical palette (8 colors)
+pub const DARK: [&str; 8] = [
+    "#1b1b1b", "#4e4e4e", "#6a3d9a", "#ff7f00",
+    "#b15928", "#01665e", "#542788", "#e7298a"
+];
+
+/// ColorBrewer Dark2 palette (8 vivid, colorblind-friendly colors)
+pub const DARK2: [&str; 8] = [
+    "#1B9E77", "#D95F02", "#7570B3", "#E7298A",
+    "#66A61E", "#E6AB02", "#A6761D", "#666666"
+];
 
 pub const RED_BLUE: [&str; 64] = [
     "#67001f", "#730421", "#7e0823", "#8a0c25", "#941127", "#9f172a", "#a81d2d",

@@ -20,7 +20,7 @@ fn main() {
                 .fill(&fill)
                 .opacity(rng.gen_range(0.6..=1.0))
                 .stroke_width(rng.gen_range(0.5..=2.0));
-            let style_id = drawing.styles_mut().add_style(style);
+            let style_id = drawing.styles_mut().define_style(style);
             let noise_x = rng.gen_range(-max_noise..max_noise);
             let noise_y = rng.gen_range(-max_noise..max_noise) + rng.gen_range(max_drop/2.0..max_drop);
             let x = i as f32 * draw_width / (n_x as f32) + noise_x;
@@ -38,5 +38,5 @@ fn main() {
         }
     }
 
-    drawing.draw();
+    drawing.to_svg();
 }
