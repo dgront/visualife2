@@ -3,9 +3,13 @@
 pub mod basic_shapes;
 /// Library for drawing mindmaps, inspired by the [TikZ MindMap](https://tikz.dev/library-mindmaps) library.
 pub mod mindmap;
+/// Visualize array-like data as a heatmap
+pub mod heatmap;
+/// Define styles for SVG elements.
 pub mod styling;
 
 mod element_id;
+
 pub use element_id::*;
 
 mod svg_drawing;

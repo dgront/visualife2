@@ -9,12 +9,68 @@ pub use style::*;
 
 /// Provides several predefined color palettes for visualization.
 ///
-/// This module exposes several commonly used palettes as string constants.
+/// This module contains several most popular color palettes as ``\[&str;\]`` arrays.
 ///
-/// # Example
-/// ```
+/// # Available categorical palettes
+///
+/// Tableau 10 palette:
+#[doc = include_str!("../../tests/expected_drawings/styling/tableau10.svg")]
+///
+/// Accent palette:
+#[doc = include_str!("../../tests/expected_drawings/styling/accent.svg")]
+///
+/// Categorical Accent palette:
+#[doc = include_str!("../../tests/expected_drawings/styling/categorical_accent.svg")]
+///
+/// Paired palette:
+#[doc = include_str!("../../tests/expected_drawings/styling/paired.svg")]
+///
+/// Pastel palette:
+#[doc = include_str!("../../tests/expected_drawings/styling/pastel.svg")]
+///
+/// Tableau 20 palette:
+#[doc = include_str!("../../tests/expected_drawings/styling/tableau20.svg")]
+///
+/// Viridis palette:
+#[doc = include_str!("../../tests/expected_drawings/styling/viridis.svg")]
+///
+/// Okabe-Ito palette:
+#[doc = include_str!("../../tests/expected_drawings/styling/okabe_ito.svg")]
+///
+/// ggplot2 Default palette:
+#[doc = include_str!("../../tests/expected_drawings/styling/ggplot2_default.svg")]
+///
+/// IBM Colors palette:
+#[doc = include_str!("../../tests/expected_drawings/styling/ibm_colors.svg")]
+///
+/// ColorBrewer Set1 palette:
+#[doc = include_str!("../../tests/expected_drawings/styling/colorbrewer_set1.svg")]
+///
+/// Plotly10 palette:
+#[doc = include_str!("../../tests/expected_drawings/styling/plotly10.svg")]
+///
+/// Dark palette:
+#[doc = include_str!("../../tests/expected_drawings/styling/dark.svg")]
+///
+/// Dark2 palette:
+#[doc = include_str!("../../tests/expected_drawings/styling/dark2.svg")]
+
+
+/// # Examples
+///
+/// ```rust
+/// use visualife::basic_shapes::SvgElement;
 /// use visualife::styling::{Style, StyleManager};
-/// use visualife::basic_shapes::SvgElement::Rect;
+/// use visualife::styling::palettes::TABLEAU10;
+/// use visualife::SvgDrawing;
+///
+/// let n_colors = TABLEAU10.len();
+/// let mut drawing = SvgDrawing::new(130.0, 30.0);
+/// for i in 0..TABLEAU10.len() {
+///     let r = SvgElement::rect("r1", (i+12 + 5) as f32, 5.0, 10.0, 20.0)
+///         .with_style(&mut drawing, Style::new().fill(TABLEAU10[i]));
+///     drawing.add_element(r);
+/// }
 /// ```
 pub mod palettes;
 
