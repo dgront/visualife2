@@ -1,13 +1,15 @@
 use pyo3::prelude::*;
 use pyo3::exceptions::PyValueError;
 use pyo3::types::PyTuple;
+use pyo3::types::{PyDict, PyDictMethods};
+
 
 use crate::{extract_element_id};
 use crate::ElementType;
 use crate::styling::{PyStyle};
 
-use visualife::{SvgDrawing};
-use visualife::basic_shapes::{SvgElement, ElementID};
+use visualife::{SvgDrawing, ElementID};
+use visualife::basic_shapes::{SvgElement};
 
 #[pyclass(name = "SvgDrawing")]
 pub struct PySvgDrawing {
@@ -28,22 +30,24 @@ impl PySvgDrawing {
     fn get_height(&self) -> f32 { self.inner.height() }
 
     /// Adds a style to the drawing and returns its style ID.
-    pub fn add_style<'py>(&mut self, style: &PyStyle) -> u32 {
-        self.inner.styles_mut().add_style(style.inner.clone())
+    pub fn define_style<'py>(&mut self, style: &PyStyle) -> usize {
+        self.inner.styles_mut().define_style(style.inner.clone())
     }
 
     /// Binds a style to an element by ID.
-    pub fn style_element<'py>(&mut self, style_id: u32, element_id: &Bound<'py, PyAny>) -> PyResult<()> {
-        let id = extract_element_id(element_id)?;
-        self.inner.styles_mut().style_element(style_id, &id);
+    pub fn style_element<'py>(&mut self, style_id: usize, element_id: Bound<'py, PyAny>) -> PyResult<()> {
+        let id = extract_element_id(&element_id)?;
+        self.inner.styles_mut().style_element(style_id, id);
         Ok(())
     }
 
     /// Draws the SVG to stdout.
-    fn draw(&mut self) { self.inner.draw(); }
+    fn to_svg(&mut self) -> String { self.inner.to_svg() }
 
     /// Adds an element by type and arguments.
-    fn add_element<'py>(&mut self, element_type: ElementType, id: &Bound<'py, PyAny>, args: &Bound<'py, PyTuple>) -> PyResult<()> {
+    #[pyo3(signature = (element_type, id, args, **kwargs))]
+    fn add_element<'py>(&mut self, element_type: ElementType, id: &Bound<'py, PyAny>,
+                        args: &Bound<'py, PyTuple>, kwargs: Option<&Bound<'py, PyDict>>) -> PyResult<()> {
 
         let id = extract_element_id(id)?;
         let el = match element_type {
@@ -58,12 +62,23 @@ impl PySvgDrawing {
             ElementType::Group => Self::parse_group(&id)?,
         };
         self.inner.add_element(el);
+
+        if let Some(kwargs) = kwargs {
+            if let Ok(Some(style_obj)) = kwargs.get_item("style") {
+                let style_py = style_obj.extract::<PyStyle>()?;
+                let style_id = self.define_style(&style_py);
+                self.inner.style_element(style_id, id);
+            }
+        }
+
         Ok(())
     }
 
     /// Adds a new SVG element to a group identified by group_id.
+    #[pyo3(signature = (group_id, element_type, id, args, **kwargs))]
     fn add_element_to_group<'py>( &mut self, group_id: &Bound<'py, PyAny>,
-        element_type: ElementType, id: &Bound<'py, PyAny>, args: &Bound<'py, PyTuple>, ) -> PyResult<()> {
+                element_type: ElementType, id: &Bound<'py, PyAny>,
+                args: &Bound<'py, PyTuple>, kwargs: Option<&Bound<'py, PyDict>> ) -> PyResult<()> {
 
         let id = extract_element_id(id)?;
         let group_id = extract_element_id(group_id)?;
@@ -78,6 +93,14 @@ impl PySvgDrawing {
             ElementType::Text => Self::parse_text(&id, args)?,
             ElementType::Group => return Err(PyValueError::new_err("Cannot nest a new group this way")),
         };
+
+        if let Some(kwargs) = kwargs {
+            if let Ok(Some(style_obj)) = kwargs.get_item("style") {
+                let style_py = style_obj.extract::<PyStyle>()?;
+                let style_id = self.define_style(&style_py);
+                self.inner.style_element(style_id, id);
+            }
+        }
 
         self.inner
             .add_element_to_group(el, group_id.clone())

@@ -17,23 +17,25 @@ impl PyStyleManager {
     }
 
     /// Adds a style to the manager. Returns a style ID.
-    pub fn add_style(&mut self, style: &PyStyle) -> u32 {
-        self.inner.add_style(style.inner.clone())
+    pub fn define_style(&mut self, style: &PyStyle) -> usize {
+        self.inner.define_style(style.inner.clone())
     }
 
     /// Binds a style to an element by ID.
-    pub fn style_element(&mut self, style_id: u32, element_id: &PyElementID) {
-        self.inner.style_element(style_id, &element_id.inner)
+    pub fn style_element(&mut self, style_id: usize, element_id: PyElementID) {
+        self.inner.style_element(style_id, element_id.inner)
+    }
+
+    pub fn get_style_id(&self, element_id: &PyElementID) -> Option<usize> {
+        self.inner.get_style_id(&element_id.inner)
     }
 
     /// Retrieves the style for the given element.
     ///
     /// Returns `None` if the element has no style.
-    pub fn get_style(&self, element_id: &PyElementID) -> Option<PyStyle> {
-        self.inner
-            .get_style(&element_id.inner)
-            .cloned()
-            .map(|s| PyStyle { inner: s })
+    pub fn get_style(&self, style_id: usize) -> PyStyle {
+        let style = self.inner.get_style(style_id);
+        PyStyle { inner: style.clone() }
     }
 
 }

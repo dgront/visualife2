@@ -1,5 +1,5 @@
 [package]
-name = "py_vl"
+name = "pyvl"
 version = "0.1.0"
 edition = "2021"
 
@@ -13,5 +13,5 @@ visualife = { path = "../../" }
 
 
 [package.metadata.maturin]
-name = "visualife"
+name = "pyvl"
 

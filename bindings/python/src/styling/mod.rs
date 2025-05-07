@@ -2,7 +2,7 @@ use pyo3::prelude::*;
 use pyo3::exceptions::PyValueError;
 
 pub(crate) mod py_style;
-pub use crate::styling::py_style::PyStyle;
+pub use crate::styling::py_style::{PyStyle, style};
 
 pub(crate) mod py_style_manager;
 use crate::styling::py_style_manager::PyStyleManager;
@@ -71,6 +71,7 @@ pub fn init_submodule(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(accent, &m)?)?;
     m.add_function(wrap_pyfunction!(paired, &m)?)?;
     m.add_function(wrap_pyfunction!(red_blue, &m)?)?;
+    m.add_function(wrap_pyfunction!(style, &m)?)?;
 
     m.add_class::<PyColorMap>()?;
     m.add_class::<PyStyle>()?;

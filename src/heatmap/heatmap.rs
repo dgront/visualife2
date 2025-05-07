@@ -6,6 +6,8 @@ pub struct Heatmap {
     pub id: ElementID,
     drawing: SvgDrawing,
     boxes: Vec<SvgElement>,
+    offset_x: f32,
+    offset_y: f32,
 }
 
 impl Heatmap {
@@ -25,7 +27,7 @@ impl Heatmap {
             }
         }
 
-        Self { id: id.into(), drawing, boxes, }
+        Self { id: id.into(), drawing, boxes, offset_x: 0.0, offset_y: 0.0 }
     }
 
     pub fn to_svg(&self) -> String { self.drawing.to_svg() }

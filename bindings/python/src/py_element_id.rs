@@ -1,7 +1,7 @@
 use pyo3::prelude::*;
 use pyo3::exceptions::PyTypeError;
 use pyo3::types::{PyAny, PyAnyMethods};
-use visualife::basic_shapes::ElementID;
+use visualife::ElementID;
 
 #[pyclass(name = "ElementID")]
 #[derive(Clone)]

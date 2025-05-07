@@ -1,5 +1,4 @@
-from visualife import SvgDrawing, ElementID
-from visualife import styling
+from visualife import SvgDrawing, ElementID, styling
 
 def draw_elements():
     drawing = SvgDrawing(800, 600)
@@ -13,22 +12,32 @@ def draw_elements():
     # drawing.draw()
 
 def draw_elements_with_styling():
+    # Initialize the drawing
     drawing = SvgDrawing(600, 600)
-    style = styling.Style().with_stroke("red").with_stroke_width(0.5)
-    style_id = drawing.add_style(style)
-    drawing.add_element("GROUP", "g1", ())
-    drawing.style_element(style_id, "g1")
+
+    # Define and register a style for the group border
+    group_style = styling.style(stroke="black", stroke_width=0.5)
+
+    # Create a group element and apply style
+    drawing.add_element("GROUP", "g1", (), style=group_style)
+
+    # Get color palette
     tableau10 = styling.tableau10()
 
+    # Create a grid of circles with blended colors
     for i in range(5):
         for j in range(5):
-            idx = i* 5 + j
-            clr = styling.mix_colors(tableau10[3], tableau10[2], i*j/25.0)
-            id = drawing.add_style(styling.Style().with_fill(clr))
-            drawing.add_element_to_group("g1", "CIRCLE", f"c{idx}", (i * 100+50, j * 100+50, 30))
-            drawing.style_element(id, f"c{idx}")
+            idx = i * 5 + j
+            blend_ratio = (i * j) / 25.0
+            fill_color = styling.mix_colors(tableau10[3], tableau10[2], blend_ratio)
+            fill_style = styling.style(fill=fill_color)
 
-    drawing.draw()
+            # Add circle to group with per-element style
+            drawing.add_element_to_group("g1", "CIRCLE", f"c{idx}", (i * 100 + 50, j * 100 + 50, 30), style=fill_style)
+
+    # Render the drawing
+    svg_str = drawing.to_svg()
+    # print(svg_str)
 
 if __name__ == "__main__":
     draw_elements()
