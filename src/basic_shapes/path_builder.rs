@@ -1,6 +1,7 @@
 use std::fmt::{Display, Formatter};
-use crate::basic_shapes::SvgElement;
+use crate::basic_shapes::{SvgAttributes, SvgElement};
 use crate::element_id::ElementID;
+use crate::styling::Style;
 
 // #[derive(Debug, Clone, PartialEq)]
 enum PathCommand {
@@ -55,12 +56,13 @@ impl Display for PathCommand {
 pub struct PathBuilder {
     id: ElementID,
     commands: Vec<PathCommand>,
+    attr: SvgAttributes,
 }
 
 impl PathBuilder {
     /// Creates a new, empty path.
     pub fn new(id: ElementID) -> Self {
-        Self { id, commands: Vec::new() }
+        Self { id, commands: Vec::new(), attr: Default::default() }
     }
 
     /// Adds a move-to command (`M x y`).
@@ -171,19 +173,34 @@ impl PathBuilder {
         self
     }
 
-    /// Builds the final Path string.
-    pub fn build(self) -> String {
-        self.commands.iter().map(|cmd| cmd.to_string()).collect::<Vec<String>>().join(" ")
+    /// Adds a style to the path
+    pub fn with_style(mut self, style: Style) -> Self {
+        self.attr.style = Some(style);
+        self
     }
+
+    /// Apply a transformation to the path
+    pub fn with_transform(mut self, transform: impl Into<String>) -> Self {
+        self.attr.transform = Some(transform.into());
+        self
+    }
+
+    /// Apply a mask to the path
+    pub fn with_mask(mut self, mask_id: impl Into<String>) -> Self {
+        self.attr.mask = Some(mask_id.into());
+        self
+    }
+
+    /// Builds the final Path string.
+    // pub fn build(self) -> String {
+    //     self.commands.iter().map(|cmd| cmd.to_string()).collect::<Vec<String>>().join(" ")
+    // }
 
     /// Converts to an `SvgElement::Path`.
     pub fn to_path(self) -> SvgElement {
-        let d = self.commands
-            .iter()
-            .map(|cmd| cmd.to_string())  // Convert each command to string
-            .collect::<Vec<String>>()    // Collect into a Vec<String>
-            .join(" ");
-
-        return SvgElement::Path { id: self.id, d, };
+        let d = self.commands.iter().map(|cmd| cmd.to_string()).collect::<Vec<_>>().join(" ");
+        let mut path = SvgElement::path(self.id, d);
+        *path.attr_mut() = self.attr;
+        path
     }
 }

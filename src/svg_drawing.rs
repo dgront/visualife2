@@ -2,12 +2,10 @@ use std::fmt::Write;
 
 use crate::basic_shapes::{SvgElement};
 use crate::{ElementID};
-use crate::styling::{Style, StyleManager};
 
 pub struct SvgDrawing {
     width: f32,
     height: f32,
-    styles: StyleManager,
     elements: Vec<SvgElement>,
 }
 
@@ -15,15 +13,12 @@ impl SvgDrawing {
 
     /// Create a new SVG drawing with the given width and height.
     pub fn new(width: f32, height: f32) -> Self {
-        SvgDrawing { width, height, styles: StyleManager::new(), elements: vec![] }
+        SvgDrawing { width, height, elements: vec![] }
     }
 
     pub fn width(&self) -> f32 { self.width }
     pub fn height(&self) -> f32 { self.width }
 
-    pub fn styles(&self) -> &StyleManager { &self.styles }
-
-    pub fn styles_mut(&mut self) -> &mut StyleManager { &mut self.styles }
 
     /// Renders the SVG drawing and returns it as a String.
     ///
@@ -37,23 +32,39 @@ impl SvgDrawing {
     /// let mut drawing = SvgDrawing::new(200.0, 30.0);
     /// for i in 0..9 {
     ///     let circle = SvgElement::circle(format!("circle{}", i), 20.0 * i as f32 + 15.0, 15.0, 9.0)
-    ///        .with_style(&mut drawing, Style::new());
+    ///        .with_style(Style::new().fill("skyblue").stroke("navy"));
     ///     drawing.add_element(circle);
     /// }
     /// let svg_string = drawing.to_svg();
     /// std::fs::write("output.svg", svg_string).unwrap();
     /// ```
     pub fn to_svg(&self) -> String {
-        // Estimate capacity: header + K elements * average line size
-        let mut svg = String::with_capacity(1024 + self.elements.len() * 256);
+        // Estimate average line length
+        let avg_len_per_element = 120;
+        let header_len = 256;
 
-        writeln!(svg, "{}", self.svg_header()).unwrap();
-        for element in &self.elements {
-            writeln!(svg, "{}", element.to_svg(&self.styles)).unwrap();
+        // Preallocate total buffer size
+        let estimated_capacity = header_len + self.elements.len() * avg_len_per_element;
+        let mut out = String::with_capacity(estimated_capacity);
+
+        // Write header
+        out.push_str(&format!(
+            r#"<svg xmlns="http://www.w3.org/2000/svg" width="{}" height="{}" viewBox="0 0 {} {}">"#,
+            self.width, self.height, self.width, self.height
+        ));
+        out.push('\n');
+
+        // Add elements
+        for el in &self.elements {
+            out.push_str("  ");
+            out.push_str(&el.to_svg());
+            out.push('\n');
         }
-        svg.push_str("</svg>\n");
 
-        svg
+        // Close SVG
+        out.push_str("</svg>\n");
+
+        out
     }
 
     pub fn add_element(&mut self, el: SvgElement) {
@@ -72,54 +83,17 @@ impl SvgDrawing {
         format!(r#"<svg width="{}" height="{}" xmlns="http://www.w3.org/2000/svg">"#, self.width, self.height).to_string()
     }
 
-    /// Defines a new style in a [`StyleManager`](StyleManager).
-    ///
-    /// See [`StyleManager::define_style()`](StyleManager::define_style()) for more information.
-    pub fn define_style(&mut self, style: Style) -> usize {
-        self.styles.define_style(style)
-    }
-
-    /// Applies an already defined style to an element by their ``id``.
-    ///
-    /// See [`StyleManager::style_element()`](StyleManager::style_element()) for more information.
-    pub fn style_element(&mut self, style_id: usize, element_id: impl Into<ElementID>) {
-        self.styles.style_element(style_id, element_id);
-    }
-
-    /// Retrieves the `id` of the style for a given element, or `None` if unstyled.
-    ///
-    /// See [`StyleManager::get_style_id()`](StyleManager::get_style_id()) for more information.
-    pub fn get_style_id(&self, element_id: &ElementID) -> Option<usize> {
-        self.styles.get_style_id(element_id)
-    }
-
-    /// Provide access to the style registered under a given index
-    ///
-    /// See [`StyleManager::get_style()`](StyleManager::get_style()) for more information.
-    pub fn get_style(&self, style_id: usize) -> &Style {
-        self.styles.get_style(style_id)
-    }
-
-    /// Provide mutable access to the style registered under a given index
-    ///
-    /// See [`StyleManager::get_style_mut()`](StyleManager::get_style_mut()) for more information.
-    pub fn get_style_mut(&mut self, style_id: usize) -> &mut Style {
-        self.styles.get_style_mut(style_id)
-    }
-
-    /// Recursively searches for the group and adds the element.
-    fn add_to_group_recursive(elements: &mut Vec<SvgElement>, group_id: &ElementID, el: SvgElement) -> bool {
+    fn add_to_group_recursive(elements: &mut [SvgElement], group_id: &ElementID, el: SvgElement) -> bool {
         for element in elements.iter_mut() {
-            match element {
-                SvgElement::Group { id, elements: group_elements } => {
-                    if id == group_id {
-                        group_elements.push(el);
-                        return true;
-                    } else if Self::add_to_group_recursive(group_elements, group_id, el.clone()) {
-                        return true;
-                    }
+            if element.id() == group_id {
+                if let Some(children) = element.group_elements_mut() {
+                    children.push(el);
+                    return true;
                 }
-                _ => {}
+            } else if let Some(children) = element.group_elements_mut() {
+                if Self::add_to_group_recursive(children, group_id, el.clone()) {
+                    return true;
+                }
             }
         }
         false
