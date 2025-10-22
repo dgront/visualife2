@@ -29,8 +29,8 @@ pub fn hex_to_rgb(hex: &str) -> Result<(u8, u8, u8), &'static str> {
 /// let darker_color = darker(color, 0.25)?;
 /// assert_eq!(&darker_color, "#BC8782");
 /// let mut fig = SvgDrawing::new(160.0, 60.0);
-/// # let original = SvgElement::rect("original",10.0, 10.0, 60.0, 40.0).with_style(&mut fig, Style::new().fill(color));
-/// # let darker = SvgElement::rect("darker",80.0, 10.0, 60.0, 40.0).with_style(&mut fig, Style::new().fill(&darker_color));
+/// # let original = SvgElement::rect("original",10.0, 10.0, 60.0, 40.0).with_style(Style::new().fill(color));
+/// # let darker = SvgElement::rect("darker",80.0, 10.0, 60.0, 40.0).with_style(Style::new().fill(&darker_color));
 /// # fig.add_element(original);
 /// # fig.add_element(darker);
 /// # let output_svg = fig.to_svg();
@@ -71,8 +71,8 @@ pub fn darker(color_hex: &str, fraction: f32) -> Result<String, &'static str> {
 /// let lighter_color = lighter(color, 0.25)?;
 /// assert_eq!(&lighter_color, "#FFE1D9");
 /// # let mut fig = SvgDrawing::new(160.0, 60.0);
-/// # let original = SvgElement::rect("original",10.0, 10.0, 60.0, 40.0).with_style(&mut fig, Style::new().fill(color));
-/// # let lighter = SvgElement::rect("lighter",80.0, 10.0, 60.0, 40.0).with_style(&mut fig, Style::new().fill(&lighter_color));
+/// # let original = SvgElement::rect("original",10.0, 10.0, 60.0, 40.0).with_style(Style::new().fill(color));
+/// # let lighter = SvgElement::rect("lighter",80.0, 10.0, 60.0, 40.0).with_style(Style::new().fill(&lighter_color));
 /// # fig.add_element(original);
 /// # fig.add_element(lighter);
 /// # let output_svg = fig.to_svg();

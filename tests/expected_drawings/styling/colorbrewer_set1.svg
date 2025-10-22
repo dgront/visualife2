@@ -1,11 +1,13 @@
-<svg width="118" height="30" xmlns="http://www.w3.org/2000/svg">
-<rect id="r0" x="5" y="5" width="10" height="20"  style="fill:#E41A1C;stroke:#B61416;stroke-width:1.5;"/>
-<rect id="r1" x="17" y="5" width="10" height="20"  style="fill:#377EB8;stroke:#2C6493;stroke-width:1.5;"/>
-<rect id="r2" x="29" y="5" width="10" height="20"  style="fill:#4DAF4A;stroke:#3D8C3B;stroke-width:1.5;"/>
-<rect id="r3" x="41" y="5" width="10" height="20"  style="fill:#984EA3;stroke:#793E82;stroke-width:1.5;"/>
-<rect id="r4" x="53" y="5" width="10" height="20"  style="fill:#FF7F00;stroke:#CC6500;stroke-width:1.5;"/>
-<rect id="r5" x="65" y="5" width="10" height="20"  style="fill:#FFFF33;stroke:#CCCC28;stroke-width:1.5;"/>
-<rect id="r6" x="77" y="5" width="10" height="20"  style="fill:#A65628;stroke:#844420;stroke-width:1.5;"/>
-<rect id="r7" x="89" y="5" width="10" height="20"  style="fill:#F781BF;stroke:#C56798;stroke-width:1.5;"/>
-<rect id="r8" x="101" y="5" width="10" height="20"  style="fill:#999999;stroke:#7A7A7A;stroke-width:1.5;"/>
+<svg width="118" height="30" viewBox="0 0 118 30" xmlns="http://www.w3.org/2000/svg">
+	<g id="color bar" style="stroke-width:1.5;" >
+<rect id="r0" x="5" y="5" width="10" height="20" style="fill:#E41A1C;stroke:#B61416;" />
+<rect id="r1" x="17" y="5" width="10" height="20" style="fill:#377EB8;stroke:#2C6493;" />
+<rect id="r2" x="29" y="5" width="10" height="20" style="fill:#4DAF4A;stroke:#3D8C3B;" />
+<rect id="r3" x="41" y="5" width="10" height="20" style="fill:#984EA3;stroke:#793E82;" />
+<rect id="r4" x="53" y="5" width="10" height="20" style="fill:#FF7F00;stroke:#CC6500;" />
+<rect id="r5" x="65" y="5" width="10" height="20" style="fill:#FFFF33;stroke:#CCCC28;" />
+<rect id="r6" x="77" y="5" width="10" height="20" style="fill:#A65628;stroke:#844420;" />
+<rect id="r7" x="89" y="5" width="10" height="20" style="fill:#F781BF;stroke:#C56798;" />
+<rect id="r8" x="101" y="5" width="10" height="20" style="fill:#999999;stroke:#7A7A7A;" />
+</g>
 </svg>

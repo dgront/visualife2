@@ -2,6 +2,7 @@ mod testing_utilities; // Declare the module
 
 #[cfg(test)]
 mod test_palettes {
+    use std::fs;
     use visualife::basic_shapes::{SvgElement};
     use visualife::styling::{darker, Style};
     use visualife::styling::palettes::*;
@@ -9,11 +10,11 @@ mod test_palettes {
 
     use crate::testing_utilities::load_expected_svgs;
 
-    fn rect(drawing: &mut SvgDrawing, i: usize, j: usize, color: &str) -> Result<SvgElement, String> {
+    fn rect(i: usize, j: usize, color: &str) -> Result<SvgElement, String> {
         let stroke = darker(color, 0.2)?;
-        let style = Style::new().fill(color).stroke(&stroke).stroke_width(1.5);
+        let style = Style::new().fill(color).stroke(&stroke);
         let r = SvgElement::rect(format!("r{}", i),
-                         i as f32 * 12.0 + 5.0, j as f32 * 12.0 + 5.0, 10.0, 20.0).with_style(drawing, style);
+                         i as f32 * 12.0 + 5.0, j as f32 * 12.0 + 5.0, 10.0, 20.0).with_style(style);
         return Ok(r);
     }
     #[test]
@@ -41,12 +42,16 @@ mod test_palettes {
         for (_file_name, palette) in palettes {
             let n_colors = palette.len();
             let mut drawing = SvgDrawing::new((n_colors * 12 + 10) as f32, 30.0);
+            let mut group_elements = vec![];
             for i in 0..palette.len() {
-                let r = rect(&mut drawing, i, 0, palette[i])?;
-                drawing.add_element(r);
+                let r = rect(i, 0, palette[i])?;
+                group_elements.push(r);
             }
+            let group = SvgElement::group("color bar", group_elements)
+                .with_style(Style::new().stroke_width(1.5));
+            drawing.add_element(group);
             let svg_str = drawing.to_svg();
-            // fs::write(file_name, &svg_str).map_err(|e| e.to_string())?;
+            // fs::write(_file_name, &svg_str).map_err(|e| e.to_string())?;
 
             assert_eq!(svg_str, expected[i_pal]);
             i_pal += 1;

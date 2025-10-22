@@ -1,7 +1,6 @@
 use crate::basic_shapes::{PathBuilder, SvgElement};
 use crate::mindmap::node::Node;
 use crate::mindmap::{cartesian_to_polar, FOOT_LENGTH_R_FRACTION, polar_to_cartesian};
-use crate::basic_shapes::SvgElement::{Group};
 use crate::element_id::ElementID;
 
 pub(crate) fn connector(node_a: &Node, node_b: &Node, foot_angle_deg: f32, bar_width: f32) -> SvgElement {
@@ -20,10 +19,9 @@ pub(crate) fn connector(node_a: &Node, node_b: &Node, foot_angle_deg: f32, bar_w
     let id_str = format!("b{}:{}", &node_a.id, &node_b.id);
     let edge_path = PathBuilder::new(ElementID::from(&id_str)).move_to(x1a, y1a).line_to(x2b, y2b).line_to(x1b, y1b).line_to(x2a, y2a).close().to_path();
 
-    Group {
-        id: ElementID::from(&format!("c{}:{}", &node_a.id, &node_b.id)),
-        elements: vec![foot_a, foot_b, edge_path]
-    }
+    let id = ElementID::from(&format!("c{}:{}", &node_a.id, &node_b.id));
+
+    SvgElement::group(id, vec![foot_a, foot_b, edge_path])
 }
 
 /// computes the two points that define the top edge of a foot.

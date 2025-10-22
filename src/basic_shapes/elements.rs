@@ -168,7 +168,7 @@ impl SvgElement {
 
             SvgElementKind::Group { id, elements, .. } => {
                 let inner = elements.iter().map(|e| e.to_svg()).collect::<Vec<_>>().join("\n");
-                format!("<g id=\"{}\"{}>\n{}\n</g>", id, attr_str, inner)
+                format!("<g id=\"{}\"{} >\n{}\n</g>", id, attr_str, inner)
             }
         }
     }
@@ -179,6 +179,18 @@ impl SvgElement {
 
     /// Replaces the current style of this element (if any) with a new one.
     pub fn set_style(&mut self, style: Style) { self.attr_mut().style = Some(style); }
+
+    /// Read the string ID of the masking element (if any).
+    pub fn mask(&self) -> Option<&String> { self.attr().mask.as_ref() }
+
+    /// Replaces the current masking element with a new one.
+    pub fn set_mask(&mut self, style: Style) { self.attr_mut().style = Some(style); }
+
+    /// Read the transformation string of the masking element (if any).
+    pub fn transformation(&self) -> Option<&String> { self.attr().mask.as_ref() }
+
+    /// Replaces the current transformation string for this element
+    pub fn set_transformation(&mut self, style: Style) { self.attr_mut().style = Some(style); }
 
     pub(crate) fn attr_mut(&mut self) -> &mut SvgAttributes {
         match &mut self.inner {

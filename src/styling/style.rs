@@ -137,7 +137,7 @@ impl Style {
     pub fn to_svg(&self) -> String {
         if self.is_empty() { return String::new(); }
 
-        let mut style_string = String::from(" style=\"");
+        let mut style_string = String::from("style=\"");
 
         if let Some(ref fill) = self.fill {
             style_string.push_str(&format!("fill:{};", fill));

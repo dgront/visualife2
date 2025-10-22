@@ -1,12 +1,14 @@
-<svg width="130" height="30" xmlns="http://www.w3.org/2000/svg">
-<rect id="r0" x="5" y="5" width="10" height="20"  style="fill:#1f77b4;stroke:#185F90;stroke-width:1.5;"/>
-<rect id="r1" x="17" y="5" width="10" height="20"  style="fill:#ff7f0e;stroke:#CC650B;stroke-width:1.5;"/>
-<rect id="r2" x="29" y="5" width="10" height="20"  style="fill:#2ca02c;stroke:#238023;stroke-width:1.5;"/>
-<rect id="r3" x="41" y="5" width="10" height="20"  style="fill:#d62728;stroke:#AB1F20;stroke-width:1.5;"/>
-<rect id="r4" x="53" y="5" width="10" height="20"  style="fill:#9467bd;stroke:#765297;stroke-width:1.5;"/>
-<rect id="r5" x="65" y="5" width="10" height="20"  style="fill:#8c564b;stroke:#70443C;stroke-width:1.5;"/>
-<rect id="r6" x="77" y="5" width="10" height="20"  style="fill:#e377c2;stroke:#B55F9B;stroke-width:1.5;"/>
-<rect id="r7" x="89" y="5" width="10" height="20"  style="fill:#7f7f7f;stroke:#656565;stroke-width:1.5;"/>
-<rect id="r8" x="101" y="5" width="10" height="20"  style="fill:#bcbd22;stroke:#96971B;stroke-width:1.5;"/>
-<rect id="r9" x="113" y="5" width="10" height="20"  style="fill:#17becf;stroke:#1298A5;stroke-width:1.5;"/>
+<svg width="130" height="30" viewBox="0 0 130 30" xmlns="http://www.w3.org/2000/svg">
+	<g id="color bar" style="stroke-width:1.5;" >
+<rect id="r0" x="5" y="5" width="10" height="20" style="fill:#1f77b4;stroke:#185F90;" />
+<rect id="r1" x="17" y="5" width="10" height="20" style="fill:#ff7f0e;stroke:#CC650B;" />
+<rect id="r2" x="29" y="5" width="10" height="20" style="fill:#2ca02c;stroke:#238023;" />
+<rect id="r3" x="41" y="5" width="10" height="20" style="fill:#d62728;stroke:#AB1F20;" />
+<rect id="r4" x="53" y="5" width="10" height="20" style="fill:#9467bd;stroke:#765297;" />
+<rect id="r5" x="65" y="5" width="10" height="20" style="fill:#8c564b;stroke:#70443C;" />
+<rect id="r6" x="77" y="5" width="10" height="20" style="fill:#e377c2;stroke:#B55F9B;" />
+<rect id="r7" x="89" y="5" width="10" height="20" style="fill:#7f7f7f;stroke:#656565;" />
+<rect id="r8" x="101" y="5" width="10" height="20" style="fill:#bcbd22;stroke:#96971B;" />
+<rect id="r9" x="113" y="5" width="10" height="20" style="fill:#17becf;stroke:#1298A5;" />
+</g>
 </svg>

@@ -68,7 +68,7 @@ pub use style::*;
 /// let mut drawing = SvgDrawing::new(130.0, 30.0);
 /// for i in 0..TABLEAU10.len() {
 ///     let r = SvgElement::rect("r1", (i+12 + 5) as f32, 5.0, 10.0, 20.0)
-///         .with_style(&mut drawing, Style::new().fill(TABLEAU10[i]));
+///         .with_style(Style::new().fill(TABLEAU10[i]));
 ///     drawing.add_element(r);
 /// }
 /// ```

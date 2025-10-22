@@ -1,5 +1,3 @@
-use std::fmt::Write;
-
 use crate::basic_shapes::{SvgElement};
 use crate::{ElementID};
 
@@ -18,7 +16,6 @@ impl SvgDrawing {
 
     pub fn width(&self) -> f32 { self.width }
     pub fn height(&self) -> f32 { self.width }
-
 
     /// Renders the SVG drawing and returns it as a String.
     ///
@@ -49,14 +46,14 @@ impl SvgDrawing {
 
         // Write header
         out.push_str(&format!(
-            r#"<svg xmlns="http://www.w3.org/2000/svg" width="{}" height="{}" viewBox="0 0 {} {}">"#,
+            r#"<svg width="{}" height="{}" viewBox="0 0 {} {}" xmlns="http://www.w3.org/2000/svg">"#,
             self.width, self.height, self.width, self.height
         ));
-        out.push('\n');
+        out.push_str("\n");
 
         // Add elements
         for el in &self.elements {
-            out.push_str("  ");
+            out.push_str("\t");
             out.push_str(&el.to_svg());
             out.push('\n');
         }
@@ -77,10 +74,6 @@ impl SvgDrawing {
         } else {
             Err(format!("Group with ID '{}' not found", group_id))
         }
-    }
-
-    pub fn svg_header(&self) -> String {
-        format!(r#"<svg width="{}" height="{}" xmlns="http://www.w3.org/2000/svg">"#, self.width, self.height).to_string()
     }
 
     fn add_to_group_recursive(elements: &mut [SvgElement], group_id: &ElementID, el: SvgElement) -> bool {

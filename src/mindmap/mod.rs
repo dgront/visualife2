@@ -1,6 +1,7 @@
 mod mindmap;
 mod connector;
 mod node;
+pub use node::Node;
 
 pub use mindmap::{Mindmap};
 
