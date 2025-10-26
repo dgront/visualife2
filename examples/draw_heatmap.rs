@@ -95,7 +95,7 @@ fn main() -> Result<(), String> {
     let cmap = ColorMap::from_range(&RED_BLUE, 0.0, 1.0)?;
     let drawing = SvgDrawing::new(draw_width, draw_width);
 
-    let map = Heatmap::from_data(drawing, "heatmap", box_size, box_size, dm.data().clone(), &cmap);
+    let map = Heatmap::from_matrix(drawing, "heatmap", box_size, box_size, dm.data().clone(), &cmap);
     fs::write(&args.output, &map.to_svg()).map_err(|e| e.to_string())?;
 
     eprintln!("Saved {}", args.output);
