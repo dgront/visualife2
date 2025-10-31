@@ -92,11 +92,14 @@ fn main() -> Result<(), String> {
 
     let n = dm.ncols();
     let draw_width = box_size * n as f32 + 2.0 * margin;
-    let cmap = ColorMap::from_range(&RED_BLUE, 0.0, 1.0)?;
-    let drawing = SvgDrawing::new(draw_width, draw_width);
+    let mut drawing = SvgDrawing::new(draw_width, draw_width);
 
-    let map = Heatmap::from_matrix(drawing, "heatmap", box_size, box_size, dm.data().clone(), &cmap);
-    fs::write(&args.output, &map.to_svg()).map_err(|e| e.to_string())?;
+    let mut map = Heatmap::from_matrix("heatmap", box_size, box_size, dm.data().clone());
+    map.cmap = ColorMap::from_range(&RED_BLUE, 0.0, 1.0)?;
+    map.offset_x = margin;
+    map.offset_y = margin;
+    drawing.add_element(map.create_elements());
+    fs::write(&args.output, drawing.to_svg()).map_err(|e| e.to_string())?;
 
     eprintln!("Saved {}", args.output);
     Ok(())

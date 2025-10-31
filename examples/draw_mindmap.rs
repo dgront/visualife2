@@ -1,15 +1,13 @@
 
 use visualife::{mindmap, SvgDrawing};
-use visualife::{ElementID};
 use visualife::styling::darker;
 use visualife::styling::palettes::TABLEAU10;
 use visualife::styling::Style;
 
 fn main() {
     let draw_width = 1000.0;
-    let drawing = SvgDrawing::new(draw_width, draw_width);
     let colors = &TABLEAU10;
-    let mut mndmp = mindmap::Mindmap::new(drawing,"a_mindmap", 50.0);
+    let mut mndmp = mindmap::Mindmap::new("a_mindmap", 50.0);
     mndmp.place_node("n0", "Center", 250.0, 250.0)
         .with_style(Style::new().fill("white").stroke("black"))
         .with_text_style(Style::new().font_size("16.0"));
@@ -23,6 +21,9 @@ fn main() {
             .with_style(style);
     }
 
-    let map = mndmp.draw();
-    println!("{}", map);
+    let mut drawing = SvgDrawing::new(draw_width, draw_width);
+    for el in mndmp.create_elements() {
+        drawing.add_element(el);
+    }
+    println!("{}", drawing.to_svg());
 }
