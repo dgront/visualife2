@@ -3,10 +3,10 @@ use crate::heatmap::HeatmapError;
 use crate::styling::{ColorMap, Style};
 use crate::ElementID;
 
-///Draws a color map based on a rectangular matrix of real values.
+/// Represents a color map based on a rectangular matrix of real values.
 ///
-/// Here is an example heatmap and the code that generates the image:
-/// ![Heatmap diagram](../tests/expected_drawings/heatmap/labelled_map.svg)
+/// Here is the code that generates the image:
+#[doc = include_str!("../../tests/expected_drawings/heatmap/labelled_map.svg")]
 ///
 /// ```
 /// use visualife::SvgDrawing;

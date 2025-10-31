@@ -1,0 +1,73 @@
+<svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+	<g id="heatmap:heatmap" >
+<g id="heatmap:boxes" >
+<rect id="heatmap:0:0" x="100" y="50" width="20" height="20" style="fill:#7EB8D7;" />
+<rect id="heatmap:0:1" x="120" y="50" width="20" height="20" style="fill:#62A6CE;" />
+<rect id="heatmap:0:2" x="140" y="50" width="20" height="20" style="fill:#6D0220;" />
+<rect id="heatmap:0:3" x="160" y="50" width="20" height="20" style="fill:#D8E8F1;" />
+<rect id="heatmap:0:4" x="180" y="50" width="20" height="20" style="fill:#E48268;" />
+<rect id="heatmap:0:5" x="200" y="50" width="20" height="20" style="fill:#62A6CE;" />
+<rect id="heatmap:0:6" x="220" y="50" width="20" height="20" style="fill:#D56151;" />
+<rect id="heatmap:1:0" x="100" y="70" width="20" height="20" style="fill:#539AC8;" />
+<rect id="heatmap:1:1" x="120" y="70" width="20" height="20" style="fill:#73B1D3;" />
+<rect id="heatmap:1:2" x="140" y="70" width="20" height="20" style="fill:#114781;" />
+<rect id="heatmap:1:3" x="160" y="70" width="20" height="20" style="fill:#08366A;" />
+<rect id="heatmap:1:4" x="180" y="70" width="20" height="20" style="fill:#B82D35;" />
+<rect id="heatmap:1:5" x="200" y="70" width="20" height="20" style="fill:#AC212F;" />
+<rect id="heatmap:1:6" x="220" y="70" width="20" height="20" style="fill:#114781;" />
+<rect id="heatmap:2:0" x="100" y="90" width="20" height="20" style="fill:#7E0823;" />
+<rect id="heatmap:2:1" x="120" y="90" width="20" height="20" style="fill:#FBDCCB;" />
+<rect id="heatmap:2:2" x="140" y="90" width="20" height="20" style="fill:#F9E8DE;" />
+<rect id="heatmap:2:3" x="160" y="90" width="20" height="20" style="fill:#1C5C99;" />
+<rect id="heatmap:2:4" x="180" y="90" width="20" height="20" style="fill:#D86655;" />
+<rect id="heatmap:2:5" x="200" y="90" width="20" height="20" style="fill:#E5EEF2;" />
+<rect id="heatmap:2:6" x="220" y="90" width="20" height="20" style="fill:#BF363A;" />
+<rect id="heatmap:3:0" x="100" y="110" width="20" height="20" style="fill:#3E88BE;" />
+<rect id="heatmap:3:1" x="120" y="110" width="20" height="20" style="fill:#D35B4E;" />
+<rect id="heatmap:3:2" x="140" y="110" width="20" height="20" style="fill:#F3EEEC;" />
+<rect id="heatmap:3:3" x="160" y="110" width="20" height="20" style="fill:#BCDAEA;" />
+<rect id="heatmap:3:4" x="180" y="110" width="20" height="20" style="fill:#F7EBE5;" />
+<rect id="heatmap:3:5" x="200" y="110" width="20" height="20" style="fill:#2E76B2;" />
+<rect id="heatmap:3:6" x="220" y="110" width="20" height="20" style="fill:#2E76B2;" />
+<rect id="heatmap:4:0" x="100" y="130" width="20" height="20" style="fill:#8A0C25;" />
+<rect id="heatmap:4:1" x="120" y="130" width="20" height="20" style="fill:#0A3A6F;" />
+<rect id="heatmap:4:2" x="140" y="130" width="20" height="20" style="fill:#D56151;" />
+<rect id="heatmap:4:3" x="160" y="130" width="20" height="20" style="fill:#0D3F75;" />
+<rect id="heatmap:4:4" x="180" y="130" width="20" height="20" style="fill:#1F609E;" />
+<rect id="heatmap:4:5" x="200" y="130" width="20" height="20" style="fill:#A4CEE3;" />
+<rect id="heatmap:4:6" x="220" y="130" width="20" height="20" style="fill:#67001F;" />
+<rect id="heatmap:5:0" x="100" y="150" width="20" height="20" style="fill:#8F0E26;" />
+<rect id="heatmap:5:1" x="120" y="150" width="20" height="20" style="fill:#C9E1EE;" />
+<rect id="heatmap:5:2" x="140" y="150" width="20" height="20" style="fill:#CDE3EF;" />
+<rect id="heatmap:5:3" x="160" y="150" width="20" height="20" style="fill:#589ECA;" />
+<rect id="heatmap:5:4" x="180" y="150" width="20" height="20" style="fill:#AED3E6;" />
+<rect id="heatmap:5:5" x="200" y="150" width="20" height="20" style="fill:#991428;" />
+<rect id="heatmap:5:6" x="220" y="150" width="20" height="20" style="fill:#991428;" />
+<rect id="heatmap:6:0" x="100" y="170" width="20" height="20" style="fill:#F0EFEF;" />
+<rect id="heatmap:6:1" x="120" y="170" width="20" height="20" style="fill:#6DADD2;" />
+<rect id="heatmap:6:2" x="140" y="170" width="20" height="20" style="fill:#3179B4;" />
+<rect id="heatmap:6:3" x="160" y="170" width="20" height="20" style="fill:#991428;" />
+<rect id="heatmap:6:4" x="180" y="170" width="20" height="20" style="fill:#F6B79A;" />
+<rect id="heatmap:6:5" x="200" y="170" width="20" height="20" style="fill:#CB4B44;" />
+<rect id="heatmap:6:6" x="220" y="170" width="20" height="20" style="fill:#EEF0F0;" />
+</g>
+<g id="heatmap:rows" >
+<text id="heatmap:r0" x="95" y="60" style="text-anchor:end;dominant-baseline:middle;">row A</text>
+<text id="heatmap:r1" x="95" y="80" style="text-anchor:end;dominant-baseline:middle;">long name B</text>
+<text id="heatmap:r2" x="95" y="100" style="text-anchor:end;dominant-baseline:middle;">row C</text>
+<text id="heatmap:r3" x="95" y="120" style="text-anchor:end;dominant-baseline:middle;">row D</text>
+<text id="heatmap:r4" x="95" y="140" style="text-anchor:end;dominant-baseline:middle;">row E</text>
+<text id="heatmap:r5" x="95" y="160" style="text-anchor:end;dominant-baseline:middle;">row F</text>
+<text id="heatmap:r6" x="95" y="180" style="text-anchor:end;dominant-baseline:middle;">row G</text>
+</g>
+<g id="heatmap:cols" >
+<text id="heatmap:c0" x="110" y="195" style="text-anchor:end;dominant-baseline:central;" transform="rotate(-90 110 195)">col 1</text>
+<text id="heatmap:c1" x="130" y="195" style="text-anchor:end;dominant-baseline:central;" transform="rotate(-90 130 195)">col 2</text>
+<text id="heatmap:c2" x="150" y="195" style="text-anchor:end;dominant-baseline:central;" transform="rotate(-90 150 195)">long name 3</text>
+<text id="heatmap:c3" x="170" y="195" style="text-anchor:end;dominant-baseline:central;" transform="rotate(-90 170 195)">col 4</text>
+<text id="heatmap:c4" x="190" y="195" style="text-anchor:end;dominant-baseline:central;" transform="rotate(-90 190 195)">col 5</text>
+<text id="heatmap:c5" x="210" y="195" style="text-anchor:end;dominant-baseline:central;" transform="rotate(-90 210 195)">col 6</text>
+<text id="heatmap:c6" x="230" y="195" style="text-anchor:end;dominant-baseline:central;" transform="rotate(-90 230 195)">col 7</text>
+</g>
+</g>
+</svg>
