@@ -18,7 +18,7 @@ use crate::ElementID;
 /// let mut htm = Heatmap::from_matrix("heatmap", 20.0, 20.0, matrix);
 /// htm.offset_x = 50.0;
 /// htm.offset_y = 50.0;
-/// drawing.add_element( htm.create_elements() );
+/// drawing.add_element( htm.create_element() );
 /// let svg_str = drawing.to_svg();
 /// fs::write("mapa.svg", &svg_str).map_err(|e| e.to_string())?;
 /// # Ok(())
@@ -111,7 +111,7 @@ impl Heatmap {
         Ok(())
     }
 
-    pub fn create_elements(&self) -> SvgElement {
+    pub fn create_element(&self) -> SvgElement {
         let mut boxes = vec![];
         let max_j = self.data.iter().map(|row| row.len()).max().unwrap_or(0);
         for i in 0..self.data.len() {

@@ -26,6 +26,18 @@ pub fn cartesian_to_polar(cx: f32, cy: f32, px: f32, py: f32) -> (f32, f32) {
 /// Convert polar coordinates to cartesian coordinates.
 ///
 /// Returns the x, y coordinates of the ``(radius, angle_rad)`` radial point.
+/// # Example
+///
+/// ```
+/// use visualife::mindmap::polar_to_cartesian;
+/// let (x, y) = polar_to_cartesian(1.0, (45.0_f32).to_radians(), 0.0, 0.0);
+/// // Expected values: x = y ≈ √2 / 2 ≈ 0.7071
+/// assert!((x - 0.7071).abs() < 1e-4);
+/// assert!((y - 0.7071).abs() < 1e-4);
+/// let (x, y) = polar_to_cartesian(1.0, (360.0_f32 - 45.0_f32).to_radians(), 0.0, 0.0);
+/// assert!((x - 0.7071).abs() < 1e-4);
+/// assert!((y + 0.7071).abs() < 1e-4);
+/// ```
 pub fn polar_to_cartesian(radius: f32, angle_rad: f32, cx: f32, cy: f32) -> (f32, f32) {
     (radius * angle_rad.cos() + cx, radius * angle_rad.sin() + cy)
 }

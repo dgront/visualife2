@@ -1,3 +1,5 @@
+use std::fs;
+
 use crate::basic_shapes::{SvgElement};
 use crate::{ElementID};
 
@@ -62,6 +64,11 @@ impl SvgDrawing {
         out.push_str("</svg>\n");
 
         out
+    }
+
+    pub fn save_svg(&self, fname: &str) -> Result<(), String> {
+        fs::write(fname, self.to_svg()).map_err(|e| e.to_string())?;
+        Ok(())
     }
 
     pub fn add_element(&mut self, el: SvgElement) {

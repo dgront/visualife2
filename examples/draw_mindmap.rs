@@ -22,8 +22,7 @@ fn main() {
     }
 
     let mut drawing = SvgDrawing::new(draw_width, draw_width);
-    for el in mndmp.create_elements() {
-        drawing.add_element(el);
-    }
+    drawing.add_element(mndmp.create_element());
+
     println!("{}", drawing.to_svg());
 }

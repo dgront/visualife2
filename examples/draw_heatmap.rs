@@ -98,7 +98,7 @@ fn main() -> Result<(), String> {
     map.cmap = ColorMap::from_range(&RED_BLUE, 0.0, 1.0)?;
     map.offset_x = margin;
     map.offset_y = margin;
-    drawing.add_element(map.create_elements());
+    drawing.add_element(map.create_element());
     fs::write(&args.output, drawing.to_svg()).map_err(|e| e.to_string())?;
 
     eprintln!("Saved {}", args.output);

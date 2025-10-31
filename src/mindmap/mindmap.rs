@@ -28,37 +28,19 @@ impl Mindmap {
         }
     }
 
-    pub fn place_node(
-        &mut self,
-        id: impl Into<ElementID>,
-        label: &str,
-        x: f32,
-        y: f32,
-    ) -> &mut Node {
+    pub fn place_node(&mut self, id: impl Into<ElementID>, label: &str, x: f32, y: f32) -> &mut Node {
         let id = id.into();
         let node = Node::new(id.clone(), label, x, y, self.max_node_radius);
         self.nodes.insert(id.clone(), node);
         self.nodes.get_mut(&id).unwrap()
     }
 
-    pub fn grow_node(
-        &mut self,
-        id: impl Into<ElementID>,
-        label: &str,
-        angle_deg: f32,
-        parent_id: impl Into<ElementID>,
-    ) -> &mut Node {
+    pub fn grow_node(&mut self, id: impl Into<ElementID>, label: &str, angle_deg: f32, parent_id: impl Into<ElementID>) -> &mut Node {
         let real_parent_id = parent_id.into();
         let parent = self.nodes.get(&real_parent_id).unwrap();
-        let (cx, cy) = polar_to_cartesian(parent.radius * 3.0, angle_deg, parent.cx, parent.cy);
+        let (cx, cy) = polar_to_cartesian(parent.radius * 3.0, angle_deg.to_radians(), parent.cx, parent.cy);
         let id = id.into();
-        let node = Node::new(
-            id.clone(),
-            label,
-            cx,
-            cy,
-            parent.radius * self.node_radius_shrink_factor,
-        );
+        let node = Node::new( id.clone(), label, cx, cy, parent.radius * self.node_radius_shrink_factor);
         self.nodes.insert(id.clone(), node);
         self.connect_nodes(real_parent_id, id.clone());
         self.nodes.get_mut(&id).unwrap()
@@ -76,7 +58,7 @@ impl Mindmap {
         self.nodes.get_mut(id)
     }
 
-    pub fn create_elements(&self) -> Vec<SvgElement> {
+    pub fn create_element(&self) -> SvgElement {
         // ---------- Create nodes and store them in a group
         let mut node_elements = Vec::new();
         for node in self.nodes.values() {
@@ -95,8 +77,6 @@ impl Mindmap {
         let connector_grp = SvgElement::group(self.id.new_with_prefix("c"), connector_elements);
 
         // ---------- Create the mindmap group
-        let top_group = SvgElement::group(self.id.clone(), vec![node_grp, connector_grp]);
-
-        vec![top_group]
+        SvgElement::group(self.id.clone(), vec![node_grp, connector_grp])
     }
 }
