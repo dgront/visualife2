@@ -1,4 +1,4 @@
-
+use crate::basic_shapes::{SvgElement};
 
 /// Style defines how an SVG element looks like
 ///
@@ -41,7 +41,6 @@ impl Style {
             dominant_baseline: None,
         }
     }
-
 
     pub fn fill(mut self, fill: &str) -> Self {
         self.fill = Some(fill.to_string());
@@ -120,7 +119,7 @@ impl Style {
     /// assert!(! style.is_empty());
     /// ```
     pub fn is_empty(&self) -> bool {
-            self.fill.is_none()
+        self.fill.is_none()
             && self.stroke.is_none()
             && self.stroke_width.is_none()
             && self.opacity.is_none()
@@ -135,7 +134,9 @@ impl Style {
     }
 
     pub fn to_svg(&self) -> String {
-        if self.is_empty() { return String::new(); }
+        if self.is_empty() {
+            return String::new();
+        }
 
         let mut style_string = String::from("style=\"");
 
@@ -184,4 +185,98 @@ impl Style {
 
         style_string
     }
+}
+
+/// Represents the SVG [`dominant-baseline`](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/dominant-baseline)
+/// property, which controls the vertical alignment of text relative to its baseline.
+///
+/// This enum provides a type-safe way to specify text baseline alignment
+/// without manipulating low-level SVG strings.
+#[derive(Clone, Copy, Debug)]
+pub enum DominantBaseline {
+    /// Use the browser’s default baseline behavior (usually alphabetic).
+    Auto,
+
+    /// Aligns the text with the hanging baseline — often used for scripts
+    /// where marks hang from the top of glyphs (e.g. Devanagari).
+    Hanging,
+
+    /// Aligns the text so that its vertical midpoint aligns with the given coordinate.
+    Middle,
+
+    /// Centers text vertically within its bounding box (similar to `Middle`,
+    /// but intended for precise typographic centering).
+    Central,
+
+    /// Aligns text according to the alphabetic baseline (used for Latin scripts).
+    Alphabetic,
+
+    /// Aligns text according to the ideographic baseline (common in East Asian scripts).
+    Ideographic,
+
+    /// Aligns text according to the mathematical baseline, which often sits
+    /// slightly below the center line for equations and symbols.
+    Mathematical,
+}
+
+impl DominantBaseline {
+    /// Returns the SVG attribute string corresponding to this baseline.
+    pub fn as_str(self) -> &'static str {
+        use DominantBaseline::*;
+        match self {
+            Auto => "auto",
+            Hanging => "hanging",
+            Middle => "middle",
+            Central => "central",
+            Alphabetic => "alphabetic",
+            Ideographic => "ideographic",
+            Mathematical => "mathematical",
+        }
+    }
+}
+
+pub trait FlushText {
+    fn flush_left(&mut self);
+
+    fn center(&mut self);
+
+    fn flush_right(&mut self);
+
+    fn set_baseline(&mut self, b: DominantBaseline);
+}
+
+// helper to set a style to a given string using fluent API
+#[macro_export]
+macro_rules! apply_style {
+    ($target:expr, $method:ident, $value:expr) => {{
+        // Clone existing style or create a new one
+        let mut __style = match $target.style() {
+            Some(s) => s.clone(),
+            None => Style::new(), // or Style::default()
+        };
+        // Apply the style builder method
+        __style = __style.$method($value);
+        // Write back
+        $target.set_style(__style);
+    }};
+}
+
+impl FlushText for SvgElement {
+
+    fn flush_left(&mut self) {
+        apply_style!(self, text_anchor, "start");
+    }
+
+    fn center(&mut self) {
+        apply_style!(self, text_anchor, "middle");
+    }
+
+    fn flush_right(&mut self) {
+        apply_style!(self, text_anchor, "end");
+    }
+
+    fn set_baseline(&mut self, b: DominantBaseline) {
+        apply_style!(self, dominant_baseline, b.as_str());
+    }
+
 }

@@ -173,7 +173,6 @@ impl SvgElement {
         }
     }
 
-
     /// Read the style of this element (if any).
     pub fn style(&self) -> Option<&Style> { self.attr().style.as_ref() }
 

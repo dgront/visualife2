@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod test_elements {
     use visualife::basic_shapes::SvgElement;
-    use visualife::styling::{Style, StyleManager};
+    use visualife::styling::{Style};
 
     #[test]
     fn test_circle() {
