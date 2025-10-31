@@ -3,13 +3,14 @@ use crate::element_id::ElementID;
 use crate::mindmap::connector::connector;
 use crate::mindmap::node::Node;
 use crate::mindmap::polar_to_cartesian;
-use std::collections::HashMap;
+
+use indexmap::IndexMap;
 
 pub struct Mindmap {
     pub foot_angle_deg: f32,
     pub bar_width: f32,
     pub id: ElementID,
-    nodes: HashMap<ElementID, Node>,
+    nodes: IndexMap<ElementID, Node>,
     connections: Vec<(ElementID, ElementID)>,
     max_node_radius: f32,
     node_radius_shrink_factor: f32,
@@ -21,7 +22,7 @@ impl Mindmap {
             foot_angle_deg: 30.0,
             bar_width: max_node_radius / 5.0,
             id: id.into(),
-            nodes: HashMap::new(),
+            nodes: IndexMap::new(),
             max_node_radius,
             connections: vec![],
             node_radius_shrink_factor: 0.8,

@@ -17,5 +17,6 @@ path = "src/lib.rs"
 rand = { version = "0.9.0-alpha.1", features = [] }
 clap = { version = "4", features = ["derive"] }
 thiserror = "1.0"
+indexmap = "2"  # to draw nodes of a mindmap in the same order as they were added / grown
 # displaydoc = "0.2"
 datamatrix = { path = "../datamatrix" }

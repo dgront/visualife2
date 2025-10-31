@@ -1,8 +1,11 @@
+mod testing_utilities; // Declare the module
+
 #[cfg(test)]
 mod test_mindmap {
     use visualife::{mindmap, SvgDrawing};
     use visualife::ElementID;
-    use visualife::styling::{Style, darker, lighter};
+    use visualife::styling::{Style, darker};
+    use crate::testing_utilities::load_expected_svgs;
 
     #[test]
     fn two_nodes() {
@@ -27,12 +30,15 @@ mod test_mindmap {
                             angle, center_node_id.clone());
             fill = darker(fill.as_str(), 0.1)?;
             let style = Style::new().fill(fill.as_str())
-                .stroke_dasharray([15.0,5.0]).stroke_width(5.0).stroke("black");
+                .stroke_dasharray([15.0,5.0]).stroke_width(3.0).stroke("black");
             n.with_style(style);
         }
         let mut drawing = SvgDrawing::new(300.0, 300.0);
         drawing.add_element(mndmp.create_element());
-        drawing.save_svg("grow_nodes.svg")
+        let expected = load_expected_svgs("./tests/expected_drawings/mindmap/", &["grow_nodes.svg"])?;
+        // drawing.save_svg("grow_nodes.svg")?;
+        assert_eq!(drawing.to_svg(), expected[0]);
+        Ok(())
     }
 
 
