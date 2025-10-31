@@ -1,6 +1,13 @@
+mod testing_utilities; // Declare the module
+
 #[cfg(test)]
 mod test_heatmap {
+    use rand::{SeedableRng, Rng};
+    use rand::rngs::StdRng;
+
     use visualife::heatmap::Heatmap;
+    use visualife::SvgDrawing;
+    use crate::testing_utilities::load_expected_svgs;
 
     #[test]
     fn build_from_array_like() {
@@ -10,7 +17,12 @@ mod test_heatmap {
         let hm2 = Heatmap::from_matrix("hm2", 10.0, 10.0, [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]);
         assert_eq!(hm2.count_columns(), 3);
 
-        let hm3 = Heatmap::from_matrix("hm3", 10.0, 10.0, [[1f32, 2f32], [3f32, 4f32], [3f32, 4f32]]);
+        let hm3 = Heatmap::from_matrix(
+            "hm3",
+            10.0,
+            10.0,
+            [[1f32, 2f32], [3f32, 4f32], [3f32, 4f32]],
+        );
         assert_eq!(hm3.count_rows(), 3);
         assert_eq!(hm3.count_columns(), 2);
 
@@ -24,6 +36,26 @@ mod test_heatmap {
         let mut hm = Heatmap::from_matrix("hm1", 10.0, 10.0, matrix);
         assert!(hm.set_row_labels(["A", "B", "C"]).is_ok());
         assert!(hm.set_col_labels(["1", "2", "3"]).is_ok());
-        assert_eq!(hm.row_labels().as_ref().unwrap()[1],"B");
+        assert_eq!(hm.row_labels().as_ref().unwrap()[1], "B");
+    }
+
+    #[test]
+    fn draw_heatmap_with_labels() -> anyhow::Result<()> {
+
+        let mut drawing = SvgDrawing::new(300.0, 300.0);
+        let mut rng = StdRng::seed_from_u64(0);
+        let matrix: Vec<Vec<f64>> = (0..7)
+            .map(|_| (0..7).map(|_| rng.random::<f64>()).collect())
+            .collect();
+        let mut htm = Heatmap::from_matrix("heatmap", 20.0, 20.0, matrix);
+        htm.offset_x = 100.0;
+        htm.offset_y = 50.0;
+        htm.set_row_labels(["row A", "long name B", "row C", "row D", "row E", "row F", "row G"])?;
+        htm.set_col_labels(["col 1", "col 2", "long name 3", "col 4", "col 5", "col 6", "col 7"])?;
+        drawing.add_element(htm.create_element());
+        let expected = load_expected_svgs("./tests/expected_drawings/heatmap/", &["labelled_map.svg"])?;
+        // drawing.save_svg("labelled_map.svg")?;
+        assert_eq!(drawing.to_svg(), expected[0]);
+        Ok(())
     }
 }

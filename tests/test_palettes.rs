@@ -2,7 +2,6 @@ mod testing_utilities; // Declare the module
 
 #[cfg(test)]
 mod test_palettes {
-    use std::fs;
     use visualife::basic_shapes::{SvgElement};
     use visualife::styling::{darker, Style};
     use visualife::styling::palettes::*;
@@ -17,6 +16,7 @@ mod test_palettes {
                          i as f32 * 12.0 + 5.0, j as f32 * 12.0 + 5.0, 10.0, 20.0).with_style(style);
         return Ok(r);
     }
+
     #[test]
     fn test_categorical_palettes() -> Result<(), String> {
 

@@ -3,27 +3,30 @@ use crate::heatmap::HeatmapError;
 use crate::styling::{ColorMap, Style};
 use crate::ElementID;
 
+///Draws a color map based on a rectangular matrix of real values.
+///
+/// Here is an example heatmap and the code that generates the image:
+/// ![Heatmap diagram](../tests/expected_drawings/heatmap/labelled_map.svg)
 ///
 /// ```
-/// # use std::fs;
-/// use rand::Rng;
-/// use visualife::heatmap::Heatmap;
-/// use visualife::styling::ColorMap;
-/// use visualife::styling::palettes::RED_BLUE;
 /// use visualife::SvgDrawing;
-/// # fn main()-> Result<(), String> {
+/// use visualife::heatmap::Heatmap;
+/// # use rand::{SeedableRng, Rng};
+/// # use rand::rngs::StdRng;
+/// # fn main() -> anyhow::Result<()> {
 /// let mut drawing = SvgDrawing::new(300.0, 300.0);
-/// # let mut rng = rand::thread_rng();
-/// let matrix: Vec<Vec<f64>> = (0..10).map(|_| (0..10).map(|_| rng.gen::<f64>()).collect()).collect();
+/// let mut rng = StdRng::seed_from_u64(0);
+/// let matrix: Vec<Vec<f64>> = (0..7)
+///     .map(|_| (0..7).map(|_| rng.random::<f64>()).collect())
+///     .collect();
 /// let mut htm = Heatmap::from_matrix("heatmap", 20.0, 20.0, matrix);
-/// htm.offset_x = 50.0;
+/// htm.offset_x = 100.0;
 /// htm.offset_y = 50.0;
-/// drawing.add_element( htm.create_element() );
-/// let svg_str = drawing.to_svg();
-/// fs::write("mapa.svg", &svg_str).map_err(|e| e.to_string())?;
+/// htm.set_row_labels(["row A", "long name B", "row C", "row D", "row E", "row F", "row G"])?;
+/// htm.set_col_labels(["col 1", "col 2", "long name 3", "col 4", "col 5", "col 6", "col 7"])?;
+/// drawing.add_element(htm.create_element());
 /// # Ok(())
 /// # }
-///
 /// ```
 pub struct Heatmap {
     pub id: ElementID,
@@ -112,11 +115,16 @@ impl Heatmap {
     }
 
     pub fn create_element(&self) -> SvgElement {
+
+        let mut heatmap_groups = Vec::with_capacity(3);
+
+        // --- Group of boxes
         let mut boxes = vec![];
-        let max_j = self.data.iter().map(|row| row.len()).max().unwrap_or(0);
-        for i in 0..self.data.len() {
+        let n_rows = self.data.len();
+        let n_cols = self.data.iter().map(|row| row.len()).max().unwrap_or(0);
+        for i in 0..n_rows {
             let y = i as f32 * self.box_height + self.offset_y;
-            for j in 0..max_j {
+            for j in 0..n_cols {
                 let box_id = format!("{}:{i}:{j}", self.id);
                 let x = j as f32 * self.box_width + self.offset_x;
                 let r = SvgElement::rect(box_id, x, y, self.box_width, self.box_height)
@@ -124,8 +132,46 @@ impl Heatmap {
                 boxes.push(r);
             }
         }
-        let grp = SvgElement::group(format!("{}:boxes", self.id), boxes);
+        let boxes_grp = SvgElement::group(format!("{}:boxes", self.id), boxes);
+        heatmap_groups.push(boxes_grp);
 
-        grp
+        let total_h = n_rows as f32 * self.box_height;
+        let pad = self.box_height.min(self.box_width) * 0.25; // --- Small padding for labels
+
+        // --- 2) Row labels (left side, right-aligned, vertically centered per row) ===
+        if let Some(labels) = &self.row_labels {
+            let mut rlbls = Vec::with_capacity(n_rows);
+            for i in 0..n_rows {
+                let y_center = self.offset_y + i as f32 * self.box_height + 0.5 * self.box_height;
+                let x_left = self.offset_x - pad;
+
+                let text_id = format!("{}:r{}", self.id, i);
+                let t = SvgElement::text(text_id, x_left, y_center, &labels[i])
+                    .with_style(
+                        Style::new()
+                            .text_anchor("end")           // align text end to x_left
+                            .dominant_baseline("middle"), // center on cell vertically
+                    );
+                rlbls.push(t);
+            }
+            heatmap_groups.push(SvgElement::group(format!("{}:rows", self.id), rlbls));
+        }
+
+        // --- Column labels (bottom, vertical)
+        if let Some(labels) = &self.col_labels {
+            let mut clbls = Vec::with_capacity(n_cols);
+            for j in 0..n_cols {
+                let x_center = self.offset_x + j as f32 * self.box_width + 0.5 * self.box_width;
+                let y_bottom = self.offset_y + total_h + pad;
+                let text_id = format!("{}:c{:}", self.id, j);
+                let t = SvgElement::text(text_id, x_center, y_bottom, &labels[j])
+                    .with_style(Style::new().text_anchor("end").dominant_baseline("central"))
+                    .with_transform(format!("rotate(-90 {} {})", x_center, y_bottom));
+                clbls.push(t);
+            }
+            heatmap_groups.push(SvgElement::group(format!("{}:cols", self.id), clbls));
+        }
+
+        SvgElement::group(format!("{}:heatmap", self.id), heatmap_groups)
     }
 }

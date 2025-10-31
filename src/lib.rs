@@ -19,7 +19,6 @@ pub use element_id::*;
 mod svg_drawing;
 pub use svg_drawing::SvgDrawing;
 
-
 /// Normalizes whitespace in a string, replacing all whitespace character blocks with a single space.
 /// This function is used to compare SVG as strings in unit tests.
 pub(crate) fn normalize_whitespace(input: &str) -> String {
