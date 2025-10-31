@@ -26,7 +26,8 @@ mod test_mindmap {
             let n = mndmp.grow_node(ElementID::from(&format!("n:{i}")), &format!("{angle}°"),
                             angle, center_node_id.clone());
             fill = darker(fill.as_str(), 0.1)?;
-            let style = Style::new().fill(fill.as_str());
+            let style = Style::new().fill(fill.as_str())
+                .stroke_dasharray([15.0,5.0]).stroke_width(5.0).stroke("black");
             n.with_style(style);
         }
         let mut drawing = SvgDrawing::new(300.0, 300.0);

@@ -16,6 +16,7 @@ pub struct Style {
     pub opacity: Option<f32>,
     pub fill_opacity: Option<f32>,
     pub stroke_opacity: Option<f32>,
+    pub stroke_dasharray: Option<String>,
     pub text_anchor: Option<String>,
     pub font_family: Option<String>,
     pub font_size: Option<String>,
@@ -33,6 +34,7 @@ impl Style {
             opacity: None,
             fill_opacity: None,
             stroke_opacity: None,
+            stroke_dasharray: None,
             text_anchor: None,
             font_family: None,
             font_size: None,
@@ -71,6 +73,18 @@ impl Style {
         self.stroke_opacity = Some(stroke_opacity);
         self
     }
+
+    pub fn stroke_dasharray<T, I>(mut self, stroke_dasharray: I) -> Self
+    where
+        T: Into<f32> + Copy,
+        I: IntoIterator<Item = T>
+    {
+        let values: Vec<f32> = stroke_dasharray.into_iter().map(|v| v.into()).collect();
+        let dasharray_str = values.iter().map(|v| v.to_string()).collect::<Vec<_>>().join(" ");
+        self.stroke_dasharray = Some(dasharray_str);
+        self
+    }
+
     /// Sets the `text-anchor` property (e.g., `"start"`, `"middle"`, `"end"`).
     pub fn text_anchor(mut self, value: &str) -> Self {
         self.text_anchor = Some(value.to_string());
@@ -125,6 +139,7 @@ impl Style {
             && self.opacity.is_none()
             && self.fill_opacity.is_none()
             && self.stroke_opacity.is_none()
+            && self.stroke_dasharray.is_none()
             && self.text_anchor.is_none()
             && self.font_family.is_none()
             && self.font_size.is_none()
@@ -163,6 +178,11 @@ impl Style {
         if let Some(stroke_opacity) = self.stroke_opacity {
             style_string.push_str(&format!("stroke-opacity:{:.3};", stroke_opacity));
         }
+
+        if let Some(ref stroke_dasharray) = self.stroke_dasharray {
+            style_string.push_str(&format!("stroke-dasharray:{};", stroke_dasharray));
+        }
+
         if let Some(ref text_anchor) = self.text_anchor {
             style_string.push_str(&format!("text-anchor:{};", text_anchor));
         }
