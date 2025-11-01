@@ -66,8 +66,8 @@ impl SvgDrawing {
         out
     }
 
-    pub fn save_svg(&self, fname: &str) -> Result<(), String> {
-        fs::write(fname, self.to_svg()).map_err(|e| e.to_string())?;
+    pub fn save_svg(&self, fname: &str) -> std::io::Result<()> {
+        fs::write(fname, self.to_svg())?;
         Ok(())
     }
 

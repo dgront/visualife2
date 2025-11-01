@@ -51,23 +51,23 @@
 <rect id="heatmap:6:5" x="200" y="170" width="20" height="20" style="fill:#CB4B44;" />
 <rect id="heatmap:6:6" x="220" y="170" width="20" height="20" style="fill:#EEF0F0;" />
 </g>
-<g id="heatmap:rows" >
-<text id="heatmap:r0" x="95" y="60" style="text-anchor:end;dominant-baseline:middle;">row A</text>
-<text id="heatmap:r1" x="95" y="80" style="text-anchor:end;dominant-baseline:middle;">long name B</text>
-<text id="heatmap:r2" x="95" y="100" style="text-anchor:end;dominant-baseline:middle;">row C</text>
-<text id="heatmap:r3" x="95" y="120" style="text-anchor:end;dominant-baseline:middle;">row D</text>
-<text id="heatmap:r4" x="95" y="140" style="text-anchor:end;dominant-baseline:middle;">row E</text>
-<text id="heatmap:r5" x="95" y="160" style="text-anchor:end;dominant-baseline:middle;">row F</text>
-<text id="heatmap:r6" x="95" y="180" style="text-anchor:end;dominant-baseline:middle;">row G</text>
+<g id="heatmap:rows" style="text-anchor:end;font-size:15;" >
+<text id="heatmap:r0" x="95" y="60" style="dominant-baseline:middle;">row A</text>
+<text id="heatmap:r1" x="95" y="80" style="dominant-baseline:middle;">long name B</text>
+<text id="heatmap:r2" x="95" y="100" style="dominant-baseline:middle;">row C</text>
+<text id="heatmap:r3" x="95" y="120" style="dominant-baseline:middle;">row D</text>
+<text id="heatmap:r4" x="95" y="140" style="dominant-baseline:middle;">row E</text>
+<text id="heatmap:r5" x="95" y="160" style="dominant-baseline:middle;">row F</text>
+<text id="heatmap:r6" x="95" y="180" style="dominant-baseline:middle;">row G</text>
 </g>
-<g id="heatmap:cols" >
-<text id="heatmap:c0" x="110" y="195" style="text-anchor:end;dominant-baseline:central;" transform="rotate(-90 110 195)">col 1</text>
-<text id="heatmap:c1" x="130" y="195" style="text-anchor:end;dominant-baseline:central;" transform="rotate(-90 130 195)">col 2</text>
-<text id="heatmap:c2" x="150" y="195" style="text-anchor:end;dominant-baseline:central;" transform="rotate(-90 150 195)">long name 3</text>
-<text id="heatmap:c3" x="170" y="195" style="text-anchor:end;dominant-baseline:central;" transform="rotate(-90 170 195)">col 4</text>
-<text id="heatmap:c4" x="190" y="195" style="text-anchor:end;dominant-baseline:central;" transform="rotate(-90 190 195)">col 5</text>
-<text id="heatmap:c5" x="210" y="195" style="text-anchor:end;dominant-baseline:central;" transform="rotate(-90 210 195)">col 6</text>
-<text id="heatmap:c6" x="230" y="195" style="text-anchor:end;dominant-baseline:central;" transform="rotate(-90 230 195)">col 7</text>
+<g id="heatmap:cols" style="text-anchor:end;font-size:15;" >
+<text id="heatmap:c0" x="110" y="195" style="dominant-baseline:central;" transform="rotate(-90 110 195)">col 1</text>
+<text id="heatmap:c1" x="130" y="195" style="dominant-baseline:central;" transform="rotate(-90 130 195)">col 2</text>
+<text id="heatmap:c2" x="150" y="195" style="dominant-baseline:central;" transform="rotate(-90 150 195)">long name 3</text>
+<text id="heatmap:c3" x="170" y="195" style="dominant-baseline:central;" transform="rotate(-90 170 195)">col 4</text>
+<text id="heatmap:c4" x="190" y="195" style="dominant-baseline:central;" transform="rotate(-90 190 195)">col 5</text>
+<text id="heatmap:c5" x="210" y="195" style="dominant-baseline:central;" transform="rotate(-90 210 195)">col 6</text>
+<text id="heatmap:c6" x="230" y="195" style="dominant-baseline:central;" transform="rotate(-90 230 195)">col 7</text>
 </g>
 </g>
 </svg>

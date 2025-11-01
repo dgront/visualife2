@@ -1,9 +1,5 @@
 use rand::Rng;
-use std::fs::File;
-use std::io::{self, BufRead, BufReader};
-use std::path::Path;
-use std::fs;
-use clap::Parser;
+use clap::{Parser, ArgAction};
 
 use datamatrix::{DataMatrixBuilder};
 
@@ -20,9 +16,13 @@ struct Args {
     #[arg(short = 'i', long = "input")]
     input: Option<String>,
 
-    /// Columns for col_label, row_label, value (1-based indices); if not specified, first three columns are used
-    #[arg(short = 'c', long = "columns", value_names = ["col", "row", "val"], num_args = 3)]
+    /// Columns for row_index, col_index, value (1-based indices); if not specified, first three columns are used
+    #[arg(short = 'c', long = "columns", value_names = ["row", "col", "val"], num_args = 3)]
     columns: Option<Vec<usize>>,
+
+    /// Columns for row_labels and col_labels (1-based indices)
+    #[arg(short = 'l', long = "labels", value_names = ["row_labels", "col_labels"], num_args = 2)]
+    labels: Option<Vec<usize>>,
 
     /// Input is a single-column matrix in row-wise order (square matrix only)
     #[arg(short = 's', long = "single-column")]
@@ -33,74 +33,64 @@ struct Args {
     indexes: Option<Vec<usize>>,
 
     /// Make matrix symmetric (set both i,j and j,i)
-    #[arg(short = 'm', long = "make-symmetric")]
+    #[arg(short = 'm', long = "make-symmetric", action = ArgAction::SetTrue)]
     make_symmetric: bool,
+
+    /// skip the header line; note that comment lines starting with '#' are always skipped
+    #[arg(long = "skip-header", action = ArgAction::SetTrue)]
+    skip_header: bool,
 
     /// Output SVG file (default: heatmap.svg)
     #[arg(short = 'o', long = "output", default_value = "heatmap.svg")]
     output: String,
 }
 
-
-fn read_column(fname: &str, which_column: usize) -> Result<Vec<f64>, String> {
-    let reader = BufReader::new(File::open(fname).map_err(|e| e.to_string())?);
-
-    reader
-        .lines()
-        .enumerate()
-        .map(|(i, line)| {
-            let line = line.map_err(|e| e.to_string())?;
-            line.split_whitespace()
-                .nth(which_column)
-                .ok_or_else(|| format!("Missing column {} on line {}", which_column, i + 1))?
-                .parse::<f64>()
-                .map_err(|e| format!("Parse error on line {}: {}", i + 1, e))
-        })
-        .collect()
-}
-
-fn main() -> Result<(), String> {
+fn main() -> anyhow::Result<()> {
     let args = Args::parse();
 
-    let margin = 20.0;
-    let box_size = 5.0;
+    let x_margin = 100.0;
+    let y_margin = 50.0;
+    let box_size = 20.0;
     let mut data_source: DataMatrixBuilder = DataMatrixBuilder::new();
-    let mut data: Option<Vec<f64>> = None;
-    match &args.input {
+    let dm = match &args.input {
         Some(filename) => {
             if let Some(col_idx) = args.single_column {
-                data = Some(read_column(filename, col_idx)?);
+                data_source = data_source.data_column(col_idx)
             }
             if let Some(row_col_val) = args.columns {
                 data_source = data_source.index_columns(row_col_val[0], row_col_val[1]).data_column(row_col_val[2]);
             }
-            if let Some(row_col) = args.indexes {
-                data_source = data_source.index_columns(row_col[0], row_col[1]);
+            if let Some(row_col_labels) = args.labels {
+                data_source = data_source.label_columns(row_col_labels[0], row_col_labels[1]);
             }
+            if args.skip_header {
+                data_source = data_source.skip_header(true);
+            }
+            if args.make_symmetric {
+                data_source = data_source.symmetric(true);
+            }
+            data_source.from_file(filename)
         }
         None => {
             let n = 30;
             let mut rng = rand::thread_rng();
-            data = Some((0..n*n).map(|_| rng.random::<f64>()).collect());
+            let data: Vec<f64> = (0..n*n).map(|_| rng.random::<f64>()).collect();
+            data_source.from_data(&data)
         }
-    }
-
-    let dm = match data {
-        Some(data) => data_source.from_data(&data),
-        None => data_source.from_file(&args.input.unwrap())
-    }.map_err(|e| e.to_string())?;
+    }?;
+    eprintln!("{:?}",dm.get(0, 1));
+    eprintln!("{:?}",dm.get(1, 2));
 
     let n = dm.ncols();
-    let draw_width = box_size * n as f32 + 2.0 * margin;
-    let mut drawing = SvgDrawing::new(draw_width, draw_width);
+    let draw_width = box_size * n as f32 + 2.0 * x_margin;
+    let draw_height = box_size * n as f32 + 2.0 * y_margin;
+    let mut drawing = SvgDrawing::new(draw_width, draw_height);
 
-    let mut map = Heatmap::from_matrix("heatmap", box_size, box_size, dm.data().clone());
-    map.cmap = ColorMap::from_range(&RED_BLUE, 0.0, 1.0)?;
-    map.offset_x = margin;
-    map.offset_y = margin;
+    let mut map = Heatmap::from_datamatrix("heatmap", box_size, box_size, &dm);
+    map.offset_x = x_margin;
+    map.offset_y = y_margin;
     drawing.add_element(map.create_element());
-    fs::write(&args.output, drawing.to_svg()).map_err(|e| e.to_string())?;
-
+    drawing.save_svg(&args.output)?;
     eprintln!("Saved {}", args.output);
     Ok(())
 }

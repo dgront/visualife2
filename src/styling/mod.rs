@@ -7,6 +7,9 @@ pub use colors::*;
 mod style;
 pub use style::*;
 
+mod errors;
+pub use errors::*;
+
 /// Provides several predefined color palettes for visualization.
 ///
 /// This module contains several most popular color palettes as ``\[&str;\]`` arrays.

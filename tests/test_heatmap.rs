@@ -54,7 +54,7 @@ mod test_heatmap {
         htm.set_col_labels(["col 1", "col 2", "long name 3", "col 4", "col 5", "col 6", "col 7"])?;
         drawing.add_element(htm.create_element());
         let expected = load_expected_svgs("./tests/expected_drawings/heatmap/", &["labelled_map.svg"])?;
-        // drawing.save_svg("labelled_map.svg")?;
+        drawing.save_svg("labelled_map.svg")?;
         assert_eq!(drawing.to_svg(), expected[0]);
         Ok(())
     }

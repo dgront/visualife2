@@ -1,7 +1,5 @@
 //! # Versatile library for SVG drawing in Rust
 //!
-//! # Versatile library for SVG drawing in Rust
-//!
 
 /// Defines all the basic shapes that can be drawn in an SVG file, such as circles or paths.
 pub mod basic_shapes;

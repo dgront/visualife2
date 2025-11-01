@@ -1,4 +1,4 @@
-use crate::styling::mix_colors;
+use crate::styling::{StylingError, mix_colors};
 
 const K: usize = 128;
 
@@ -36,9 +36,9 @@ pub struct ColorMap {
 
 impl ColorMap {
     /// Constructs from explicit stops
-    pub fn from_stops(colors: &[&str], stops: &[f64]) -> Result<Self, &'static str> {
+    pub fn from_stops(colors: &[&str], stops: &[f64]) -> Result<Self, StylingError> {
         if colors.len() != stops.len() || colors.len() < 2 {
-            return Err("colors and stops must have the same length and at least 2 points");
+            return Err(StylingError::ColorScaleDefinitionError { n_colors: colors.len(), n_stops: stops.len() });
         }
 
         let from = *stops.first().unwrap();
@@ -54,7 +54,7 @@ impl ColorMap {
     }
 
     /// Constructs from a scalar range
-    pub fn from_range(colors: &[&str], from: f64, to: f64) -> Result<Self, &'static str> {
+    pub fn from_range(colors: &[&str], from: f64, to: f64) -> Result<Self, StylingError> {
         let n = colors.len();
         let mut stops = Vec::with_capacity(n);
         for i in 0..n {
@@ -71,7 +71,11 @@ impl ColorMap {
     }
 
     /// Internal: interpolates a color at position `x`
-    fn interpolate(x: f64, colors: &[&str], stops: &[f64]) -> Result<String, &'static str> {
+    fn interpolate(x: f64, colors: &[&str], stops: &[f64]) -> Result<String, StylingError> {
+
+        if x <= stops[0] { return Ok(colors[0].to_string()); }
+        if x >= stops[stops.len() - 1] { return Ok(colors[colors.len() - 1].to_string()); }
+
         for i in 0..stops.len() - 1 {
             let (x0, x1) = (stops[i], stops[i + 1]);
             if x0 <= x && x <= x1 {
@@ -79,13 +83,7 @@ impl ColorMap {
                 return mix_colors(colors[i], colors[i + 1], (1.0 - f) as f32);
             }
         }
-        // Handle out-of-bound edges
-        if x <= stops[0] {
-            Ok(colors[0].to_string())
-        } else if x >= stops[stops.len() - 1] {
-            Ok(colors[colors.len() - 1].to_string())
-        } else {
-            Err("Failed to interpolate color")
-        }
+
+        return Ok(colors[0].to_string());
     }
 }
