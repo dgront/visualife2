@@ -1,8 +1,11 @@
-mod mindmap;
 mod connector;
 mod node;
 pub use node::Node;
 
+mod errors;
+pub use errors::*;
+
+mod mindmap;
 pub use mindmap::{Mindmap};
 
 const FOOT_LENGTH_R_FRACTION: f32 = 1.5;    /// foot is 1.5 times the radius

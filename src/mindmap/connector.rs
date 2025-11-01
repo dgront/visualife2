@@ -100,7 +100,7 @@ mod test_connector {
     fn test_connector() {
         let na = Node::new(ElementID::from(1), "A", 100.0, 100.0, 10.0);
         let nb = Node::new(ElementID::from(2), "B", 100.0, 100.0, 10.0);
-        let g = connector(&na, &nb, 0.0, 2.0);
-        // println!("{:?}", g.to_svg());
+        let _g = connector(&na, &nb, 0.0, 2.0);
+        // println!("{:?}", _g.to_svg());
     }
 }

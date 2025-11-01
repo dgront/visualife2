@@ -5,6 +5,9 @@ mod tests {
 
     #[test]
     fn test_from_str_valid() {
+        let id = ElementID::from("abc123");
+        assert_eq!(id.id, [b'a', b'b', b'c', b'1', b'2', b'3', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+
         let id = ElementID::try_from("abc123").unwrap();
         assert_eq!(id.id, [b'a', b'b', b'c', b'1', b'2', b'3', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     }

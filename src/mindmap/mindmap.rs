@@ -51,10 +51,44 @@ impl Mindmap {
         self.connections.push((from_id.into(), to_id.into()));
     }
 
+    /// Non-mutable access to a [`Node`] of this [`Mindmap`]
+    ///
+    /// # Example
+    /// ```
+    /// # use visualife::ElementID;
+    /// # use visualife::mindmap::{Mindmap, MindmapError};
+    /// # fn main() -> Result<(), MindmapError> {
+    /// let radius = 45.0;
+    /// let mut mndmp = Mindmap::new("a_mindmap", radius);
+    /// let node_id = ElementID::from("n1");
+    /// mndmp.place_node(node_id.clone(), "Node 1", 30.0, 30.0);
+    /// let node_ref = mndmp.node(&node_id).ok_or(MindmapError::node_not_found("n1"))?;
+    /// assert_eq!(node_ref.radius, radius);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub fn node(&self, id: &ElementID) -> Option<&Node> {
         self.nodes.get(id)
     }
 
+    /// Mutable access to a [`Node`] of this [`Mindmap`]
+    ///
+    /// This method allows to edit a node, e.g. to change its syle, as in the example below:
+    /// # Example
+    /// ```
+    /// # use visualife::ElementID;
+    /// # use visualife::mindmap::{Mindmap, MindmapError};
+    /// # use visualife::styling::Style;
+    /// # fn main() -> Result<(), MindmapError> {
+    /// let radius = 45.0;
+    /// let mut mndmp = Mindmap::new("a_mindmap", radius);
+    /// let node_id = ElementID::from("n1");
+    /// mndmp.place_node(node_id.clone(), "Node 1", 30.0, 30.0);
+    /// let node_mut = mndmp.node_mut(&node_id).ok_or(MindmapError::node_not_found("n1"))?;
+    /// node_mut.with_style( Style::new().fill("#AAAAAA").stroke("black"));
+    /// # Ok(())
+    /// # }
+    /// ```
     pub fn node_mut(&mut self, id: &ElementID) -> Option<&mut Node> {
         self.nodes.get_mut(id)
     }
