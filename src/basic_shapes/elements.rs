@@ -227,3 +227,42 @@ impl SvgElement {
         }
     }
 }
+
+/// Roughly estimate the width in pixels of a text element.
+///
+/// The function assumes Latin text typeset in a generic sans-serif font.
+///
+/// # Arguments
+/// - `text`: The text to measure. Assumes Latin characters; complex scripts are not modeled.
+/// - `font_px`: The font size in CSS-equivalent pixels (e.g., `12.0` for 12px).
+///
+/// # Returns
+/// Estimated width in pixels as an `f32`.
+///
+/// # Examples
+/// ```
+/// let w = estimate_text_width_heuristic("Crazy dog jumps...", 12.0);
+/// # assert!(w > 0.0);
+/// ```
+pub fn estimate_text_width(text: &str, font_px: f32) -> f32 {
+    // width factors in "em" (font size). Tuned for common sans-serif (Arial/Helvetica/DejaVu).
+    const NARROW: f32 = 0.35; // i l ! | ' ` : ; . ,
+    const NORMAL: f32 = 0.52; // default
+    const WIDE:   f32 = 0.90; // M W @ # % & 0-9 often wider in many faces
+    const SPACE:  f32 = 0.33; // space width roughly 1/3 em in many fonts
+
+    let mut ems = 0.0f32;
+    for ch in text.chars() {
+        ems += match ch {
+            ' ' => SPACE,
+            // narrow-ish
+            'i' | 'l' | 'I' | '!' | '|' | '\'' | '`' | ':' | ';' | '.' | ',' => NARROW,
+            // wide-ish
+            'M' | 'W' | '@' | '#' | '%' | '&' |
+            '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => WIDE,
+            // default bucket
+            _ => NORMAL,
+        };
+    }
+    ems * font_px
+}
