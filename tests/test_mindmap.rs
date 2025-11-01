@@ -68,7 +68,7 @@ mod test_mindmap {
         drawing.add_element(mndmp.create_element());
         let expected =
             load_expected_svgs("./tests/expected_drawings/mindmap/", &["grow_nodes.svg"])?;
-        // drawing.save_svg("grow_nodes.svg")?;
+        drawing.save_svg("grow_nodes.svg")?;
         assert_eq!(drawing.to_svg(), expected[0]);
         Ok(())
     }

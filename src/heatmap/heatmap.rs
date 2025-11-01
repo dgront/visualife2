@@ -1,6 +1,6 @@
 use datamatrix::DataMatrix;
 
-use crate::basic_shapes::{SvgElement, estimate_text_width};
+use crate::basic_shapes::{SvgElement};
 use crate::heatmap::HeatmapError;
 use crate::styling::{ColorMap, Style};
 use crate::ElementID;

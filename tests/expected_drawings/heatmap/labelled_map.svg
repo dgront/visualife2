@@ -11,7 +11,7 @@
 <rect id="heatmap:1:0" x="100" y="70" width="20" height="20" style="fill:#539AC8;" />
 <rect id="heatmap:1:1" x="120" y="70" width="20" height="20" style="fill:#73B1D3;" />
 <rect id="heatmap:1:2" x="140" y="70" width="20" height="20" style="fill:#114781;" />
-<rect id="heatmap:1:3" x="160" y="70" width="20" height="20" style="fill:#08366A;" />
+<rect id="heatmap:1:3" x="160" y="70" width="20" height="20" style="fill:#08366a;" />
 <rect id="heatmap:1:4" x="180" y="70" width="20" height="20" style="fill:#B82D35;" />
 <rect id="heatmap:1:5" x="200" y="70" width="20" height="20" style="fill:#AC212F;" />
 <rect id="heatmap:1:6" x="220" y="70" width="20" height="20" style="fill:#114781;" />
@@ -35,7 +35,7 @@
 <rect id="heatmap:4:3" x="160" y="130" width="20" height="20" style="fill:#0D3F75;" />
 <rect id="heatmap:4:4" x="180" y="130" width="20" height="20" style="fill:#1F609E;" />
 <rect id="heatmap:4:5" x="200" y="130" width="20" height="20" style="fill:#A4CEE3;" />
-<rect id="heatmap:4:6" x="220" y="130" width="20" height="20" style="fill:#67001F;" />
+<rect id="heatmap:4:6" x="220" y="130" width="20" height="20" style="fill:#67001f;" />
 <rect id="heatmap:5:0" x="100" y="150" width="20" height="20" style="fill:#8F0E26;" />
 <rect id="heatmap:5:1" x="120" y="150" width="20" height="20" style="fill:#C9E1EE;" />
 <rect id="heatmap:5:2" x="140" y="150" width="20" height="20" style="fill:#CDE3EF;" />

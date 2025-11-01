@@ -241,7 +241,8 @@ impl SvgElement {
 ///
 /// # Examples
 /// ```
-/// let w = estimate_text_width_heuristic("Crazy dog jumps...", 12.0);
+/// # use visualife::basic_shapes::estimate_text_width;
+/// let w = estimate_text_width("Crazy dog jumps...", 12.0);
 /// # assert!(w > 0.0);
 /// ```
 pub fn estimate_text_width(text: &str, font_px: f32) -> f32 {
