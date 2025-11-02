@@ -6,6 +6,7 @@ use crate::mindmap::polar_to_cartesian;
 
 use indexmap::IndexMap;
 
+/// Represents the whole mindmap, with its nodes ans connectors
 pub struct Mindmap {
     pub foot_angle_deg: f32,
     pub bar_width: f32,
@@ -29,6 +30,47 @@ impl Mindmap {
         }
     }
 
+    /// Create a new node at a given location
+    ///
+    /// # Parameters
+    /// - `id`: unique identifier for the node; any type implementing `Into<ElementID>`.
+    /// - `label`: text rendered for the node
+    /// - `x`, `y`: position in canvas/user units
+    ///
+    /// # Returns
+    /// A mutable reference to the created node.
+    ///
+    /// # Examples
+    ///
+    /// **Place a single node and change its color:**
+    ///
+    /// ```rust
+    /// # use visualife::mindmap::Mindmap;
+    /// # use visualife::styling::Style;
+    /// let mut mndmp = Mindmap::new("a_mindmap", 50.0);
+    /// mndmp.place_node("root", "Root", 120.0, 80.0)
+    ///     .with_style(Style::new().fill("#9A9A9A"));
+    ///```
+    ///
+    /// **Place multiple nodes, each with its own style:**
+    /// ```
+    /// # use visualife::styling::{Style, darker, palettes};
+    /// # use visualife::mindmap::{Mindmap, MindmapError};
+    /// # fn place_nodes() -> Result<(), anyhow::Error> {
+    /// let mut mndmp = Mindmap::new("a_mindmap", 30.0);
+    /// for (i, color) in palettes::PASTEL.iter().enumerate() {
+    ///     let x = ((i%3) as f32) * 70.0 + 40.0;
+    ///     let y = ((i/3) as f32) * 70.0 + 40.0;
+    ///     mndmp.place_node(format!("c{i}"), color, x, y)
+    ///         .with_style(Style::new().fill(color).stroke(&darker(color, 0.2)?).stroke_width(2.0))
+    ///         .with_text_style(Style::new().fill(&darker(color, 0.8)?));
+    /// }
+    /// # Ok(())
+    /// # }
+    /// ```
+    ///
+    #[doc = include_str!("../../tests/expected_drawings/mindmap/pastel_nodes.svg")]
+    ///
     pub fn place_node(&mut self, id: impl Into<ElementID>, label: &str, x: f32, y: f32) -> &mut Node {
         let id = id.into();
         let node = Node::new(id.clone(), label, x, y, self.max_node_radius);
@@ -36,6 +78,38 @@ impl Mindmap {
         self.nodes.get_mut(&id).unwrap()
     }
 
+    /// Grows a new node in a given direction
+    ///
+    /// Creates a new node growing at a given angle from the parent one. Connects the two nodes with the connector
+    /// of the default length.
+    ///
+    /// ```
+    /// # use visualife::mindmap::Mindmap;
+    /// # use visualife::styling::{Style, darker};
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// let mut mndmp = Mindmap::new("a_mindmap", 50.0);
+    /// let center_node_id = mndmp.place_node("n0", "Center node", 80.0, 80.0).id.clone();
+    /// let n_new_nodes = 5;
+    /// let mut fill = String::from("#FFFFFF");
+    /// for i in 0..n_new_nodes {
+    ///     let angle = (90.0 / ((n_new_nodes - 1) as f32) * i as f32);
+    ///     // --- grow a new node
+    ///     let new_node = mndmp.grow_node(&format!("n:{i}"),&format!("{angle}°"), angle, center_node_id.clone());
+    ///     // --- create a new style and assign to the new node
+    ///     fill = darker(fill.as_str(), 0.1)?;
+    ///     let style = Style::new()
+    ///         .fill(fill.as_str())
+    ///         .stroke_dasharray([15.0, 5.0])
+    ///         .stroke_width(3.0)
+    ///         .stroke("black");
+    ///     new_node.with_style(style);
+    /// }
+    /// # Ok(())
+    /// # }
+    /// ```
+    ///
+    #[doc = include_str!("../../tests/expected_drawings/mindmap/grow_nodes.svg")]
+    ///
     pub fn grow_node(&mut self, id: impl Into<ElementID>, label: &str, angle_deg: f32, parent_id: impl Into<ElementID>) -> &mut Node {
         let real_parent_id = parent_id.into();
         let parent = self.nodes.get(&real_parent_id).unwrap();
@@ -47,6 +121,15 @@ impl Mindmap {
         self.nodes.get_mut(&id).unwrap()
     }
 
+    /// Connect two nodes that have been already created
+    ///
+    /// ```
+    /// # use visualife::mindmap::{Mindmap, MindmapError};
+    /// let mut mndmp = Mindmap::new("a_mindmap", 45.0);
+    /// let node1_id = mndmp.place_node("n1", "Node 1", 100.0, 100.0).id.clone();
+    /// let node2_id = mndmp.place_node("n2", "Node 2", 180.0, 180.0).id.clone();
+    /// mndmp.connect_nodes(node1_id, node2_id);
+    /// ```
     pub fn connect_nodes(&mut self, from_id: impl Into<ElementID>, to_id: impl Into<ElementID>) {
         self.connections.push((from_id.into(), to_id.into()));
     }
@@ -58,12 +141,11 @@ impl Mindmap {
     /// # use visualife::ElementID;
     /// # use visualife::mindmap::{Mindmap, MindmapError};
     /// # fn main() -> Result<(), MindmapError> {
-    /// let radius = 45.0;
-    /// let mut mndmp = Mindmap::new("a_mindmap", radius);
-    /// let node_id = ElementID::from("n1");
-    /// mndmp.place_node(node_id.clone(), "Node 1", 30.0, 30.0);
+    /// # let mut mndmp = Mindmap::new("a_mindmap", 45.0);
+    /// # let node_id = ElementID::from("n1");
+    /// # mndmp.place_node(node_id.clone(), "Node 1", 30.0, 30.0);
     /// let node_ref = mndmp.node(&node_id).ok_or(MindmapError::node_not_found("n1"))?;
-    /// assert_eq!(node_ref.radius, radius);
+    /// assert_eq!(node_ref.radius, 45.0);
     /// # Ok(())
     /// # }
     /// ```
@@ -80,10 +162,9 @@ impl Mindmap {
     /// # use visualife::mindmap::{Mindmap, MindmapError};
     /// # use visualife::styling::Style;
     /// # fn main() -> Result<(), MindmapError> {
-    /// let radius = 45.0;
-    /// let mut mndmp = Mindmap::new("a_mindmap", radius);
-    /// let node_id = ElementID::from("n1");
-    /// mndmp.place_node(node_id.clone(), "Node 1", 30.0, 30.0);
+    /// # let mut mndmp = Mindmap::new("a_mindmap", 45.0);
+    /// # let node_id = ElementID::from("n1");
+    /// # mndmp.place_node(node_id.clone(), "Node 1", 30.0, 30.0);
     /// let node_mut = mndmp.node_mut(&node_id).ok_or(MindmapError::node_not_found("n1"))?;
     /// node_mut.with_style( Style::new().fill("#AAAAAA").stroke("black"));
     /// # Ok(())
@@ -93,6 +174,30 @@ impl Mindmap {
         self.nodes.get_mut(id)
     }
 
+    /// Creates an SVG group element that contains all graphical components representing this mindmap
+    ///
+    /// Once you created your mindmap with all the desired nodes and connectors,
+    /// create an SVG `<g>` (group) element and insert it into a [`SvgDrawing`](crate::SvgDrawing)
+    ///
+    /// ```
+    /// # use visualife::mindmap::Mindmap;
+    /// # use visualife::SvgDrawing;
+    /// # use std::fs;
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// // --- create a mindmap
+    /// let mut mndmp = Mindmap::new("a_mindmap", 45.0);
+    /// // --- add some nodes
+    /// mndmp.place_node("n1", "Node 1", 100.0, 100.0);
+    /// // --- create SvgDrawing
+    /// let mut drawing = SvgDrawing::new(220.0, 220.0);
+    /// // --- create the element for the mindmap and place it in the drawing
+    /// drawing.add_element(mndmp.create_element());
+    /// // --- save to file
+    /// drawing.save_svg("figure.svg")?;
+    /// # fs::remove_file("figure.svg").unwrap(); // cleanup
+    /// # Ok(())
+    /// # }
+    /// ```
     pub fn create_element(&self) -> SvgElement {
         // ---------- Create nodes and store them in a group
         let mut node_elements = Vec::new();

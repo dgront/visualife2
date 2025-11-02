@@ -1,0 +1,21 @@
+<svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+	<g id="a_mindmap" >
+<g id="na_mindmap" >
+<g id="n1" >
+<circle id="c:n1" cx="100" cy="100" r="45" />
+<text id="t:n1" x="100" y="100" style="text-anchor:middle;dominant-baseline:middle;">Node 1</text>
+</g>
+<g id="n2" >
+<circle id="c:n2" cx="180" cy="180" r="45" />
+<text id="t:n2" x="180" y="180" style="text-anchor:middle;dominant-baseline:middle;">Node 2</text>
+</g>
+</g>
+<g id="ca_mindmap" >
+<g id="cn1:n2" >
+<path id="fn1:n2" d="M 150.91168 144.54773 C 142.95673 136.59277 135.90671 128.5143 138.97115 122.5 A 45 45 0 0 1 122.5 138.97115 C 128.5143 135.90671 136.59277 142.95673 144.54773 150.91168" />
+<path id="fn2:n1" d="M 129.08832 135.45227 C 137.04327 143.40723 144.0933 151.4857 141.02887 157.5 A 45 45 0 0 1 157.5 141.02885 C 151.4857 144.09329 143.40723 137.04327 135.45227 129.08832" />
+<path id="bn1:n2" d="M 150.91168 144.54773 L 135.45227 129.08832 L 129.08832 135.45227 L 144.54773 150.91168 Z" />
+</g>
+</g>
+</g>
+</svg>

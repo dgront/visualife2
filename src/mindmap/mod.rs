@@ -1,3 +1,75 @@
+//! # Library for drawing mindmaps, inspired by the [TikZ MindMap](https://tikz.dev/library-mindmaps) library.
+//!
+//! A mindmap is a visual diagram that organizes information around a central concept
+//! using branches to represent related ideas, relationships, or hierarchical structures.
+//!
+//! ## Create an empty [`Mindmap`](crate::mindmap::Mindmap)
+//! ```
+//! use visualife::mindmap::Mindmap;
+//! let mut mndmp = Mindmap::new("a_mindmap", 50.0);
+//! ```
+//! `50.0` is the default node radius, `"a_mindmap"` is the unique ID assigned to corresponding SVG group.
+//!
+//! ## Add some nodes
+//! ```
+//! # use visualife::mindmap::Mindmap;
+//! # let mut mndmp = Mindmap::new("a_mindmap", 50.0);
+//! let root_node = mndmp.place_node("root", "Root", 120.0, 80.0);
+//! ```
+//!
+//! You may also grow nodes into a desired direction by specifying the angle:
+//! ```
+//! # use visualife::mindmap::Mindmap;
+//! # let mut mndmp = Mindmap::new("a_mindmap", 50.0);
+//! # let root_node_id = mndmp.place_node("root", "Root", 120.0, 80.0).id.clone();
+//! let n_new_nodes = 5;
+//! for i in 0..n_new_nodes {
+//!     let angle = (90.0 / ((n_new_nodes - 1) as f32) * i as f32);
+//!     let new_node = mndmp.grow_node(&format!("n:{i}"),&format!("{angle}°"), angle, root_node_id.clone());
+//! }
+//! ```
+//! You may want to change how a [`Node`](crate::mindmap::Node) looks like by adding a style to it:
+//! ```
+//! # use visualife::mindmap::Mindmap;
+//! use visualife::styling::{Style, darker};
+//! # fn main() -> Result<(), anyhow::Error> {
+//! # let mut mndmp = Mindmap::new("a_mindmap", 50.0);
+//! # let root_node_id = mndmp.place_node("root", "Root", 120.0, 80.0).id.clone();
+//! # let n_new_nodes = 5;
+//! let mut fill = String::from("#FFFFFF");
+//! for i in 0..n_new_nodes {
+//! #     let angle = (90.0 / ((n_new_nodes - 1) as f32) * i as f32);
+//! #     let new_node = mndmp.grow_node(&format!("n:{i}"),&format!("{angle}°"), angle, root_node_id.clone());
+//!     fill = darker(fill.as_str(), 0.1)?;
+//!     let style = Style::new()
+//!         .fill(fill.as_str())
+//!         .stroke_dasharray([15.0, 5.0])
+//!         .stroke_width(3.0)
+//!         .stroke("black");
+//!     new_node.with_style(style);
+//! }
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! ## Create [`SvgDrawing`](crate::SvgDrawing) and add the [`Mindmap`]
+//! ```
+//! # fn main() -> Result<(), anyhow::Error> {
+//! use visualife::SvgDrawing;
+//! # use std::fs;
+//! # use visualife::mindmap::Mindmap;
+//! # let mut mndmp = Mindmap::new("a_mindmap", 50.0);
+//! let mut drawing = SvgDrawing::new(300.0, 300.0);
+//! drawing.add_element(mndmp.create_element());
+//! drawing.save_svg("figure.svg")?;
+//! # fs::remove_file("figure.svg").unwrap(); // cleanup
+//! # Ok(())
+//! # }
+//! ```
+//!
+#![doc = include_str!("../../tests/expected_drawings/mindmap/grow_nodes.svg")]
+//!
+
 mod connector;
 mod node;
 pub use node::Node;

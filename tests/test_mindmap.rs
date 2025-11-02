@@ -3,11 +3,10 @@ mod testing_utilities; // Declare the module
 #[cfg(test)]
 mod test_mindmap {
     use crate::testing_utilities::load_expected_svgs;
-    use visualife::styling::{darker, Style};
+    use visualife::styling::{Style, darker, palettes};
     use visualife::ElementID;
-    use visualife::{mindmap, SvgDrawing};
+    use visualife::SvgDrawing;
     use visualife::mindmap::{Mindmap, MindmapError};
-    // use visualife::mindmap::MindmapError;
 
     #[test]
     fn test_node_access() -> Result<(), MindmapError> {
@@ -21,41 +20,51 @@ mod test_mindmap {
     }
 
     #[test]
+    fn place_nodes() -> Result<(), anyhow::Error> {
+
+        let mut mndmp = Mindmap::new("a_mindmap", 30.0);
+        for (i, color) in palettes::PASTEL.iter().enumerate() {
+            let x = ((i%3) as f32) * 70.0 + 40.0;
+            let y = ((i/3) as f32) * 70.0 + 40.0;
+            mndmp.place_node(format!("c{i}"), color, x, y)
+                .with_style(Style::new().fill(color).stroke(&darker(color, 0.2)?).stroke_width(2.0))
+                .with_text_style(Style::new().fill(&darker(color, 0.8)?));
+        }
+        let mut drawing = SvgDrawing::new(220.0, 220.0);
+        drawing.add_element(mndmp.create_element());
+        let expected =
+            load_expected_svgs("./tests/expected_drawings/mindmap/", &["pastel_nodes.svg"])?;
+        // drawing.save_svg("pastel_nodes.svg")?;
+        assert_eq!(drawing.to_svg(), expected[0]);
+
+        Ok(())
+    }
+
+    #[test]
     fn two_nodes() -> std::io::Result<()> {
-        let mut mndmp = mindmap::Mindmap::new("a_mindmap", 45.0);
-        let node1_id = mndmp
-            .place_node(ElementID::from("n1"), "Node 1", 100.0, 100.0)
-            .id
-            .clone();
-        let node2_id = mndmp
-            .place_node(ElementID::from("n2"), "Node 2", 180.0, 180.0)
-            .id
-            .clone();
+        let mut mndmp = Mindmap::new("a_mindmap", 45.0);
+        let node1_id = mndmp.place_node(ElementID::from("n1"), "Node 1", 100.0, 100.0).id.clone();
+        let node2_id = mndmp.place_node(ElementID::from("n2"), "Node 2", 180.0, 180.0).id.clone();
         mndmp.connect_nodes(node1_id, node2_id);
         let svg_el = mndmp.create_element();
         let mut drawing = SvgDrawing::new(300.0, 300.0);
         drawing.add_element(svg_el);
-        drawing.save_svg("two_nodes.svg")?;
+        // drawing.save_svg("two_nodes.svg")?;
+        let expected =
+            load_expected_svgs("./tests/expected_drawings/mindmap/", &["two_nodes.svg"])?;
+        assert_eq!(drawing.to_svg(), expected[0]);
         Ok(())
     }
 
     #[test]
     fn grow_nodes() -> Result<(), anyhow::Error> {
-        let mut mndmp = mindmap::Mindmap::new("a_mindmap", 50.0);
-        let center_node_id = mndmp
-            .place_node(ElementID::from("n0"), "Center node", 80.0, 80.0)
-            .id
-            .clone();
+        let mut mndmp = Mindmap::new("a_mindmap", 50.0);
+        let center_node_id = mndmp.place_node("n0", "Center node", 80.0, 80.0).id.clone();
         let n_new_nodes = 5;
         let mut fill = String::from("#FFFFFF");
         for i in 0..n_new_nodes {
             let angle = (90.0 / ((n_new_nodes - 1) as f32) * i as f32);
-            let n = mndmp.grow_node(
-                ElementID::from(&format!("n:{i}")),
-                &format!("{angle}°"),
-                angle,
-                center_node_id.clone(),
-            );
+            let n = mndmp.grow_node(&format!("n:{i}"),&format!("{angle}°"),angle,center_node_id.clone());
             fill = darker(fill.as_str(), 0.1)?;
             let style = Style::new()
                 .fill(fill.as_str())
@@ -68,14 +77,14 @@ mod test_mindmap {
         drawing.add_element(mndmp.create_element());
         let expected =
             load_expected_svgs("./tests/expected_drawings/mindmap/", &["grow_nodes.svg"])?;
-        drawing.save_svg("grow_nodes.svg")?;
+        // drawing.save_svg("grow_nodes.svg")?;
         assert_eq!(drawing.to_svg(), expected[0]);
         Ok(())
     }
 
     #[test]
     fn small_mindmap() -> Result<(), anyhow::Error> {
-        let mut mndmp = mindmap::Mindmap::new("a_mindmap", 50.0);
+        let mut mndmp = Mindmap::new("a_mindmap", 50.0);
         mndmp.place_node("n0", "Center", 250.0, 250.0);
         for i in 1..=2 {
             let ni_id = ElementID::from(&format!("n:{i}"));

@@ -3,7 +3,7 @@
 
 /// Defines all the basic shapes that can be drawn in an SVG file, such as circles or paths.
 pub mod basic_shapes;
-// /// Library for drawing mindmaps, inspired by the [TikZ MindMap](https://tikz.dev/library-mindmaps) library.
+
 pub mod mindmap;
 /// Visualize array-like data as a heatmap
 pub mod heatmap;

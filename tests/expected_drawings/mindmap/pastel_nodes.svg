@@ -1,0 +1,45 @@
+<svg width="220" height="220" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+	<g id="a_mindmap" >
+<g id="na_mindmap" >
+<g id="c0" >
+<circle id="c:c0" cx="40" cy="40" r="30" style="fill:#fbb4ae;stroke:#C8908B;stroke-width:2;" />
+<text id="t:c0" x="40" y="40" style="fill:#322322;text-anchor:middle;dominant-baseline:middle;">#fbb4ae</text>
+</g>
+<g id="c1" >
+<circle id="c:c1" cx="110" cy="40" r="30" style="fill:#b3cde3;stroke:#8FA4B5;stroke-width:2;" />
+<text id="t:c1" x="110" y="40" style="fill:#23282D;text-anchor:middle;dominant-baseline:middle;">#b3cde3</text>
+</g>
+<g id="c2" >
+<circle id="c:c2" cx="180" cy="40" r="30" style="fill:#ccebc5;stroke:#A3BC9D;stroke-width:2;" />
+<text id="t:c2" x="180" y="40" style="fill:#282E27;text-anchor:middle;dominant-baseline:middle;">#ccebc5</text>
+</g>
+<g id="c3" >
+<circle id="c:c3" cx="40" cy="110" r="30" style="fill:#decbe4;stroke:#B1A2B6;stroke-width:2;" />
+<text id="t:c3" x="40" y="110" style="fill:#2C282D;text-anchor:middle;dominant-baseline:middle;">#decbe4</text>
+</g>
+<g id="c4" >
+<circle id="c:c4" cx="110" cy="110" r="30" style="fill:#fed9a6;stroke:#CBAD84;stroke-width:2;" />
+<text id="t:c4" x="110" y="110" style="fill:#322B21;text-anchor:middle;dominant-baseline:middle;">#fed9a6</text>
+</g>
+<g id="c5" >
+<circle id="c:c5" cx="180" cy="110" r="30" style="fill:#ffffcc;stroke:#CCCCA3;stroke-width:2;" />
+<text id="t:c5" x="180" y="110" style="fill:#323228;text-anchor:middle;dominant-baseline:middle;">#ffffcc</text>
+</g>
+<g id="c6" >
+<circle id="c:c6" cx="40" cy="180" r="30" style="fill:#e5d8bd;stroke:#B7AC97;stroke-width:2;" />
+<text id="t:c6" x="40" y="180" style="fill:#2D2B25;text-anchor:middle;dominant-baseline:middle;">#e5d8bd</text>
+</g>
+<g id="c7" >
+<circle id="c:c7" cx="110" cy="180" r="30" style="fill:#fddaec;stroke:#CAAEBC;stroke-width:2;" />
+<text id="t:c7" x="110" y="180" style="fill:#322B2F;text-anchor:middle;dominant-baseline:middle;">#fddaec</text>
+</g>
+<g id="c8" >
+<circle id="c:c8" cx="180" cy="180" r="30" style="fill:#f2f2f2;stroke:#C1C1C1;stroke-width:2;" />
+<text id="t:c8" x="180" y="180" style="fill:#303030;text-anchor:middle;dominant-baseline:middle;">#f2f2f2</text>
+</g>
+</g>
+<g id="ca_mindmap" >
+
+</g>
+</g>
+</svg>
