@@ -9,7 +9,7 @@ pub use errors::*;
 
 /// Provides several predefined color palettes for visualization.
 ///
-/// This module contains several most popular color palettes as ``\[&str;\]`` arrays.
+/// This module contains several most popular color palettes as `[&str; ]` arrays.
 ///
 /// # Available categorical palettes
 ///
@@ -30,9 +30,6 @@ pub use errors::*;
 ///
 /// Tableau 20 palette:
 #[doc = include_str!("../../tests/expected_drawings/styling/tableau20.svg")]
-///
-/// Viridis palette:
-#[doc = include_str!("../../tests/expected_drawings/styling/viridis.svg")]
 ///
 /// Okabe-Ito palette:
 #[doc = include_str!("../../tests/expected_drawings/styling/okabe_ito.svg")]
@@ -55,6 +52,10 @@ pub use errors::*;
 /// Dark2 palette:
 #[doc = include_str!("../../tests/expected_drawings/styling/dark2.svg")]
 
+/// # Available continuous palettes
+///
+/// Viridis palette:
+#[doc = include_str!("../../tests/expected_drawings/styling/viridis.svg")]
 
 /// # Examples
 ///

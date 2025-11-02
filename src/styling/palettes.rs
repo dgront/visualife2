@@ -11,6 +11,7 @@ pub const TABLEAU10: [&str; 10] = [
     "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"
 ];
 
+/// Categorical Accent palette
 pub const CATEGORICAL_ACCENT: [&str; 10] = [
     "#4e79a7", "#f28e2c", "#e15759", "#76b7b2", "#59a14f",
     "#edc949", "#af7aa1", "#ff9da7", "#9c755f", "#bab0ab"
@@ -80,6 +81,7 @@ pub const DARK2: [&str; 8] = [
     "#66A61E", "#E6AB02", "#A6761D", "#666666"
 ];
 
+/// Red-to-blue color scale
 pub const RED_BLUE: [&str; 64] = [
     "#67001f", "#730421", "#7e0823", "#8a0c25", "#941127", "#9f172a", "#a81d2d",
     "#b12531", "#b82e35", "#bf373a", "#c6413f", "#cc4c45", "#d1574b", "#d66252",

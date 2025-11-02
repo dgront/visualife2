@@ -2,6 +2,7 @@ mod testing_utilities; // Declare the module
 
 #[cfg(test)]
 mod test_heatmap {
+    use datamatrix::DataMatrixBuilder;
     use rand::{SeedableRng, Rng};
     use rand::rngs::StdRng;
 
@@ -54,7 +55,28 @@ mod test_heatmap {
         htm.set_col_labels(["col 1", "col 2", "long name 3", "col 4", "col 5", "col 6", "col 7"])?;
         drawing.add_element(htm.create_element());
         let expected = load_expected_svgs("./tests/expected_drawings/heatmap/", &["labelled_map.svg"])?;
-        drawing.save_svg("labelled_map.svg")?;
+        // drawing.save_svg("labelled_map.svg")?;
+        assert_eq!(drawing.to_svg(), expected[0]);
+        Ok(())
+    }
+
+    #[test]
+    fn cities_heatmap_from_datamatrix() -> Result<(), anyhow::Error> {
+
+        let dmap = DataMatrixBuilder::new()
+            .label_columns(1, 2)
+            .data_column(3)
+            .index_columns(4, 5)
+            .skip_header(true)
+            .symmetric(true)
+            .from_file("./tests/test_inputs/cities_by_distance.csv")?;
+        let mut htm = Heatmap::from_datamatrix("heatmap", 20.0, 20.0, &dmap);
+        htm.offset_x = 110.0;
+        htm.offset_y = 50.0;
+        let mut drawing = SvgDrawing::new(460.0, 460.0);
+        drawing.add_element(htm.create_element());
+        // drawing.save_svg("cities.svg")?;
+        let expected = load_expected_svgs("./tests/expected_drawings/heatmap/", &["cities.svg"])?;
         assert_eq!(drawing.to_svg(), expected[0]);
         Ok(())
     }

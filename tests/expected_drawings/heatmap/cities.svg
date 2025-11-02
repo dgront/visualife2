@@ -1,0 +1,265 @@
+<svg width="460" height="460" viewBox="0 0 460 460" xmlns="http://www.w3.org/2000/svg">
+	<g id="heatmap:heatmap" >
+<g id="heatmap:boxes" >
+<rect id="heatmap:0:0" x="110" y="50" width="20" height="20" style="fill:#67001f;" />
+<rect id="heatmap:0:1" x="130" y="50" width="20" height="20" style="fill:#991428;" />
+<rect id="heatmap:0:2" x="150" y="50" width="20" height="20" style="fill:#B82D35;" />
+<rect id="heatmap:0:3" x="170" y="50" width="20" height="20" style="fill:#E88C70;" />
+<rect id="heatmap:0:4" x="190" y="50" width="20" height="20" style="fill:#F3A98B;" />
+<rect id="heatmap:0:5" x="210" y="50" width="20" height="20" style="fill:#DCE9F2;" />
+<rect id="heatmap:0:6" x="230" y="50" width="20" height="20" style="fill:#BCDAEA;" />
+<rect id="heatmap:0:7" x="250" y="50" width="20" height="20" style="fill:#D8E8F1;" />
+<rect id="heatmap:0:8" x="270" y="50" width="20" height="20" style="fill:#ECF0F1;" />
+<rect id="heatmap:0:9" x="290" y="50" width="20" height="20" style="fill:#F2EFED;" />
+<rect id="heatmap:0:10" x="310" y="50" width="20" height="20" style="fill:#EEF0F0;" />
+<rect id="heatmap:0:11" x="330" y="50" width="20" height="20" style="fill:#8FC2DC;" />
+<rect id="heatmap:0:12" x="350" y="50" width="20" height="20" style="fill:#D1E5EF;" />
+<rect id="heatmap:0:13" x="370" y="50" width="20" height="20" style="fill:#BCDAEA;" />
+<rect id="heatmap:0:14" x="390" y="50" width="20" height="20" style="fill:#CDE3EF;" />
+<rect id="heatmap:1:0" x="110" y="70" width="20" height="20" style="fill:#991428;" />
+<rect id="heatmap:1:1" x="130" y="70" width="20" height="20" style="fill:#67001f;" />
+<rect id="heatmap:1:2" x="150" y="70" width="20" height="20" style="fill:#8F0E26;" />
+<rect id="heatmap:1:3" x="170" y="70" width="20" height="20" style="fill:#DA6C58;" />
+<rect id="heatmap:1:4" x="190" y="70" width="20" height="20" style="fill:#EA9174;" />
+<rect id="heatmap:1:5" x="210" y="70" width="20" height="20" style="fill:#ECF0F1;" />
+<rect id="heatmap:1:6" x="230" y="70" width="20" height="20" style="fill:#D5E6F0;" />
+<rect id="heatmap:1:7" x="250" y="70" width="20" height="20" style="fill:#ECF0F1;" />
+<rect id="heatmap:1:8" x="270" y="70" width="20" height="20" style="fill:#F6EDE7;" />
+<rect id="heatmap:1:9" x="290" y="70" width="20" height="20" style="fill:#F9E8DE;" />
+<rect id="heatmap:1:10" x="310" y="70" width="20" height="20" style="fill:#DFEBF2;" />
+<rect id="heatmap:1:11" x="330" y="70" width="20" height="20" style="fill:#7EB8D7;" />
+<rect id="heatmap:1:12" x="350" y="70" width="20" height="20" style="fill:#C5DFEC;" />
+<rect id="heatmap:1:13" x="370" y="70" width="20" height="20" style="fill:#B3D6E7;" />
+<rect id="heatmap:1:14" x="390" y="70" width="20" height="20" style="fill:#C5DFEC;" />
+<rect id="heatmap:2:0" x="110" y="90" width="20" height="20" style="fill:#B82D35;" />
+<rect id="heatmap:2:1" x="130" y="90" width="20" height="20" style="fill:#8F0E26;" />
+<rect id="heatmap:2:2" x="150" y="90" width="20" height="20" style="fill:#67001f;" />
+<rect id="heatmap:2:3" x="170" y="90" width="20" height="20" style="fill:#D35B4E;" />
+<rect id="heatmap:2:4" x="190" y="90" width="20" height="20" style="fill:#E6876C;" />
+<rect id="heatmap:2:5" x="210" y="90" width="20" height="20" style="fill:#F6EDE7;" />
+<rect id="heatmap:2:6" x="230" y="90" width="20" height="20" style="fill:#E8EFF2;" />
+<rect id="heatmap:2:7" x="250" y="90" width="20" height="20" style="fill:#F6EDE7;" />
+<rect id="heatmap:2:8" x="270" y="90" width="20" height="20" style="fill:#FAE1D3;" />
+<rect id="heatmap:2:9" x="290" y="90" width="20" height="20" style="fill:#FBD9C6;" />
+<rect id="heatmap:2:10" x="310" y="90" width="20" height="20" style="fill:#D5E6F0;" />
+<rect id="heatmap:2:11" x="330" y="90" width="20" height="20" style="fill:#78B5D5;" />
+<rect id="heatmap:2:12" x="350" y="90" width="20" height="20" style="fill:#C5DFEC;" />
+<rect id="heatmap:2:13" x="370" y="90" width="20" height="20" style="fill:#B8D8E9;" />
+<rect id="heatmap:2:14" x="390" y="90" width="20" height="20" style="fill:#C5DFEC;" />
+<rect id="heatmap:3:0" x="110" y="110" width="20" height="20" style="fill:#E88C70;" />
+<rect id="heatmap:3:1" x="130" y="110" width="20" height="20" style="fill:#DA6C58;" />
+<rect id="heatmap:3:2" x="150" y="110" width="20" height="20" style="fill:#D35B4E;" />
+<rect id="heatmap:3:3" x="170" y="110" width="20" height="20" style="fill:#67001f;" />
+<rect id="heatmap:3:4" x="190" y="110" width="20" height="20" style="fill:#A31A2B;" />
+<rect id="heatmap:3:5" x="210" y="110" width="20" height="20" style="fill:#E2ECF2;" />
+<rect id="heatmap:3:6" x="230" y="110" width="20" height="20" style="fill:#D1E5EF;" />
+<rect id="heatmap:3:7" x="250" y="110" width="20" height="20" style="fill:#EEF0F0;" />
+<rect id="heatmap:3:8" x="270" y="110" width="20" height="20" style="fill:#F2EFED;" />
+<rect id="heatmap:3:9" x="290" y="110" width="20" height="20" style="fill:#F6EDE7;" />
+<rect id="heatmap:3:10" x="310" y="110" width="20" height="20" style="fill:#589ECA;" />
+<rect id="heatmap:3:11" x="330" y="110" width="20" height="20" style="fill:#1F609E;" />
+<rect id="heatmap:3:12" x="350" y="110" width="20" height="20" style="fill:#4A93C4;" />
+<rect id="heatmap:3:13" x="370" y="110" width="20" height="20" style="fill:#468FC2;" />
+<rect id="heatmap:3:14" x="390" y="110" width="20" height="20" style="fill:#4F97C6;" />
+<rect id="heatmap:4:0" x="110" y="130" width="20" height="20" style="fill:#F3A98B;" />
+<rect id="heatmap:4:1" x="130" y="130" width="20" height="20" style="fill:#EA9174;" />
+<rect id="heatmap:4:2" x="150" y="130" width="20" height="20" style="fill:#E6876C;" />
+<rect id="heatmap:4:3" x="170" y="130" width="20" height="20" style="fill:#A31A2B;" />
+<rect id="heatmap:4:4" x="190" y="130" width="20" height="20" style="fill:#67001f;" />
+<rect id="heatmap:4:5" x="210" y="130" width="20" height="20" style="fill:#C1DDEB;" />
+<rect id="heatmap:4:6" x="230" y="130" width="20" height="20" style="fill:#A9D0E5;" />
+<rect id="heatmap:4:7" x="250" y="130" width="20" height="20" style="fill:#D5E6F0;" />
+<rect id="heatmap:4:8" x="270" y="130" width="20" height="20" style="fill:#D8E8F1;" />
+<rect id="heatmap:4:9" x="290" y="130" width="20" height="20" style="fill:#E5EEF2;" />
+<rect id="heatmap:4:10" x="310" y="130" width="20" height="20" style="fill:#3E88BE;" />
+<rect id="heatmap:4:11" x="330" y="130" width="20" height="20" style="fill:#08366a;" />
+<rect id="heatmap:4:12" x="350" y="130" width="20" height="20" style="fill:#296FAD;" />
+<rect id="heatmap:4:13" x="370" y="130" width="20" height="20" style="fill:#2467A6;" />
+<rect id="heatmap:4:14" x="390" y="130" width="20" height="20" style="fill:#2B72AF;" />
+<rect id="heatmap:5:0" x="110" y="150" width="20" height="20" style="fill:#DCE9F2;" />
+<rect id="heatmap:5:1" x="130" y="150" width="20" height="20" style="fill:#ECF0F1;" />
+<rect id="heatmap:5:2" x="150" y="150" width="20" height="20" style="fill:#F6EDE7;" />
+<rect id="heatmap:5:3" x="170" y="150" width="20" height="20" style="fill:#E2ECF2;" />
+<rect id="heatmap:5:4" x="190" y="150" width="20" height="20" style="fill:#C1DDEB;" />
+<rect id="heatmap:5:5" x="210" y="150" width="20" height="20" style="fill:#67001f;" />
+<rect id="heatmap:5:6" x="230" y="150" width="20" height="20" style="fill:#941127;" />
+<rect id="heatmap:5:7" x="250" y="150" width="20" height="20" style="fill:#941127;" />
+<rect id="heatmap:5:8" x="270" y="150" width="20" height="20" style="fill:#8F0E26;" />
+<rect id="heatmap:5:9" x="290" y="150" width="20" height="20" style="fill:#9F172A;" />
+<rect id="heatmap:5:10" x="310" y="150" width="20" height="20" style="fill:#EAEFF2;" />
+<rect id="heatmap:5:11" x="330" y="150" width="20" height="20" style="fill:#FAE1D3;" />
+<rect id="heatmap:5:12" x="350" y="150" width="20" height="20" style="fill:#FAD2BD;" />
+<rect id="heatmap:5:13" x="370" y="150" width="20" height="20" style="fill:#F7BB9F;" />
+<rect id="heatmap:5:14" x="390" y="150" width="20" height="20" style="fill:#F8C0A4;" />
+<rect id="heatmap:6:0" x="110" y="170" width="20" height="20" style="fill:#BCDAEA;" />
+<rect id="heatmap:6:1" x="130" y="170" width="20" height="20" style="fill:#D5E6F0;" />
+<rect id="heatmap:6:2" x="150" y="170" width="20" height="20" style="fill:#E8EFF2;" />
+<rect id="heatmap:6:3" x="170" y="170" width="20" height="20" style="fill:#D1E5EF;" />
+<rect id="heatmap:6:4" x="190" y="170" width="20" height="20" style="fill:#A9D0E5;" />
+<rect id="heatmap:6:5" x="210" y="170" width="20" height="20" style="fill:#941127;" />
+<rect id="heatmap:6:6" x="230" y="170" width="20" height="20" style="fill:#67001f;" />
+<rect id="heatmap:6:7" x="250" y="170" width="20" height="20" style="fill:#9F172A;" />
+<rect id="heatmap:6:8" x="270" y="170" width="20" height="20" style="fill:#B12531;" />
+<rect id="heatmap:6:9" x="290" y="170" width="20" height="20" style="fill:#BB3237;" />
+<rect id="heatmap:6:10" x="310" y="170" width="20" height="20" style="fill:#E5EEF2;" />
+<rect id="heatmap:6:11" x="330" y="170" width="20" height="20" style="fill:#FBDCCB;" />
+<rect id="heatmap:6:12" x="350" y="170" width="20" height="20" style="fill:#FAD2BD;" />
+<rect id="heatmap:6:13" x="370" y="170" width="20" height="20" style="fill:#F6B79A;" />
+<rect id="heatmap:6:14" x="390" y="170" width="20" height="20" style="fill:#F8C0A4;" />
+<rect id="heatmap:7:0" x="110" y="190" width="20" height="20" style="fill:#D8E8F1;" />
+<rect id="heatmap:7:1" x="130" y="190" width="20" height="20" style="fill:#ECF0F1;" />
+<rect id="heatmap:7:2" x="150" y="190" width="20" height="20" style="fill:#F6EDE7;" />
+<rect id="heatmap:7:3" x="170" y="190" width="20" height="20" style="fill:#EEF0F0;" />
+<rect id="heatmap:7:4" x="190" y="190" width="20" height="20" style="fill:#D5E6F0;" />
+<rect id="heatmap:7:5" x="210" y="190" width="20" height="20" style="fill:#941127;" />
+<rect id="heatmap:7:6" x="230" y="190" width="20" height="20" style="fill:#9F172A;" />
+<rect id="heatmap:7:7" x="250" y="190" width="20" height="20" style="fill:#67001f;" />
+<rect id="heatmap:7:8" x="270" y="190" width="20" height="20" style="fill:#991428;" />
+<rect id="heatmap:7:9" x="290" y="190" width="20" height="20" style="fill:#9F172A;" />
+<rect id="heatmap:7:10" x="310" y="190" width="20" height="20" style="fill:#D1E5EF;" />
+<rect id="heatmap:7:11" x="330" y="190" width="20" height="20" style="fill:#F5EEEA;" />
+<rect id="heatmap:7:12" x="350" y="190" width="20" height="20" style="fill:#F9E8DE;" />
+<rect id="heatmap:7:13" x="370" y="190" width="20" height="20" style="fill:#FBD9C6;" />
+<rect id="heatmap:7:14" x="390" y="190" width="20" height="20" style="fill:#FBDCCB;" />
+<rect id="heatmap:8:0" x="110" y="210" width="20" height="20" style="fill:#ECF0F1;" />
+<rect id="heatmap:8:1" x="130" y="210" width="20" height="20" style="fill:#F6EDE7;" />
+<rect id="heatmap:8:2" x="150" y="210" width="20" height="20" style="fill:#FAE1D3;" />
+<rect id="heatmap:8:3" x="170" y="210" width="20" height="20" style="fill:#F2EFED;" />
+<rect id="heatmap:8:4" x="190" y="210" width="20" height="20" style="fill:#D8E8F1;" />
+<rect id="heatmap:8:5" x="210" y="210" width="20" height="20" style="fill:#8F0E26;" />
+<rect id="heatmap:8:6" x="230" y="210" width="20" height="20" style="fill:#B12531;" />
+<rect id="heatmap:8:7" x="250" y="210" width="20" height="20" style="fill:#991428;" />
+<rect id="heatmap:8:8" x="270" y="210" width="20" height="20" style="fill:#67001f;" />
+<rect id="heatmap:8:9" x="290" y="210" width="20" height="20" style="fill:#7E0823;" />
+<rect id="heatmap:8:10" x="310" y="210" width="20" height="20" style="fill:#E5EEF2;" />
+<rect id="heatmap:8:11" x="330" y="210" width="20" height="20" style="fill:#F7EBE5;" />
+<rect id="heatmap:8:12" x="350" y="210" width="20" height="20" style="fill:#FBDCCB;" />
+<rect id="heatmap:8:13" x="370" y="210" width="20" height="20" style="fill:#FACBB3;" />
+<rect id="heatmap:8:14" x="390" y="210" width="20" height="20" style="fill:#FACBB3;" />
+<rect id="heatmap:9:0" x="110" y="230" width="20" height="20" style="fill:#F2EFED;" />
+<rect id="heatmap:9:1" x="130" y="230" width="20" height="20" style="fill:#F9E8DE;" />
+<rect id="heatmap:9:2" x="150" y="230" width="20" height="20" style="fill:#FBD9C6;" />
+<rect id="heatmap:9:3" x="170" y="230" width="20" height="20" style="fill:#F6EDE7;" />
+<rect id="heatmap:9:4" x="190" y="230" width="20" height="20" style="fill:#E5EEF2;" />
+<rect id="heatmap:9:5" x="210" y="230" width="20" height="20" style="fill:#9F172A;" />
+<rect id="heatmap:9:6" x="230" y="230" width="20" height="20" style="fill:#BB3237;" />
+<rect id="heatmap:9:7" x="250" y="230" width="20" height="20" style="fill:#9F172A;" />
+<rect id="heatmap:9:8" x="270" y="230" width="20" height="20" style="fill:#7E0823;" />
+<rect id="heatmap:9:9" x="290" y="230" width="20" height="20" style="fill:#67001f;" />
+<rect id="heatmap:9:10" x="310" y="230" width="20" height="20" style="fill:#DFEBF2;" />
+<rect id="heatmap:9:11" x="330" y="230" width="20" height="20" style="fill:#F2EFED;" />
+<rect id="heatmap:9:12" x="350" y="230" width="20" height="20" style="fill:#FAE4D6;" />
+<rect id="heatmap:9:13" x="370" y="230" width="20" height="20" style="fill:#FAD5C2;" />
+<rect id="heatmap:9:14" x="390" y="230" width="20" height="20" style="fill:#FBD9C6;" />
+<rect id="heatmap:10:0" x="110" y="250" width="20" height="20" style="fill:#EEF0F0;" />
+<rect id="heatmap:10:1" x="130" y="250" width="20" height="20" style="fill:#DFEBF2;" />
+<rect id="heatmap:10:2" x="150" y="250" width="20" height="20" style="fill:#D5E6F0;" />
+<rect id="heatmap:10:3" x="170" y="250" width="20" height="20" style="fill:#589ECA;" />
+<rect id="heatmap:10:4" x="190" y="250" width="20" height="20" style="fill:#3E88BE;" />
+<rect id="heatmap:10:5" x="210" y="250" width="20" height="20" style="fill:#EAEFF2;" />
+<rect id="heatmap:10:6" x="230" y="250" width="20" height="20" style="fill:#E5EEF2;" />
+<rect id="heatmap:10:7" x="250" y="250" width="20" height="20" style="fill:#D1E5EF;" />
+<rect id="heatmap:10:8" x="270" y="250" width="20" height="20" style="fill:#E5EEF2;" />
+<rect id="heatmap:10:9" x="290" y="250" width="20" height="20" style="fill:#DFEBF2;" />
+<rect id="heatmap:10:10" x="310" y="250" width="20" height="20" style="fill:#67001f;" />
+<rect id="heatmap:10:11" x="330" y="250" width="20" height="20" style="fill:#DA6C58;" />
+<rect id="heatmap:10:12" x="350" y="250" width="20" height="20" style="fill:#C94642;" />
+<rect id="heatmap:10:13" x="370" y="250" width="20" height="20" style="fill:#DD715C;" />
+<rect id="heatmap:10:14" x="390" y="250" width="20" height="20" style="fill:#D56151;" />
+<rect id="heatmap:11:0" x="110" y="270" width="20" height="20" style="fill:#8FC2DC;" />
+<rect id="heatmap:11:1" x="130" y="270" width="20" height="20" style="fill:#7EB8D7;" />
+<rect id="heatmap:11:2" x="150" y="270" width="20" height="20" style="fill:#78B5D5;" />
+<rect id="heatmap:11:3" x="170" y="270" width="20" height="20" style="fill:#1F609E;" />
+<rect id="heatmap:11:4" x="190" y="270" width="20" height="20" style="fill:#08366a;" />
+<rect id="heatmap:11:5" x="210" y="270" width="20" height="20" style="fill:#FAE1D3;" />
+<rect id="heatmap:11:6" x="230" y="270" width="20" height="20" style="fill:#FBDCCB;" />
+<rect id="heatmap:11:7" x="250" y="270" width="20" height="20" style="fill:#F5EEEA;" />
+<rect id="heatmap:11:8" x="270" y="270" width="20" height="20" style="fill:#F7EBE5;" />
+<rect id="heatmap:11:9" x="290" y="270" width="20" height="20" style="fill:#F2EFED;" />
+<rect id="heatmap:11:10" x="310" y="270" width="20" height="20" style="fill:#DA6C58;" />
+<rect id="heatmap:11:11" x="330" y="270" width="20" height="20" style="fill:#67001f;" />
+<rect id="heatmap:11:12" x="350" y="270" width="20" height="20" style="fill:#B12531;" />
+<rect id="heatmap:11:13" x="370" y="270" width="20" height="20" style="fill:#AC212F;" />
+<rect id="heatmap:11:14" x="390" y="270" width="20" height="20" style="fill:#B42933;" />
+<rect id="heatmap:12:0" x="110" y="290" width="20" height="20" style="fill:#D1E5EF;" />
+<rect id="heatmap:12:1" x="130" y="290" width="20" height="20" style="fill:#C5DFEC;" />
+<rect id="heatmap:12:2" x="150" y="290" width="20" height="20" style="fill:#C5DFEC;" />
+<rect id="heatmap:12:3" x="170" y="290" width="20" height="20" style="fill:#4A93C4;" />
+<rect id="heatmap:12:4" x="190" y="290" width="20" height="20" style="fill:#296FAD;" />
+<rect id="heatmap:12:5" x="210" y="290" width="20" height="20" style="fill:#FAD2BD;" />
+<rect id="heatmap:12:6" x="230" y="290" width="20" height="20" style="fill:#FAD2BD;" />
+<rect id="heatmap:12:7" x="250" y="290" width="20" height="20" style="fill:#F9E8DE;" />
+<rect id="heatmap:12:8" x="270" y="290" width="20" height="20" style="fill:#FBDCCB;" />
+<rect id="heatmap:12:9" x="290" y="290" width="20" height="20" style="fill:#FAE4D6;" />
+<rect id="heatmap:12:10" x="310" y="290" width="20" height="20" style="fill:#C94642;" />
+<rect id="heatmap:12:11" x="330" y="290" width="20" height="20" style="fill:#B12531;" />
+<rect id="heatmap:12:12" x="350" y="290" width="20" height="20" style="fill:#67001f;" />
+<rect id="heatmap:12:13" x="370" y="290" width="20" height="20" style="fill:#991428;" />
+<rect id="heatmap:12:14" x="390" y="290" width="20" height="20" style="fill:#840A24;" />
+<rect id="heatmap:13:0" x="110" y="310" width="20" height="20" style="fill:#BCDAEA;" />
+<rect id="heatmap:13:1" x="130" y="310" width="20" height="20" style="fill:#B3D6E7;" />
+<rect id="heatmap:13:2" x="150" y="310" width="20" height="20" style="fill:#B8D8E9;" />
+<rect id="heatmap:13:3" x="170" y="310" width="20" height="20" style="fill:#468FC2;" />
+<rect id="heatmap:13:4" x="190" y="310" width="20" height="20" style="fill:#2467A6;" />
+<rect id="heatmap:13:5" x="210" y="310" width="20" height="20" style="fill:#F7BB9F;" />
+<rect id="heatmap:13:6" x="230" y="310" width="20" height="20" style="fill:#F6B79A;" />
+<rect id="heatmap:13:7" x="250" y="310" width="20" height="20" style="fill:#FBD9C6;" />
+<rect id="heatmap:13:8" x="270" y="310" width="20" height="20" style="fill:#FACBB3;" />
+<rect id="heatmap:13:9" x="290" y="310" width="20" height="20" style="fill:#FAD5C2;" />
+<rect id="heatmap:13:10" x="310" y="310" width="20" height="20" style="fill:#DD715C;" />
+<rect id="heatmap:13:11" x="330" y="310" width="20" height="20" style="fill:#AC212F;" />
+<rect id="heatmap:13:12" x="350" y="310" width="20" height="20" style="fill:#991428;" />
+<rect id="heatmap:13:13" x="370" y="310" width="20" height="20" style="fill:#67001f;" />
+<rect id="heatmap:13:14" x="390" y="310" width="20" height="20" style="fill:#7E0823;" />
+<rect id="heatmap:14:0" x="110" y="330" width="20" height="20" style="fill:#CDE3EF;" />
+<rect id="heatmap:14:1" x="130" y="330" width="20" height="20" style="fill:#C5DFEC;" />
+<rect id="heatmap:14:2" x="150" y="330" width="20" height="20" style="fill:#C5DFEC;" />
+<rect id="heatmap:14:3" x="170" y="330" width="20" height="20" style="fill:#4F97C6;" />
+<rect id="heatmap:14:4" x="190" y="330" width="20" height="20" style="fill:#2B72AF;" />
+<rect id="heatmap:14:5" x="210" y="330" width="20" height="20" style="fill:#F8C0A4;" />
+<rect id="heatmap:14:6" x="230" y="330" width="20" height="20" style="fill:#F8C0A4;" />
+<rect id="heatmap:14:7" x="250" y="330" width="20" height="20" style="fill:#FBDCCB;" />
+<rect id="heatmap:14:8" x="270" y="330" width="20" height="20" style="fill:#FACBB3;" />
+<rect id="heatmap:14:9" x="290" y="330" width="20" height="20" style="fill:#FBD9C6;" />
+<rect id="heatmap:14:10" x="310" y="330" width="20" height="20" style="fill:#D56151;" />
+<rect id="heatmap:14:11" x="330" y="330" width="20" height="20" style="fill:#B42933;" />
+<rect id="heatmap:14:12" x="350" y="330" width="20" height="20" style="fill:#840A24;" />
+<rect id="heatmap:14:13" x="370" y="330" width="20" height="20" style="fill:#7E0823;" />
+<rect id="heatmap:14:14" x="390" y="330" width="20" height="20" style="fill:#67001f;" />
+</g>
+<g id="heatmap:rows" style="text-anchor:end;font-size:15;" >
+<text id="heatmap:r0" x="105" y="60" style="dominant-baseline:middle;">Tokyo</text>
+<text id="heatmap:r1" x="105" y="80" style="dominant-baseline:middle;">Seoul</text>
+<text id="heatmap:r2" x="105" y="100" style="dominant-baseline:middle;">Beijing</text>
+<text id="heatmap:r3" x="105" y="120" style="dominant-baseline:middle;">Bangkok</text>
+<text id="heatmap:r4" x="105" y="140" style="dominant-baseline:middle;">Singapore</text>
+<text id="heatmap:r5" x="105" y="160" style="dominant-baseline:middle;">Paris</text>
+<text id="heatmap:r6" x="105" y="180" style="dominant-baseline:middle;">Madrid</text>
+<text id="heatmap:r7" x="105" y="200" style="dominant-baseline:middle;">Rome</text>
+<text id="heatmap:r8" x="105" y="220" style="dominant-baseline:middle;">Berlin</text>
+<text id="heatmap:r9" x="105" y="240" style="dominant-baseline:middle;">Warsaw</text>
+<text id="heatmap:r10" x="105" y="260" style="dominant-baseline:middle;">Los Angeles</text>
+<text id="heatmap:r11" x="105" y="280" style="dominant-baseline:middle;">Miami</text>
+<text id="heatmap:r12" x="105" y="300" style="dominant-baseline:middle;">Chicago</text>
+<text id="heatmap:r13" x="105" y="320" style="dominant-baseline:middle;">New York City</text>
+<text id="heatmap:r14" x="105" y="340" style="dominant-baseline:middle;">Toronto</text>
+</g>
+<g id="heatmap:cols" style="text-anchor:end;font-size:15;" >
+<text id="heatmap:c0" x="120" y="355" style="dominant-baseline:central;" transform="rotate(-90 120 355)">Tokyo</text>
+<text id="heatmap:c1" x="140" y="355" style="dominant-baseline:central;" transform="rotate(-90 140 355)">Seoul</text>
+<text id="heatmap:c2" x="160" y="355" style="dominant-baseline:central;" transform="rotate(-90 160 355)">Beijing</text>
+<text id="heatmap:c3" x="180" y="355" style="dominant-baseline:central;" transform="rotate(-90 180 355)">Bangkok</text>
+<text id="heatmap:c4" x="200" y="355" style="dominant-baseline:central;" transform="rotate(-90 200 355)">Singapore</text>
+<text id="heatmap:c5" x="220" y="355" style="dominant-baseline:central;" transform="rotate(-90 220 355)">Paris</text>
+<text id="heatmap:c6" x="240" y="355" style="dominant-baseline:central;" transform="rotate(-90 240 355)">Madrid</text>
+<text id="heatmap:c7" x="260" y="355" style="dominant-baseline:central;" transform="rotate(-90 260 355)">Rome</text>
+<text id="heatmap:c8" x="280" y="355" style="dominant-baseline:central;" transform="rotate(-90 280 355)">Berlin</text>
+<text id="heatmap:c9" x="300" y="355" style="dominant-baseline:central;" transform="rotate(-90 300 355)">Warsaw</text>
+<text id="heatmap:c10" x="320" y="355" style="dominant-baseline:central;" transform="rotate(-90 320 355)">Los Angeles</text>
+<text id="heatmap:c11" x="340" y="355" style="dominant-baseline:central;" transform="rotate(-90 340 355)">Miami</text>
+<text id="heatmap:c12" x="360" y="355" style="dominant-baseline:central;" transform="rotate(-90 360 355)">Chicago</text>
+<text id="heatmap:c13" x="380" y="355" style="dominant-baseline:central;" transform="rotate(-90 380 355)">New York City</text>
+<text id="heatmap:c14" x="400" y="355" style="dominant-baseline:central;" transform="rotate(-90 400 355)">Toronto</text>
+</g>
+</g>
+</svg>
