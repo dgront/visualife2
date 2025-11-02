@@ -5,8 +5,6 @@ use datamatrix::{DataMatrixBuilder};
 
 use visualife::{SvgDrawing};
 use visualife::heatmap::Heatmap;
-use visualife::styling::{ColorMap};
-use visualife::styling::palettes::RED_BLUE;
 
 /// Command line app for visualizing matrix as heatmaps
 #[derive(Parser, Debug)]
