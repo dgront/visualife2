@@ -1,7 +1,6 @@
 use std::fs;
 
 use crate::basic_shapes::{SvgElement};
-use crate::{ElementID};
 
 pub struct SvgDrawing {
     width: f32,
@@ -71,31 +70,16 @@ impl SvgDrawing {
         Ok(())
     }
 
+    /// Add a graphical element to this drawing
+    ///
+    /// ```
+    /// # use visualife::SvgDrawing;
+    /// # use visualife::basic_shapes::SvgElement;
+    /// let mut drawing = SvgDrawing::new(100.0, 100.0);
+    /// drawing.add_element(SvgElement::circle("c1", 50.0, 50.0, 80.0));
+    /// # let svg = drawing.to_svg();
+    /// ```
     pub fn add_element(&mut self, el: SvgElement) {
         self.elements.push(el);
-    }
-
-    pub fn add_element_to_group(&mut self, el: SvgElement, group_id: ElementID) -> Result<(), String> {
-        if Self::add_to_group_recursive(&mut self.elements, &group_id, el) {
-            Ok(())
-        } else {
-            Err(format!("Group with ID '{}' not found", group_id))
-        }
-    }
-
-    fn add_to_group_recursive(elements: &mut [SvgElement], group_id: &ElementID, el: SvgElement) -> bool {
-        for element in elements.iter_mut() {
-            if element.id() == group_id {
-                if let Some(children) = element.group_elements_mut() {
-                    children.push(el);
-                    return true;
-                }
-            } else if let Some(children) = element.group_elements_mut() {
-                if Self::add_to_group_recursive(children, group_id, el.clone()) {
-                    return true;
-                }
-            }
-        }
-        false
     }
 }

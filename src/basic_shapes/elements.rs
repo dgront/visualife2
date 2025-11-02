@@ -135,7 +135,7 @@ impl SvgElement {
         }
     }
 
-    /// Converts the element into an SVG XML fragment using the provided style manager.
+    /// Converts the element into an SVG XML fragment
     pub fn to_svg(&self) -> String {
 
         let attr_str = self.attr().to_svg_fragment();
