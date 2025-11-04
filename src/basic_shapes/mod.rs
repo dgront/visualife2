@@ -1,3 +1,5 @@
+//! Defines all the basic shapes that can be drawn in an SVG file, such as circles or paths.
+
 mod elements;
 pub use elements::*;
 

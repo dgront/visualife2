@@ -1,7 +1,16 @@
 //! # Versatile library for SVG drawing in Rust
 //!
+//! ## How to contribute
+#![doc = r#"
+Check the [design notes](crate::design_notes) to see the rationale behind the VisuaLife design
+"#]
 
-/// Defines all the basic shapes that can be drawn in an SVG file, such as circles or paths.
+// Expose a docs-only page backed by your Markdown file
+pub mod design_notes {
+    #![doc = include_str!("../design_notes.md")]
+}
+
+// /// Defines all the basic shapes that can be drawn in an SVG file, such as circles or paths.
 pub mod basic_shapes;
 
 pub mod mindmap;
