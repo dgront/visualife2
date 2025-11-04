@@ -1,5 +1,5 @@
 use pyo3::prelude::*;
-use pyo3::exceptions::PyValueError;
+use pyo3::exceptions::{PyValueError, PyIOError};
 use pyo3::types::PyTuple;
 use pyo3::types::{PyDict, PyDictMethods};
 
@@ -29,20 +29,12 @@ impl PySvgDrawing {
     #[getter]
     fn get_height(&self) -> f32 { self.inner.height() }
 
-    /// Adds a style to the drawing and returns its style ID.
-    pub fn define_style<'py>(&mut self, style: &PyStyle) -> usize {
-        self.inner.styles_mut().define_style(style.inner.clone())
-    }
-
-    /// Binds a style to an element by ID.
-    pub fn style_element<'py>(&mut self, style_id: usize, element_id: Bound<'py, PyAny>) -> PyResult<()> {
-        let id = extract_element_id(&element_id)?;
-        self.inner.styles_mut().style_element(style_id, id);
-        Ok(())
-    }
-
     /// Draws the SVG to stdout.
     fn to_svg(&mut self) -> String { self.inner.to_svg() }
+
+    fn save_svg(&self, fname: &str) -> PyResult<()> {
+        self.inner.save_svg(fname).map_err(|e| PyIOError::new_err(e.to_string()))
+    }
 
     /// Adds an element by type and arguments.
     #[pyo3(signature = (element_type, id, args, **kwargs))]
@@ -50,26 +42,9 @@ impl PySvgDrawing {
                         args: &Bound<'py, PyTuple>, kwargs: Option<&Bound<'py, PyDict>>) -> PyResult<()> {
 
         let id = extract_element_id(id)?;
-        let el = match element_type {
-            ElementType::Line => Self::parse_line(&id, args)?,
-            ElementType::Rect => Self::parse_rect(&id, args)?,
-            ElementType::Circle => Self::parse_circle(&id, args)?,
-            ElementType::Ellipse => Self::parse_ellipse(&id, args)?,
-            ElementType::Polygon => Self::parse_polygon(&id, args)?,
-            ElementType::Polyline => Self::parse_polyline(&id, args)?,
-            ElementType::Path => Self::parse_path(&id, args)?,
-            ElementType::Text => Self::parse_text(&id, args)?,
-            ElementType::Group => Self::parse_group(&id)?,
-        };
-        self.inner.add_element(el);
+        let el = Self::create_element(element_type, id, args, kwargs)?;
 
-        if let Some(kwargs) = kwargs {
-            if let Ok(Some(style_obj)) = kwargs.get_item("style") {
-                let style_py = style_obj.extract::<PyStyle>()?;
-                let style_id = self.define_style(&style_py);
-                self.inner.style_element(style_id, id);
-            }
-        }
+        self.inner.add_element(el);
 
         Ok(())
     }
@@ -82,67 +57,75 @@ impl PySvgDrawing {
 
         let id = extract_element_id(id)?;
         let group_id = extract_element_id(group_id)?;
-        let el = match element_type {
-            ElementType::Line => Self::parse_line(&id, args)?,
-            ElementType::Rect => Self::parse_rect(&id, args)?,
-            ElementType::Circle => Self::parse_circle(&id, args)?,
-            ElementType::Ellipse => Self::parse_ellipse(&id, args)?,
-            ElementType::Polygon => Self::parse_polygon(&id, args)?,
-            ElementType::Polyline => Self::parse_polyline(&id, args)?,
-            ElementType::Path => Self::parse_path(&id, args)?,
-            ElementType::Text => Self::parse_text(&id, args)?,
-            ElementType::Group => return Err(PyValueError::new_err("Cannot nest a new group this way")),
-        };
+        let el = Self::create_element(element_type, id, args, kwargs)?;
+
+        self.inner.add_element_to_group(el, &group_id).map_err(|e| PyValueError::new_err(e.to_string()))?;
+
+        Ok(())
+    }
+}
+
+
+impl PySvgDrawing {
+
+    fn create_element<'py>(element_type: ElementType, id: ElementID,
+                        args: &Bound<'py, PyTuple>, kwargs: Option<&Bound<'py, PyDict>>) -> PyResult<SvgElement> {
+
+        let mut el = match element_type {
+            ElementType::Line => Self::parse_line(&id, args),
+            ElementType::Rect => Self::parse_rect(&id, args),
+            ElementType::Circle => Self::parse_circle(&id, args),
+            ElementType::Ellipse => Self::parse_ellipse(&id, args),
+            ElementType::Polygon => Self::parse_polygon(&id, args),
+            ElementType::Polyline => Self::parse_polyline(&id, args),
+            ElementType::Path => Self::parse_path(&id, args),
+            ElementType::Text => Self::parse_text(&id, args),
+            ElementType::Group => Self::parse_group(&id),
+        }?;
 
         if let Some(kwargs) = kwargs {
             if let Ok(Some(style_obj)) = kwargs.get_item("style") {
                 let style_py = style_obj.extract::<PyStyle>()?;
-                let style_id = self.define_style(&style_py);
-                self.inner.style_element(style_id, id);
+                el.set_style(style_py.inner);
             }
         }
 
-        self.inner
-            .add_element_to_group(el, group_id.clone())
-            .map_err(PyValueError::new_err)
+        return Ok(el);
     }
-}
-
-impl PySvgDrawing {
 
     fn parse_line<'py>(id: &ElementID, args: &Bound<'py, PyTuple>) -> PyResult<SvgElement> {
         let [x1, y1, x2, y2] = extract_f32_args::<4>(args)?;
-        Ok(SvgElement::Line { id: id.clone(), x1, y1, x2, y2 })
+        Ok(SvgElement::line(id.clone(), x1, y1, x2, y2 ))
     }
 
     fn parse_circle<'py>(id: &ElementID, args: &Bound<'py, PyTuple>) -> PyResult<SvgElement> {
         let [cx, cy, r] = extract_f32_args::<3>(args)?;
-        Ok(SvgElement::Circle { id: id.clone(), cx, cy, r })
+        Ok(SvgElement::circle(id.clone(), cx, cy, r ))
     }
 
     fn parse_rect<'py>(id: &ElementID, args: &Bound<'py, PyTuple>) -> PyResult<SvgElement> {
         let [x, y, width, height] = extract_f32_args::<4>(args)?;
-        Ok(SvgElement::Rect { id: id.clone(), x, y, width, height })
+        Ok(SvgElement::rect(id.clone(), x, y, width, height ))
     }
 
     fn parse_ellipse<'py>(id: &ElementID, args: &Bound<'py, PyTuple>) -> PyResult<SvgElement> {
         let [cx, cy, rx, ry] = extract_f32_args::<4>(args)?;
-        Ok(SvgElement::Ellipse { id: id.clone(), cx, cy, rx, ry })
+        Ok(SvgElement::ellipse(id.clone(), cx, cy, rx, ry ))
     }
 
     fn parse_polygon<'py>(id: &ElementID, args: &Bound<'py, PyTuple>) -> PyResult<SvgElement> {
         let points = extract_point_list(args)?;
-        Ok(SvgElement::Polygon { id: id.clone(), points })
+        Ok(SvgElement::polygon(id.clone(), points))
     }
 
     fn parse_polyline<'py>(id: &ElementID, args: &Bound<'py, PyTuple>) -> PyResult<SvgElement> {
         let points = extract_point_list(args)?;
-        Ok(SvgElement::Polyline { id: id.clone(), points })
+        Ok(SvgElement::polyline(id.clone(), points))
     }
 
     fn parse_group(id: &ElementID) -> PyResult<SvgElement> {
 
-        Ok(SvgElement::Group { id: id.clone(), elements: Vec::new(), })
+        Ok(SvgElement::group(id.clone(), Vec::new()))
     }
 
     fn parse_text<'py>(id: &ElementID, args: &Bound<'py, PyTuple>) -> PyResult<SvgElement> {
@@ -154,7 +137,7 @@ impl PySvgDrawing {
         let y = args.get_item(1)?.extract::<f32>()?;
         let content = args.get_item(2)?.extract::<String>()?;
 
-        Ok(SvgElement::Text { id: id.clone(), x, y, content, })
+        Ok(SvgElement::text(id.clone(), x, y, content))
     }
 
     fn parse_path<'py>(id: &ElementID, args: &Bound<'py, PyTuple>) -> PyResult<SvgElement> {
@@ -162,10 +145,8 @@ impl PySvgDrawing {
             return Err(PyValueError::new_err("Path requires 1 argument: d (string)"));
         }
         let d = args.get_item(0)?.extract::<String>()?;
-        Ok(SvgElement::Path { id: id.clone(), d })
+        Ok(SvgElement::path(id.clone(), d ))
     }
-
-
 }
 
 fn extract_f32_args<const N: usize>(args: &Bound<'_, PyTuple>) -> PyResult<[f32; N]> {

@@ -37,7 +37,7 @@ def draw_elements_with_styling():
 
     # Render the drawing
     svg_str = drawing.to_svg()
-    # print(svg_str)
+    drawing.save_svg("fig.svg")
 
 if __name__ == "__main__":
     draw_elements()

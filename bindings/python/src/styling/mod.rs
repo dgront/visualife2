@@ -4,9 +4,6 @@ use pyo3::exceptions::PyValueError;
 pub(crate) mod py_style;
 pub use crate::styling::py_style::{PyStyle, style};
 
-pub(crate) mod py_style_manager;
-use crate::styling::py_style_manager::PyStyleManager;
-
 pub mod py_palettes;
 use crate::styling::py_palettes::*;
 
@@ -51,7 +48,7 @@ pub fn mix_colors(color1: &str, color2: &str, fraction: f32) -> PyResult<String>
 
     match visualife::styling::mix_colors(color1, color2, fraction) {
         Ok(result) => Ok(result),
-        Err(msg) => Err(PyValueError::new_err(msg)),
+        Err(err) => Err(PyValueError::new_err(err.to_string())),
     }
 }
 
@@ -75,7 +72,7 @@ pub fn init_submodule(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
 
     m.add_class::<PyColorMap>()?;
     m.add_class::<PyStyle>()?;
-    m.add_class::<PyStyleManager>()?;
+    // m.add_class::<PyStyleManager>()?;
 
     parent_module.add_submodule(&m)
 }

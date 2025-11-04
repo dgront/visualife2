@@ -1,6 +1,6 @@
 use std::fs;
-
-use crate::basic_shapes::{SvgElement};
+use crate::{ElementID, VisualifeError};
+use crate::{basic_shapes::SvgElement};
 
 pub struct SvgDrawing {
     width: f32,
@@ -70,16 +70,31 @@ impl SvgDrawing {
         Ok(())
     }
 
-    /// Add a graphical element to this drawing
+    /// Add a graphical element to this drawing.
     ///
     /// ```
     /// # use visualife::SvgDrawing;
     /// # use visualife::basic_shapes::SvgElement;
     /// let mut drawing = SvgDrawing::new(100.0, 100.0);
-    /// drawing.add_element(SvgElement::circle("c1", 50.0, 50.0, 80.0));
+    /// drawing.add_element(SvgElement::circle("circle_1", 50.0, 50.0, 80.0));
     /// # let svg = drawing.to_svg();
     /// ```
     pub fn add_element(&mut self, el: SvgElement) {
         self.elements.push(el);
+    }
+
+    // ---- used by Python API!
+    /// Attempts to add an element to a group.
+    ///
+    /// The group must be already created with ID `group_id`; the methid results in error
+    /// when the group can't be found.
+    pub fn add_element_to_group(&mut self, element_to_add: SvgElement, group_id: &ElementID) -> Result<(), VisualifeError> {
+
+        for elem in self.elements.iter_mut() {
+            if elem.add_to_group(group_id, element_to_add.clone()) {
+                return Ok(());
+            }
+        }
+        return Err(VisualifeError::NoSuchGroup { group_id: group_id.to_string() });
     }
 }

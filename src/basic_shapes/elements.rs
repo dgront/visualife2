@@ -213,6 +213,29 @@ impl SvgElement {
         }
     }
 
+    /// Recursive attempt to add an element to a group given its ID
+    ///
+    /// Returns true if an element has been actually added; false when failed.
+    /// This method is necessary to have Python API working
+    pub(crate) fn add_to_group(&mut self, target_id: &ElementID, element_to_add: SvgElement) -> bool {
+
+        match &mut self.inner {
+            SvgElementKind::Group { id, elements, .. } if id == target_id => {
+                elements.push(element_to_add);
+                true
+            }
+            SvgElementKind::Group { elements, .. } => {
+                for child in elements.iter_mut() {
+                    if child.add_to_group(target_id, element_to_add.clone()) {
+                        return true;
+                    }
+                }
+                false
+            }
+            _ => false,
+        }
+    }
+
     fn attr(&self) -> &SvgAttributes {
         match &self.inner {
             SvgElementKind::Line { attr, .. }

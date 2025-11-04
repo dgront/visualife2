@@ -18,7 +18,7 @@ def test_methods():
     style.fill = "#FF0000"
     style.stroke = "#00FF00"
     svg_style = style.to_svg()
-    assert svg_style == ' style="fill:#FF0000;stroke:#00FF00;"'
+    assert svg_style == 'style="fill:#FF0000;stroke:#00FF00;"'
 
 
 if __name__ == "__main__":
