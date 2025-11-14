@@ -220,3 +220,8 @@ impl Mindmap {
         SvgElement::group(self.id.clone(), vec![node_grp, connector_grp])
     }
 }
+
+impl From<&Mindmap> for SvgElement {
+    /// Creates an SVG group that contains all graphical elements for this mindmap
+    fn from(m: &Mindmap) -> Self { m.create_element() }
+}

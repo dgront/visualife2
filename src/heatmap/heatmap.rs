@@ -1,4 +1,4 @@
-use datamatrix::DataMatrix;
+use data_matrix::DataMatrix;
 
 use crate::basic_shapes::{SvgElement};
 use crate::heatmap::HeatmapError;
@@ -96,13 +96,13 @@ impl Heatmap {
     /// ```
     /// use visualife::heatmap::Heatmap;
     /// use visualife::SvgDrawing;
-    /// use datamatrix::DataMatrixBuilder;
-    /// # use datamatrix::Error;
-    /// # fn main() -> Result<(), datamatrix::Error> {
+    /// use data_matrix::DataMatrixBuilder;
+    /// # use data_matrix::Error;
+    /// # fn main() -> Result<(), data_matrix::Error> {
     /// let dm = DataMatrixBuilder::new()
-    ///     .label_columns(1, 2)
-    ///     .index_columns(4, 5)
-    ///     .data_column(3)
+    ///     .label_columns(0, 1)
+    ///     .index_columns(3, 4)
+    ///     .data_column(2)
     ///     .symmetric(true)
     ///     .skip_header(true)
     ///     .separator(',')
@@ -253,4 +253,10 @@ impl Heatmap {
 
         SvgElement::group(format!("{}:heatmap", self.id), heatmap_groups)
     }
+}
+
+impl From<&Heatmap> for SvgElement {
+    /// Creates an SVG group that contains all graphical elements for this mindmap
+
+    fn from(h: &Heatmap) -> Self { h.create_element() }
 }

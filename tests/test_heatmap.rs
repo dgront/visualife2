@@ -2,7 +2,7 @@ mod testing_utilities; // Declare the module
 
 #[cfg(test)]
 mod test_heatmap {
-    use datamatrix::DataMatrixBuilder;
+    use data_matrix::DataMatrixBuilder;
     use rand::{SeedableRng, Rng};
     use rand::rngs::StdRng;
 
@@ -64,9 +64,9 @@ mod test_heatmap {
     fn cities_heatmap_from_datamatrix() -> Result<(), anyhow::Error> {
 
         let dmap = DataMatrixBuilder::new()
-            .label_columns(1, 2)
-            .data_column(3)
-            .index_columns(4, 5)
+            .label_columns(0, 1)
+            .data_column(2)
+            .index_columns(3, 4)
             .skip_header(true)
             .symmetric(true)
             .from_file("./tests/test_inputs/cities_by_distance.csv")?;

@@ -79,8 +79,8 @@ impl SvgDrawing {
     /// drawing.add_element(SvgElement::circle("circle_1", 50.0, 50.0, 80.0));
     /// # let svg = drawing.to_svg();
     /// ```
-    pub fn add_element(&mut self, el: SvgElement) {
-        self.elements.push(el);
+    pub fn add_element<E: Into<SvgElement>>(&mut self, e: E) {
+        self.elements.push(e.into());
     }
 
     // ---- used by Python API!

@@ -61,7 +61,7 @@ pub use errors::*;
 ///
 /// ```rust
 /// use visualife::basic_shapes::SvgElement;
-/// use visualife::styling::{Style, StyleManager};
+/// use visualife::styling::Style;
 /// use visualife::styling::palettes::TABLEAU10;
 /// use visualife::SvgDrawing;
 ///

@@ -1,7 +1,7 @@
 use rand::Rng;
 use clap::{Parser, ArgAction};
 
-use datamatrix::{DataMatrixBuilder};
+use data_matrix::{DataMatrixBuilder};
 
 use visualife::{SvgDrawing};
 use visualife::heatmap::Heatmap;
