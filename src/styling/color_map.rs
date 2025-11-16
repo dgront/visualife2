@@ -28,6 +28,7 @@ const K: usize = 128;
 /// - The `color(x)` function clamps `x` to the range [from, to].
 /// - Interpolation is linear in RGB space using `mix_colors(...)`.
 /// - Colors are returned as hex strings (e.g., "#8a0c25").
+#[derive(Clone)]
 pub struct ColorMap {
     colors: Vec<String>, // Precomputed K interpolated colors
     from: f64,

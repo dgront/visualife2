@@ -13,7 +13,7 @@ use visualife::basic_shapes::{SvgElement};
 
 #[pyclass(name = "SvgDrawing")]
 pub struct PySvgDrawing {
-    inner: SvgDrawing,
+    pub(crate) inner: SvgDrawing,   // to make it accessible for PyHeatmap::_add_element_to_drawing()
 }
 
 #[pymethods]
@@ -38,11 +38,11 @@ impl PySvgDrawing {
 
     /// Adds an element by type and arguments.
     #[pyo3(signature = (element_type, id, args, **kwargs))]
-    fn add_element<'py>(&mut self, element_type: ElementType, id: &Bound<'py, PyAny>,
+    fn create_element<'py>(&mut self, element_type: ElementType, id: &Bound<'py, PyAny>,
                         args: &Bound<'py, PyTuple>, kwargs: Option<&Bound<'py, PyDict>>) -> PyResult<()> {
 
         let id = extract_element_id(id)?;
-        let el = Self::create_element(element_type, id, args, kwargs)?;
+        let el = Self::_create_element(element_type, id, args, kwargs)?;
 
         self.inner.add_element(el);
 
@@ -57,7 +57,7 @@ impl PySvgDrawing {
 
         let id = extract_element_id(id)?;
         let group_id = extract_element_id(group_id)?;
-        let el = Self::create_element(element_type, id, args, kwargs)?;
+        let el = Self::_create_element(element_type, id, args, kwargs)?;
 
         self.inner.add_element_to_group(el, &group_id).map_err(|e| PyValueError::new_err(e.to_string()))?;
 
@@ -68,7 +68,7 @@ impl PySvgDrawing {
 
 impl PySvgDrawing {
 
-    fn create_element<'py>(element_type: ElementType, id: ElementID,
+    fn _create_element<'py>(element_type: ElementType, id: ElementID,
                         args: &Bound<'py, PyTuple>, kwargs: Option<&Bound<'py, PyDict>>) -> PyResult<SvgElement> {
 
         let mut el = match element_type {
@@ -166,14 +166,12 @@ fn extract_point_list<'py>(args: &Bound<'py, PyTuple>) -> PyResult<Vec<(f32, f32
     let mut points = Vec::with_capacity(args.len());
 
     for (i, item) in args.iter().enumerate() {
-        let tuple = item.downcast::<PyTuple>().map_err(|_| {
+        let tuple = item.cast::<PyTuple>().map_err(|_| {
             PyValueError::new_err(format!("Item at index {} is not a tuple", i))
         })?;
 
         if tuple.len() != 2 {
-            return Err(PyValueError::new_err(format!(
-                "Item at index {} must be a 2-tuple (x, y)", i
-            )));
+            return Err(PyValueError::new_err(format!("Item at index {} must be a 2-tuple (x, y)", i)));
         }
 
         let x = tuple.get_item(0)?.extract::<f32>().map_err(|_| {

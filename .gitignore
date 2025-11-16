@@ -20,3 +20,5 @@ ooo
 lll
 python/Cargo.lock
 ?.svg
+
+*.so

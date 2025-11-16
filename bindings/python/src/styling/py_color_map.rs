@@ -6,7 +6,7 @@ use visualife::styling::ColorMap;
 
 #[pyclass(name = "ColorMap")]
 pub struct PyColorMap {
-    inner: ColorMap,
+    pub(crate) inner: ColorMap, // to make it accessible from the other parts of the binding engine
 }
 
 #[pymethods]

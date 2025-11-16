@@ -88,10 +88,11 @@ impl SvgDrawing {
     ///
     /// The group must be already created with ID `group_id`; the methid results in error
     /// when the group can't be found.
-    pub fn add_element_to_group(&mut self, element_to_add: SvgElement, group_id: &ElementID) -> Result<(), VisualifeError> {
+    pub fn add_element_to_group<E: Into<SvgElement>>(&mut self, element_to_add: E, group_id: &ElementID) -> Result<(), VisualifeError> {
 
+        let ee = element_to_add.into();
         for elem in self.elements.iter_mut() {
-            if elem.add_to_group(group_id, element_to_add.clone()) {
+            if elem.add_to_group(group_id, ee.clone()) {
                 return Ok(());
             }
         }

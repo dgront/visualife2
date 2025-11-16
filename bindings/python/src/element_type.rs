@@ -15,9 +15,10 @@ pub enum ElementType {
     Group,
 }
 
-impl<'py> FromPyObject<'py> for ElementType {
-    fn extract_bound(ob: &Bound<'py, PyAny>) -> PyResult<Self> {
-        let s = ob.extract::<&str>()?;
+impl FromPyObject<'_, '_> for ElementType {
+    type Error = PyErr;
+    fn extract(ob: Borrowed<'_, '_, PyAny>) -> PyResult<Self> {
+        let s: String = ob.extract()?;
         match s.to_lowercase().as_str() {
             "line" => Ok(ElementType::Line),
             "rect" => Ok(ElementType::Rect),
