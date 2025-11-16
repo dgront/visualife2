@@ -1,8 +1,6 @@
 use pyo3::prelude::*;
-use pyo3::exceptions::{PyValueError, PyIOError};
-use pyo3::types::PyTuple;
-use pyo3::types::{PyDict, PyDictMethods};
-
+use pyo3::types::{PyAny, PyTuple, PyDict, PyDictMethods };
+use pyo3::exceptions::{PyValueError, PyIOError, PyTypeError};
 
 use crate::{extract_element_id};
 use crate::ElementType;
@@ -36,7 +34,19 @@ impl PySvgDrawing {
         self.inner.save_svg(fname).map_err(|e| PyIOError::new_err(e.to_string()))
     }
 
-    /// Adds an element by type and arguments.
+    /// Add a group produced by a module such as a Heatmap or a Mindmap to this drawing
+    #[pyo3(signature = (element))]
+    fn add<'py>(slf: PyRefMut<'py, Self>, element: &Bound<'py, PyAny>) -> PyResult<()> {
+        if element.hasattr("_add_element_to_drawing")? {
+            // Call element._add_element_to_drawing(self)
+            element.call_method1("_add_element_to_drawing", (slf,))?;
+            Ok(())
+        } else {
+            Err(PyTypeError::new_err("object does not implement _add_element_to_drawing(drawing)"))
+        }
+    }
+
+    /// Creates a new element by type and arguments and adds it to this drawing.
     #[pyo3(signature = (element_type, id, args, **kwargs))]
     fn create_element<'py>(&mut self, element_type: ElementType, id: &Bound<'py, PyAny>,
                         args: &Bound<'py, PyTuple>, kwargs: Option<&Bound<'py, PyDict>>) -> PyResult<()> {
@@ -49,9 +59,9 @@ impl PySvgDrawing {
         Ok(())
     }
 
-    /// Adds a new SVG element to a group identified by group_id.
+    /// Creates a new element by type and arguments and adds it to a group existing in this drawing.
     #[pyo3(signature = (group_id, element_type, id, args, **kwargs))]
-    fn add_element_to_group<'py>( &mut self, group_id: &Bound<'py, PyAny>,
+    fn create_element_in_group<'py>( &mut self, group_id: &Bound<'py, PyAny>,
                 element_type: ElementType, id: &Bound<'py, PyAny>,
                 args: &Bound<'py, PyTuple>, kwargs: Option<&Bound<'py, PyDict>> ) -> PyResult<()> {
 

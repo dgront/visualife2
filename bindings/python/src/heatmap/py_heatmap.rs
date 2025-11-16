@@ -105,12 +105,13 @@ impl PyHeatmap {
         self.inner.offset_y = v;
     }
 
-    /// Add this heatmap to an existing `SvgDrawing`.
+    // Add this heatmap to an existing `SvgDrawing`.
     fn _add_element_to_drawing(&self, drawing: &mut PySvgDrawing) -> PyResult<()> {
         let el = self.inner.create_element();
         drawing.inner.add_element(el);
         Ok(())
     }
+
 }
 
 /// Parse `Sequence[Sequence[number]] -> Vec<Vec<f64>>`

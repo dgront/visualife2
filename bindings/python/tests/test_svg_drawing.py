@@ -2,13 +2,13 @@ from visualife import SvgDrawing, ElementID, styling
 
 def draw_elements():
     drawing = SvgDrawing(800, 600)
-    drawing.add_element("LINE", "l1", (100, 100, 300, 300))
-    drawing.add_element("CIRCLE", "c1", (400, 300, 100))
-    drawing.add_element("RECT", "r1", (500, 500, 30, 30))
-    drawing.add_element("ELLIPSE", "e1", (600, 100, 50,10))
-    drawing.add_element("TEXT", "r1", (100, 100, "Hello World"))
-    drawing.add_element("PATH", "p1", ("M10 10 H 90 V 90 H 10 Z",))
-    drawing.add_element("POLYLINE", "q1", ((10, 10), (50, 30), (90, 10), (130, 40),))
+    drawing.create_element("LINE", "l1", (100, 100, 300, 300))
+    drawing.create_element("CIRCLE", "c1", (400, 300, 100))
+    drawing.create_element("RECT", "r1", (500, 500, 30, 30))
+    drawing.create_element("ELLIPSE", "e1", (600, 100, 50,10))
+    drawing.create_element("TEXT", "r1", (100, 100, "Hello World"))
+    drawing.create_element("PATH", "p1", ("M10 10 H 90 V 90 H 10 Z",))
+    drawing.create_element("POLYLINE", "q1", ((10, 10), (50, 30), (90, 10), (130, 40),))
     # drawing.draw()
 
 def draw_elements_with_styling():
@@ -19,7 +19,7 @@ def draw_elements_with_styling():
     group_style = styling.style(stroke="black", stroke_width=0.5)
 
     # Create a group element and apply style
-    drawing.add_element("GROUP", "g1", (), style=group_style)
+    drawing.create_element("GROUP", "g1", (), style=group_style)
 
     # Get color palette
     tableau10 = styling.tableau10()
@@ -33,7 +33,7 @@ def draw_elements_with_styling():
             fill_style = styling.style(fill=fill_color)
 
             # Add circle to group with per-element style
-            drawing.add_element_to_group("g1", "CIRCLE", f"c{idx}", (i * 100 + 50, j * 100 + 50, 30), style=fill_style)
+            drawing.create_element_in_group("g1", "CIRCLE", f"c{idx}", (i * 100 + 50, j * 100 + 50, 30), style=fill_style)
 
     # Render the drawing
     svg_str = drawing.to_svg()
