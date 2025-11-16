@@ -18,5 +18,5 @@ htmp = Heatmap("map1", 10, 10, grid)
 htmp.offset_x = 50
 htmp.offset_y = 50
 fig = SvgDrawing(1100, 1100)
-fig.add(htmp)
+fig.add_composit(htmp)
 fig.save_svg("hmap.svg")

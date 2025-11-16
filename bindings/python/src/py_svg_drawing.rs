@@ -35,15 +35,15 @@ impl PySvgDrawing {
     }
 
     /// Add a group produced by a module such as a Heatmap or a Mindmap to this drawing
-    #[pyo3(signature = (element))]
-    fn add<'py>(slf: PyRefMut<'py, Self>, element: &Bound<'py, PyAny>) -> PyResult<()> {
-        if element.hasattr("_add_element_to_drawing")? {
-            // Call element._add_element_to_drawing(self)
-            element.call_method1("_add_element_to_drawing", (slf,))?;
-            Ok(())
-        } else {
-            Err(PyTypeError::new_err("object does not implement _add_element_to_drawing(drawing)"))
-        }
+    #[pyo3(signature = (obj))]
+    fn add_composit<'py>(slf: PyRefMut<'py, Self>, obj: &Bound<'py, PyAny>) -> PyResult<()> {
+
+            if obj.hasattr("add_composit_to_drawing")? {
+                obj.call_method1("add_composit_to_drawing", (slf,))?;
+                Ok(())
+            } else {
+                Err(PyTypeError::new_err("object does not implement add_coposit_to_drawing(drawing)"))
+            }
     }
 
     /// Creates a new element by type and arguments and adds it to this drawing.
@@ -74,7 +74,6 @@ impl PySvgDrawing {
         Ok(())
     }
 }
-
 
 impl PySvgDrawing {
 

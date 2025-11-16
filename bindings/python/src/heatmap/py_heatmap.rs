@@ -4,6 +4,7 @@ use pyo3::types::{PyAny, PySequence};
 
 use crate::py_svg_drawing::PySvgDrawing;
 use visualife::heatmap::Heatmap;
+use crate::DrawingComposit;
 
 /// Python wrapper for `visualife::heatmap::Heatmap`
 #[pyclass(name = "Heatmap")]
@@ -104,14 +105,17 @@ impl PyHeatmap {
     fn set_offset_y(&mut self, v: f32) {
         self.inner.offset_y = v;
     }
+}
+
+
+impl DrawingComposit for PyHeatmap {
 
     // Add this heatmap to an existing `SvgDrawing`.
-    fn _add_element_to_drawing(&self, drawing: &mut PySvgDrawing) -> PyResult<()> {
+    fn add_composit_to_drawing(&self, drawing: &mut PySvgDrawing) -> PyResult<()> {
         let el = self.inner.create_element();
         drawing.inner.add_element(el);
         Ok(())
     }
-
 }
 
 /// Parse `Sequence[Sequence[number]] -> Vec<Vec<f64>>`

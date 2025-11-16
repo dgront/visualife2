@@ -12,6 +12,9 @@ use py_svg_drawing::PySvgDrawing;
 mod element_type;
 use element_type::ElementType;
 
+mod composit;
+pub use composit::DrawingComposit;
+
 /// Python module definition
 #[pymodule]
 fn visualife(m: &Bound<'_, PyModule>) -> PyResult<()> {
