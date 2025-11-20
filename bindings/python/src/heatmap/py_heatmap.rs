@@ -4,7 +4,6 @@ use pyo3::types::{PyAny, PySequence};
 
 use crate::py_svg_drawing::PySvgDrawing;
 use visualife::heatmap::Heatmap;
-use crate::DrawingComposit;
 
 /// Python wrapper for `visualife::heatmap::Heatmap`
 #[pyclass(name = "Heatmap")]
@@ -26,12 +25,7 @@ impl PyHeatmap {
     ///     TypeError/ValueError for malformed inputs.
     #[new]
     #[pyo3(signature = (id, box_width, box_height, data))]
-    fn new<'py>(
-        id: &Bound<'py, PyAny>,
-        box_width: f32,
-        box_height: f32,
-        data: &Bound<'py, PyAny>,
-    ) -> PyResult<Self> {
+    fn new<'py>(id: &Bound<'py, PyAny>, box_width: f32, box_height: f32, data: &Bound<'py, PyAny>) -> PyResult<Self> {
         let element_id = crate::extract_element_id(id)?;
         let matrix = extract_2d_f64(data)?;
         Ok(Self {
@@ -73,6 +67,7 @@ impl PyHeatmap {
 
     /// Set row labels (length must equal number of rows).
     #[pyo3(signature = (labels))]
+    // #[setter]
     fn set_row_labels(&mut self, labels: Vec<String>) -> PyResult<()> {
         self.inner
             .set_row_labels(labels)
@@ -81,6 +76,7 @@ impl PyHeatmap {
 
     /// Set column labels (length must equal number of columns).
     #[pyo3(signature = (labels))]
+    // #[setter]
     fn set_col_labels(&mut self, labels: Vec<String>) -> PyResult<()> {
         self.inner
             .set_col_labels(labels)
@@ -92,6 +88,7 @@ impl PyHeatmap {
     fn offset_x(&self) -> f32 {
         self.inner.offset_x
     }
+
     #[setter]
     fn set_offset_x(&mut self, v: f32) {
         self.inner.offset_x = v;
@@ -101,14 +98,11 @@ impl PyHeatmap {
     fn offset_y(&self) -> f32 {
         self.inner.offset_y
     }
+
     #[setter]
     fn set_offset_y(&mut self, v: f32) {
         self.inner.offset_y = v;
     }
-}
-
-
-impl DrawingComposit for PyHeatmap {
 
     // Add this heatmap to an existing `SvgDrawing`.
     fn add_composit_to_drawing(&self, drawing: &mut PySvgDrawing) -> PyResult<()> {
