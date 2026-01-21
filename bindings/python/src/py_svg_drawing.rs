@@ -9,6 +9,15 @@ use crate::styling::{PyStyle};
 use visualife::{SvgDrawing, ElementID};
 use visualife::basic_shapes::{SvgElement};
 
+// use visualife::basic_shapes::estimate_text_width;
+
+#[pyfunction]
+#[pyo3(name = "estimate_text_width")]
+pub fn estimate_text_width(text: &str, font_px: f32) -> f32 {
+    visualife::basic_shapes::estimate_text_width(text, font_px)
+}
+
+
 #[pyclass(name = "SvgDrawing")]
 pub struct PySvgDrawing {
     pub(crate) inner: SvgDrawing,   // to make it accessible for PyHeatmap::_add_element_to_drawing()
@@ -47,7 +56,7 @@ impl PySvgDrawing {
     }
 
     /// Creates a new element by type and arguments and adds it to this drawing.
-    #[pyo3(signature = (element_type, id, args, **kwargs))]
+    #[pyo3(signature = (element_type, id, *args, **kwargs))]
     fn create_element<'py>(&mut self, element_type: ElementType, id: &Bound<'py, PyAny>,
                         args: &Bound<'py, PyTuple>, kwargs: Option<&Bound<'py, PyDict>>) -> PyResult<()> {
 
@@ -60,7 +69,7 @@ impl PySvgDrawing {
     }
 
     /// Creates a new element by type and arguments and adds it to a group existing in this drawing.
-    #[pyo3(signature = (group_id, element_type, id, args, **kwargs))]
+    #[pyo3(signature = (group_id, element_type, id, *args, **kwargs))]
     fn create_element_in_group<'py>( &mut self, group_id: &Bound<'py, PyAny>,
                 element_type: ElementType, id: &Bound<'py, PyAny>,
                 args: &Bound<'py, PyTuple>, kwargs: Option<&Bound<'py, PyDict>> ) -> PyResult<()> {
