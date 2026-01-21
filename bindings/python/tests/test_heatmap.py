@@ -4,11 +4,11 @@ from visualife import SvgDrawing
 from visualife.heatmap import Heatmap
 
 # Input data is a fancy function evaluated on a grid
-N = 100
+N = 60
 grid = [
     [(lambda x, y: (lambda r: math.cos(r) * math.exp(-r / 4.0))(math.hypot(x, y)))(
-            -15.0 + j * (30.0 / N-1),
-            -15.0 + i * (30.0 / N-1),
+            -15.0 + j * (30.0 / (N-1)),
+            -15.0 + i * (30.0 / (N-1)),
         )
         for j in range(N)
     ]
