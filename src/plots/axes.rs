@@ -105,6 +105,7 @@ impl Axis {
     }
 
 
+    /// Creates an SVG group element that contains all graphical components representing this axis
     pub fn create_element(&self) -> SvgElement {
 
         // ---------- Group of lines
@@ -202,7 +203,6 @@ impl Axis {
         }
         return SvgElement::group(format!("{}t", self.side), arrow_tip);
     }
-
 }
 
 /// Compute a "nice" plotting range that encloses [min, max].
@@ -368,15 +368,21 @@ impl AxisSet {
         self.axes.iter_mut().find(|a| a.side == side)
     }
 
+    /// Returns the primary X axis which is the [`AxisSide::BOTTOM`] one
+    ///
+    /// If not found, [`AxisSide::TOP`] axis is returned
     pub fn primary_x_axis(&self) -> &Axis {
 
         if let Some(axis) = self.axis(AxisSide::BOTTOM) {
             return axis;
         } else {
-            return self.axis(AxisSide::BOTTOM).unwrap();
+            return self.axis(AxisSide::TOP).unwrap();
         }
     }
 
+    /// Returns the primary Y axis which is the [`AxisSide::LEFT`] one
+    ///
+    /// If not found, [`AxisSide::RIGHT`] axis is returned
     pub fn primary_y_axis(&self) -> &Axis {
 
         if let Some(axis) = self.axis(AxisSide::LEFT) {
@@ -405,7 +411,7 @@ impl AxisSet {
 
     /// Convert screen coordinates to plot/data coordinates.
     ///
-    /// Uses BOTTOM & LEFT if present, otherwise TOP & RIGHT.
+    /// Uses [`AxisSide::BOTTOM`] & [`AxisSide::LEFT`] if present, otherwise [`AxisSide::TOP`] & [`AxisSide::RIGHT`].
     pub fn to_plot(&self, x: f32, y: f32) -> (f32, f32) {
         if let Some((x_axis, y_axis)) = self.resolve_xy_axes() {
             let px = x_axis.to_plot(x);
@@ -419,7 +425,7 @@ impl AxisSet {
 
     /// Convert plot/data coordinates to screen coordinates.
     ///
-    /// Uses BOTTOM & LEFT if present, otherwise TOP & RIGHT.
+    /// Uses [`AxisSide::BOTTOM`] & [`AxisSide::LEFT`] if present, otherwise [`AxisSide::TOP`] & [`AxisSide::RIGHT`].
     pub fn to_screen(&self, x: f32, y: f32) -> (f32, f32) {
         if let Some((x_axis, y_axis)) = self.resolve_xy_axes() {
             let sx = x_axis.to_screen(x);
@@ -431,6 +437,7 @@ impl AxisSet {
         }
     }
 
+    /// Creates an SVG group element that contains all graphical components representing all axes in this set
     pub fn create_element(&self) ->SvgElement {
         let mut axes = vec![];
         for ax in &self.axes {

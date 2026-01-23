@@ -1,4 +1,4 @@
-mod test_palettes {
+mod test_axes {
     use visualife::plots::{AxisBuilder, AxisSetBuilder, AxisSide, Box2D};
     use visualife::SvgDrawing;
 

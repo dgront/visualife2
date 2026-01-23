@@ -182,6 +182,7 @@ impl Heatmap {
         Ok(())
     }
 
+    /// Creates an SVG group element that contains all graphical components representing this heatmap
     pub fn create_element(&self) -> SvgElement {
 
         let mut heatmap_groups = Vec::with_capacity(3);
