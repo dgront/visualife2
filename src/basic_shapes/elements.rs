@@ -183,13 +183,16 @@ impl SvgElement {
     pub fn mask(&self) -> Option<&String> { self.attr().mask.as_ref() }
 
     /// Replaces the current masking element with a new one.
-    pub fn set_mask(&mut self, style: Style) { self.attr_mut().style = Some(style); }
+    pub fn set_mask(&mut self, style: String) { self.attr_mut().mask = Some(style); }
 
     /// Read the transformation string of the masking element (if any).
-    pub fn transformation(&self) -> Option<&String> { self.attr().mask.as_ref() }
+    pub fn transformation(&self) -> Option<&String> { self.attr().transform.as_ref() }
 
     /// Replaces the current transformation string for this element
-    pub fn set_transformation(&mut self, style: Style) { self.attr_mut().style = Some(style); }
+    pub fn set_transformation(&mut self, style: String) { self.attr_mut().transform = Some(style); }
+
+    /// Replaces the current transformation defined for this element with a translation by (dx, dy)
+    pub fn translate(&mut self, dx: f32, dy: f32)  { self.attr_mut().transform = Some(format!("translate({dx},{dy})"))}
 
     pub(crate) fn attr_mut(&mut self) -> &mut SvgAttributes {
         match &mut self.inner {

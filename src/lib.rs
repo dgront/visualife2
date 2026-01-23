@@ -19,6 +19,9 @@ pub mod heatmap;
 /// Define styles for SVG elements.
 pub mod styling;
 
+/// Plotting library
+pub mod plots;
+
 mod element_id;
 
 pub use element_id::*;
