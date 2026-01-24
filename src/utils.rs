@@ -57,3 +57,29 @@ pub fn linspace(n: usize, xb: f32, xe: f32, skip_ends: bool) -> Vec<f32> {
         }
     }
 }
+
+/// Returns (n_rows, max_cols) of a 2D iterator without consuming the data.
+///
+/// It works with slices:
+/// ```
+/// use visualife::plots::matrix_shape;
+/// let r1: &[i32] = &[1, 2, 3];
+/// let r2: &[i32] = &[4, 5];
+/// let data = vec![r1, r2];
+/// assert_eq!(matrix_shape(&data), (2, 3));
+/// ```
+///
+/// ... and with Vec<>. For ragged matrix (rows of different length) provides the maximum size:
+/// ```
+/// use visualife::plots::matrix_shape;
+/// let m = vec![
+///     vec![1, 2],
+///     vec![3, 4, 5, 6],
+///     vec![7],
+/// ];
+/// assert_eq!(matrix_shape(&m), (3, 4));
+pub fn matrix_shape<R, T>(data: &[R]) -> (usize, usize)  where R: AsRef<[T]> {
+    let n_rows = data.len();
+    let max_cols = data.iter().map(|row| row.as_ref().len()).max().unwrap_or(0);
+    (n_rows, max_cols)
+}

@@ -32,8 +32,9 @@ pub struct Box2D<T> {
 
 impl<T> Box2D<T>
 where
-    T: Copy + PartialOrd + Sub<Output = T>,
+    T: Copy + PartialOrd + Sub<Output = T>
 {
+    /// Width of the [`Box2D`]
     #[inline]
     pub fn width(&self) -> T {
         if self.x_end >= self.x_beg {
@@ -43,6 +44,7 @@ where
         }
     }
 
+    /// Height of the [`Box2D`]
     #[inline]
     pub fn height(&self) -> T {
         if self.y_end >= self.y_beg {
@@ -51,6 +53,18 @@ where
             self.y_beg - self.y_end
         }
     }
+}
+
+impl Box2D<f32> {
+    /// Length of the shorter side of the [`Box2D`]
+    #[inline]
+    pub fn shortest_length(&self) -> f32 { self.width().min(self.height()) }
+}
+
+impl Box2D<f64> {
+    /// Length of the shorter side of the [`Box2D`]
+    #[inline]
+    pub fn shortest_length(&self) -> f64 { self.width().min(self.height()) }
 }
 
 impl From<(f32, f32, f32, f32)> for Box2D<f32> {

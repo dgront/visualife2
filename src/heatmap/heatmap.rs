@@ -44,7 +44,7 @@ pub struct Heatmap {
 
 impl Heatmap {
 
-    /// Creates a heatmap from data given as a matrix of numerical values
+    /// Creates a heatmap from data given as a 2D Vec of numerical values.
     ///
     /// # Example
     /// ```
@@ -52,23 +52,14 @@ impl Heatmap {
     /// # use rand::{SeedableRng, Rng};
     /// # use rand::rngs::StdRng;
     /// let mut rng = StdRng::seed_from_u64(0);
-    /// let matrix: Vec<Vec<f64>> = (0..5)
+    /// let vec2d: Vec<Vec<f64>> = (0..5)
     ///     .map(|_| (0..7).map(|_| rng.random::<f64>()).collect())
     ///     .collect();
-    /// let mut htm = Heatmap::from_matrix("heatmap", 20.0, 20.0, matrix);
+    /// let mut htm = Heatmap::from_vec2d("heatmap", 20.0, 20.0, vec2d);
     /// # assert_eq!(htm.count_rows(), 5);
     /// # assert_eq!(htm.count_columns(), 7);
     /// ```
-    pub fn from_matrix<I, R, T>(id: impl Into<ElementID>,box_width: f32,box_height: f32, data: I) -> Self
-    where
-        I: IntoIterator<Item = R>,
-        R: IntoIterator<Item = T>,
-        T: Into<f64>
-    {
-        let data: Vec<Vec<f64>> = data
-                    .into_iter()
-                    .map(|row| row.into_iter().map(Into::into).collect())
-                    .collect();
+    pub fn from_vec2d(id: impl Into<ElementID>, box_width: f32,box_height: f32, data: Vec<Vec<f64>>) -> Self {
 
         let (min, max) = data
             .iter()
@@ -88,6 +79,35 @@ impl Heatmap {
             row_labels: None,
             col_labels: None,
         }
+    }
+
+    /// Creates a heatmap from data given as a matrix of numerical values.
+    ///
+    /// # Example
+    /// ```
+    /// # use visualife::heatmap::Heatmap;
+    /// # use rand::{SeedableRng, Rng};
+    /// # use rand::rngs::StdRng;
+    /// let mut rng = StdRng::seed_from_u64(0);
+    /// let matrix: Vec<Vec<f64>> = (0..5)
+    ///     .map(|_| (0..7).map(|_| rng.random::<f64>()).collect())
+    ///     .collect();
+    /// let mut htm = Heatmap::from_matrix("heatmap", 20.0, 20.0, matrix);
+    /// # assert_eq!(htm.count_rows(), 5);
+    /// # assert_eq!(htm.count_columns(), 7);
+    /// ```
+    pub fn from_matrix<I, R, T>(id: impl Into<ElementID>, box_width: f32,box_height: f32, data: I) -> Self
+    where
+        I: IntoIterator<Item = R>,
+        R: IntoIterator<Item = T>,
+        T: Into<f64>
+    {
+        let data: Vec<Vec<f64>> = data
+                    .into_iter()
+                    .map(|row| row.into_iter().map(Into::into).collect())
+                    .collect();
+
+        return Heatmap::from_vec2d(id, box_width, box_height, data);
     }
 
     /// Creates a heatmap from [`DataMatrix`] struct
@@ -186,14 +206,7 @@ impl Heatmap {
     pub fn create_element(&self) -> SvgElement {
 
         let mut heatmap_groups = Vec::with_capacity(3);
-        // --- modify the offset_x field  to make room for the labels
-        // let mut x_offset_new = match &self.row_labels {
-        //     None => self.offset_x,
-        //     Some(labels) => {
-        //         let font_size = 15.0;
-        //         self.offset_x + labels.iter().map(|l| estimate_text_width(l, font_size)).reduce(f32::max).unwrap_or(0.0)
-        //     }
-        // };
+
         let x_offset_new = self.offset_x;
 
         // --- Group of boxes

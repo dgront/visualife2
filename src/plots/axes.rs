@@ -3,7 +3,8 @@ use std::fmt::Display;
 
 use crate::basic_shapes::SvgElement;
 use crate::plots::box2d::Box2D;
-use crate::plots::linspace;
+use crate::plots::{linspace, PlotError};
+use crate::plots::PlotError::NoAxisDefined;
 use crate::styling::Style;
 
 /// Defines which side of the plot rectangle the axis is drawn on.
@@ -26,10 +27,14 @@ impl Display for AxisSide {
     }
 }
 
+/// Specifies where tick marks are drawn relative to the plot area
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum TicsLocation {
+    /// Tick marks extend into the plot area.
     INNER,
+    /// Tick marks extend away from the plot area.
     OUTER,
+    /// No tick marks are drawn.
     NONE,
 }
 
@@ -53,6 +58,9 @@ impl Tick {
         Self { value, label: Some(label.into()) }
     }
 
+    /// Returns the string label defined for this tick.
+    ///
+    /// If no label has been assigned, the value converted to string is returned
     pub fn label(&self) -> String {
         return if let Some(lbl) = &self.label { lbl.clone() } else {
             format!("{:.2}", self.value)
@@ -102,9 +110,11 @@ impl Axis {
         self.plot_to = pmax;
     }
 
+    /// Location of this axis within their plot
     #[inline]
     pub fn side(&self) -> AxisSide { self.side }
 
+    /// Position on the other axis this axes intersects
     #[inline]
     pub fn intercept(&self) -> f32 { self.intercept }
 
@@ -330,6 +340,7 @@ impl Into<SvgElement> for Axis {
 }
 
 #[derive(Debug, Clone)]
+/// Builds an axis and sets its all optional properties.
 pub struct AxisBuilder { axis: Axis, }
 
 
@@ -371,10 +382,7 @@ impl AxisBuilder {
     ///
     /// Ignores NaN values. If no finite values are found,
     /// the existing plot range is left unchanged.
-    pub fn plot_range_from_data<D>(mut self, data: D) -> Self
-    where
-        D: AsRef<[f32]>,
-    {
+    pub fn plot_range_from_data<D: AsRef<[f32]>>(mut self, data: D) -> Self {
         let slice = data.as_ref();
         let mut min = f32::INFINITY;
         let mut max = f32::NEG_INFINITY;
@@ -395,6 +403,9 @@ impl AxisBuilder {
         self
     }
 
+    /// Sets the axis intercept value in plot (data) coordinates.
+    ///
+    /// The intercept defines where this axis crosses the orthogonal axis.
     pub fn intercept(mut self, value: f32) -> Self {
         self.axis.intercept = value;
         self
@@ -425,16 +436,19 @@ impl AxisBuilder {
         self
     }
 
+    /// Sets the stroke width used to draw the axis line and ticks.
     pub fn stroke_width(mut self, width: f32) -> Self {
         self.axis.stroke_width = width;
         self
     }
 
+    /// Sets the font size used for tick labels on this axis.
     pub fn font_size(mut self, size: f32) -> Self {
         self.axis.font_size = size;
         self
     }
 
+    /// Sets the length of tick marks extending from the axis line.
     pub fn tics_width(mut self, width: f32) -> Self {
         self.axis.tics_width = width;
         self
@@ -445,6 +459,18 @@ impl AxisBuilder {
 }
 
 
+/// A collection of axes forming the coordinate frame of a plot.
+///
+/// An `AxisSet` groups together one or more [`Axis`] objects
+/// (e.g. bottom/left, all four sides, dual axes) and is responsible for:
+///
+/// - defining the plot rectangle in screen space,
+/// - managing axis placement and crossings,
+/// - converting between plot (data) and screen coordinates,
+/// - rendering axes, ticks, labels, and grid lines.
+///
+/// It is typically created via [`AxisSetBuilder`] and then used by [`Plot`]
+/// to draw data series within the defined coordinate system.
 #[derive(Debug, Clone)]
 pub struct AxisSet {
     axes: Vec<Axis>
@@ -464,25 +490,37 @@ impl AxisSet {
     /// Returns the primary X axis which is the [`AxisSide::BOTTOM`] one
     ///
     /// If not found, [`AxisSide::TOP`] axis is returned
-    pub fn primary_x_axis(&self) -> &Axis {
+    pub fn primary_x_axis(&self) -> Result<&Axis, PlotError> {
 
         if let Some(axis) = self.axis(AxisSide::BOTTOM) {
-            return axis;
+            return Ok(axis);
         } else {
-            return self.axis(AxisSide::TOP).unwrap();
+            return self.axis(AxisSide::TOP).ok_or(NoAxisDefined);
         }
     }
 
     /// Returns the primary Y axis which is the [`AxisSide::LEFT`] one
     ///
     /// If not found, [`AxisSide::RIGHT`] axis is returned
-    pub fn primary_y_axis(&self) -> &Axis {
+    pub fn primary_y_axis(&self) -> Result<&Axis, PlotError>  {
 
         if let Some(axis) = self.axis(AxisSide::LEFT) {
-            return axis;
+            return Ok(axis);
         } else {
-            return self.axis(AxisSide::RIGHT).unwrap();
+            return self.axis(AxisSide::TOP).ok_or(NoAxisDefined);
         }
+    }
+
+    /// Screen coordinates of a rectangle that contains the plotting area.
+    ///
+    /// The rectangle includes also the ticks if they point inwards
+    pub fn screen_box(&self) -> Result<Box2D<f32>,PlotError> {
+        Ok(Box2D{
+            x_beg: self.primary_x_axis()?.screen_from,
+            x_end: self.primary_x_axis()?.screen_to,
+            y_beg: self.primary_y_axis()?.screen_from,
+            y_end: self.primary_y_axis()?.screen_to
+        })
     }
 
     /// Choose which axes act as X and Y for coordinate transforms.
@@ -536,9 +574,9 @@ impl AxisSet {
         for ax in &self.axes {
             let mut axis = ax.create_element();
             if ax.side==AxisSide::BOTTOM || ax.side==AxisSide::TOP {
-                axis.translate(0.0, self.primary_y_axis().to_screen(ax.intercept));
+                axis.translate(0.0, self.primary_y_axis().expect("No primary Y axis found!").to_screen(ax.intercept));
             } else if ax.side==AxisSide::LEFT || ax.side==AxisSide::RIGHT  {
-                axis.translate(self.primary_x_axis().to_screen(ax.intercept), 0.0);
+                axis.translate(self.primary_x_axis().expect("No primary X axis found!").to_screen(ax.intercept), 0.0);
             }
             axes.push(axis);
         }
@@ -546,6 +584,27 @@ impl AxisSet {
     }
 }
 
+/// Builder for constructing an [`AxisSet`] with a chosen layout and defaults.
+///
+/// [`AxisSetBuilder`] allows selecting which axes are present (e.g. left/bottom,
+/// rectangular frame, dual axes) and configuring common properties that will
+/// be propagated to all created [`Axis`] objects, such as tick count,
+/// tick direction, font size, and arrowheads.
+///
+/// The builder is typically used indirectly via higher-level plot
+/// construction, but it can also be used standalone when axes are needed
+/// outside of a full plot.
+///
+/// # Example
+///
+/// ```
+/// use visualife::plots::{AxisSetBuilder, TicsLocation};
+/// let axes = AxisSetBuilder::new("LRTB", (50.0, 250.0, 450.0, 50.0))
+///     .ntics(6)
+///     .tics_location(TicsLocation::OUTER)
+///     .arrowheads(true)
+///     .build();
+/// ```
 #[derive(Debug, Clone)]
 pub struct AxisSetBuilder {
     screen_box: Box2D<f32>,
@@ -557,41 +616,31 @@ pub struct AxisSetBuilder {
     n_ticks: usize,
     tics_location: TicsLocation,
     has_arrowhead: bool,
+    font_size: f32,
 }
 
 impl AxisSetBuilder {
-    /// Start a builder with an empty axis set for the given plot rect.
-    pub fn new<R: Into<Box2D<f32>>>(screen_box: R) -> Self {
+    /// Start a builder with empty axes drawn over a given rectangle
+    ///
+    pub fn new<R: Into<Box2D<f32>>>(sides: &str, screen_box: R) -> Self {
+        let sides = Self::axes_sides(sides);
+        let screen_box = screen_box.into();
         Self {
-            screen_box: screen_box.into(),
+            screen_box,
             plot_box: Box2D{ x_beg: 0.0, x_end: 1.0, y_beg: 0.0, y_end: 1.0},
-            sides: Vec::new(),
+            sides,
             xc: 0.0,
             yc: 0.0,
             n_ticks: 5,
             tics_location: TicsLocation::OUTER,
             has_arrowhead: false,
+            font_size: screen_box.shortest_length() / 20.0,
         }
     }
 
-    /// Add axes from a compact string, e.g. "LB", "TLBR".
-    /// Allowed letters: T, L, B, R.
-    pub fn axes(mut self, sides: &str) -> Self {
-        for ch in sides.chars() {
-            let side = match ch {
-                'T' | 't' => Some(AxisSide::TOP),
-                'L' | 'l' => Some(AxisSide::LEFT),
-                'B' | 'b' => Some(AxisSide::BOTTOM),
-                'R' | 'r' => Some(AxisSide::RIGHT),
-                _ => None,
-            };
-            if let Some(s) = side { self.sides.push(s) }
-        }
-        self
-    }
     /// Set the default number of major ticks for all axes created by this builder.
     pub fn ntics(mut self, n: usize) -> Self {
-        self.n_ticks = n.max(2);
+        self.n_ticks = n;
         self
     }
 
@@ -607,6 +656,15 @@ impl AxisSetBuilder {
         self
     }
 
+    /// Set the main font size.
+    ///
+    /// This size define the size of ticks
+    pub fn font_size(mut self, fsize: f32) -> Self {
+        self.font_size = fsize;
+        self
+    }
+
+    /// Define the intersection point where the X and Y axes cross each other
     pub fn center(mut self, xc: f32, yc: f32) -> Self {
         self.xc = xc;
         self.yc = yc;
@@ -676,13 +734,31 @@ impl AxisSetBuilder {
                 .arrowhead(self.has_arrowhead)
                 .stroke_width(shortest_len/400.0)
                 .tics_width(shortest_len/40.0)
-                .font_size(shortest_len/15.0)
+                .font_size(self.font_size)
                 .build();
 
             axes.push(axis);
         }
 
         AxisSet { axes }
+    }
+
+
+    /// Decodes a compact string, e.g. "LB", "TLBR" into a set of axes.
+    /// Allowed letters: T, L, B, R.
+    fn axes_sides(sides_str: &str) -> Vec<AxisSide> {
+        let mut sides: Vec<AxisSide> = vec![];
+        for ch in sides_str.chars() {
+            let side = match ch {
+                'T' | 't' => Some(AxisSide::TOP),
+                'L' | 'l' => Some(AxisSide::LEFT),
+                'B' | 'b' => Some(AxisSide::BOTTOM),
+                'R' | 'r' => Some(AxisSide::RIGHT),
+                _ => None,
+            };
+            if let Some(s) = side { sides.push(s) }
+        }
+        sides
     }
 }
 
@@ -693,7 +769,7 @@ impl Into<SvgElement> for AxisSet {
     /// ```
     /// use visualife::plots::{AxisSetBuilder, AxisSide};
     /// use visualife::SvgDrawing;
-    /// let axis = AxisSetBuilder::new((25.0, 225.0, 25.0, 225.0)).center(0.0, 0.0).build();
+    /// let axis = AxisSetBuilder::new("BL", (25.0, 225.0, 25.0, 225.0)).center(0.0, 0.0).build();
     /// let mut drawing = SvgDrawing::new(250.0, 250.0);
     /// drawing.add_element(axis);  // --- Here is where we actually use the Into<SvgElement>
     /// ```

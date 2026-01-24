@@ -30,6 +30,8 @@ mod svg_drawing;
 pub use svg_drawing::SvgDrawing;
 
 mod errors;
+mod utils;
+
 pub use errors::*;
 
 /// Normalizes whitespace in a string, replacing all whitespace character blocks with a single space.
