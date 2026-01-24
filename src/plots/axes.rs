@@ -315,6 +315,19 @@ fn nice_plot_range(min: f32, max: f32) -> (f32, f32) {
 
     (nice_min, nice_max)
 }
+impl Into<SvgElement> for Axis {
+    /// [`Axis`] can be turned into [`SvgElement`] which facilitates their insertion into a drawing.
+    ///
+    /// # Example
+    /// ```
+    /// use visualife::plots::{AxisBuilder, AxisSide};
+    /// use visualife::SvgDrawing;
+    /// let axis = AxisBuilder::new(AxisSide::BOTTOM, 50.0, 150.0).n_tics(8).arrowhead(true).build();
+    /// let mut drawing = SvgDrawing::new(200.0, 50.0);
+    /// drawing.add_element(axis);  // --- Here is where we actually use the Into<SvgElement>
+    /// ```
+    fn into(self) -> SvgElement { self.create_element() }
+}
 
 #[derive(Debug, Clone)]
 pub struct AxisBuilder { axis: Axis, }
@@ -673,3 +686,16 @@ impl AxisSetBuilder {
     }
 }
 
+impl Into<SvgElement> for AxisSet {
+    /// [`AxisSet`] can be turned into [`SvgElement`] which facilitates their insertion into a drawing.
+    ///
+    /// # Example
+    /// ```
+    /// use visualife::plots::{AxisSetBuilder, AxisSide};
+    /// use visualife::SvgDrawing;
+    /// let axis = AxisSetBuilder::new((25.0, 225.0, 25.0, 225.0)).center(0.0, 0.0).build();
+    /// let mut drawing = SvgDrawing::new(250.0, 250.0);
+    /// drawing.add_element(axis);  // --- Here is where we actually use the Into<SvgElement>
+    /// ```
+    fn into(self) -> SvgElement { self.create_element() }
+}
