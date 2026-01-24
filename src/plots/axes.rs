@@ -18,10 +18,10 @@ pub enum AxisSide {
 impl Display for AxisSide {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match &self {
-            AxisSide::TOP => write!(f, "x2"),
-            AxisSide::BOTTOM => write!(f, "x1"),
-            AxisSide::LEFT => write!(f, "y1"),
-            AxisSide::RIGHT => write!(f, "y2")
+            AxisSide::TOP => write!(f, "xt"),
+            AxisSide::BOTTOM => write!(f, "xb"),
+            AxisSide::LEFT => write!(f, "yl"),
+            AxisSide::RIGHT => write!(f, "yr")
         }
     }
 }
@@ -31,6 +31,33 @@ pub enum TicsLocation {
     INNER,
     OUTER,
     NONE,
+}
+
+/// A simple tick representation (plot-space value + optional label).
+#[derive(Debug, Clone, PartialEq)]
+pub struct Tick {
+    /// Tick location in the data / plot coordinates
+    pub value: f32,
+    /// Optional text label
+    ///
+    /// When not provided, the actual value will be used
+    pub label: Option<String>,
+}
+
+impl Tick {
+    /// Create a new default tick at a given location
+    pub fn new(value: f32) -> Self { Self { value, label: None } }
+
+    /// Create a new labeled tick at a given location
+    pub fn with_label(value: f32, label: impl Into<String>) -> Self {
+        Self { value, label: Some(label.into()) }
+    }
+
+    pub fn label(&self) -> String {
+        return if let Some(lbl) = &self.label { lbl.clone() } else {
+            format!("{:.2}", self.value)
+        }
+    }
 }
 
 /// An axis that maps plot-space values to screen coordinates along a single dimension.
@@ -53,7 +80,7 @@ pub struct Axis {
     plot_to: f32,
 
     /// Optional explicit major ticks in plot coordinates;
-    plot_ticks: Vec<f32>,
+    plot_ticks: Vec<Tick>,
     /// If ticks are not explicitly set, generate `n_ticks` evenly spaced ticks.
     n_ticks: usize,
     /// How tics should be drawn
@@ -63,7 +90,8 @@ pub struct Axis {
     has_arrowhead: bool,
     /// drawing parameters
     stroke_width: f32,
-    tics_width: f32
+    tics_width: f32,
+    font_size: f32
 }
 
 impl Axis {
@@ -92,7 +120,15 @@ impl Axis {
     pub fn to_plot(&self, u: f32) -> f32 {
         let denom = self.screen_to - self.screen_from;
         if denom == 0.0 { return self.plot_from; }
-        let t = (u - self.screen_from) / denom;
+        let t = match self.side {
+            AxisSide::LEFT | AxisSide::RIGHT => {
+                // invert screen direction for Y axis
+                (self.screen_to - u) / denom
+            }
+            _ => {
+                (u - self.screen_from) / denom
+            }
+        };
         self.plot_from + t * (self.plot_to - self.plot_from)
     }
 
@@ -101,9 +137,16 @@ impl Axis {
         let denom = self.plot_to - self.plot_from;
         if denom == 0.0 { return self.screen_from; }
         let t = (x - self.plot_from) / denom;
-        self.screen_from + t * (self.screen_to - self.screen_from)
+        match self.side {
+            AxisSide::LEFT | AxisSide::RIGHT => {
+                // invert mapping for Y axis
+                self.screen_to - t * (self.screen_to - self.screen_from)
+            }
+            _ => {
+                self.screen_from + t * (self.screen_to - self.screen_from)
+            }
+        }
     }
-
 
     /// Creates an SVG group element that contains all graphical components representing this axis
     pub fn create_element(&self) -> SvgElement {
@@ -120,45 +163,76 @@ impl Axis {
         if self.has_arrowhead {
             lines.push(self.create_arrowhead());
         }
-        let dir = if (self.tics_location == TicsLocation::INNER) { 1.0 } else { -1.0 };
         if self.tics_location != TicsLocation::NONE {
-            let mut tics: Vec<f32> = vec![];
-            if self.plot_ticks.len()==0 && self.n_ticks > 0 {
-                for t in linspace(self.n_ticks, self.plot_from, self.plot_to, true) {
-                    tics.push(self.to_screen(t));
-                }
-            } else {
-                for t in &self.plot_ticks {
-                    tics.push(self.to_screen(*t));
-                }
-            }
-            match self.side {
-                AxisSide::TOP => {
-                    for (i,t) in tics.iter().enumerate() {
-                        lines.push(SvgElement::line(format!("{}t{}", self.side, i), *t, 0.0, *t, -self.tics_width * dir))
-                    }
-                }
-                AxisSide::BOTTOM => {
-                    for (i,t) in tics.iter().enumerate() {
-                        lines.push(SvgElement::line(format!("{}t{}", self.side, i), *t, 0.0, *t, self.tics_width * dir))
-                    }
-                }
-                AxisSide::LEFT => {
-                    for (i,t) in tics.iter().enumerate() {
-                        lines.push(SvgElement::line(format!("{}t{}", self.side, i), 0.0, *t, self.tics_width * dir, *t))
-                    }
-                }
-                AxisSide::RIGHT => {
-                    for (i,t) in tics.iter().enumerate() {
-                        lines.push(SvgElement::line(format!("{}t{}", self.side, i), 0.0, *t, -self.tics_width * dir, *t))
-                    }
-                }
-            }
+            lines.push(self.create_tics());
         }
         let axis_grp = SvgElement::group(format!("{}", self.side), lines).with_style(
             Style::new().stroke("#000000").stroke_width(self.stroke_width));
 
         return axis_grp;
+    }
+
+    fn create_tics(&self) -> SvgElement {
+        // ---------- Prepare ticks
+        let mut tics: Vec<Tick> = vec![];
+        if self.plot_ticks.len()==0 && self.n_ticks > 0 {
+            for v in linspace(self.n_ticks, self.plot_from, self.plot_to, true) {
+                tics.push(Tick::with_label(v, format!("{:.2}", v)));
+            }
+        } else {
+            for t in &self.plot_ticks { tics.push(t.clone()); }
+        }
+
+        // ---------- Create SVG elements
+        let mut elements = vec![];
+        let is_horizontal = matches!(self.side, AxisSide::TOP | AxisSide::BOTTOM);
+        let dir = if (self.tics_location == TicsLocation::INNER) { 1.0 } else { -1.0 };
+
+        // ---------- ... ticks lines first
+        let sign = match self.side {
+            AxisSide::TOP    =>  1.0 * dir,
+            AxisSide::BOTTOM => -1.0 * dir,
+            AxisSide::LEFT   =>  1.0 * dir,
+            AxisSide::RIGHT  => -1.0 * dir,
+        };
+        for (i, t) in tics.iter().enumerate() {
+            let ts = self.to_screen(t.value);
+            let d  = self.tics_width * sign;
+
+            let (x1, y1, x2, y2) = if is_horizontal {
+                (ts, 0.0, ts, d)    // ticks along X axis
+            } else {
+                (0.0, ts, d, ts)    // ticks along Y axis
+            };
+
+            elements.push(SvgElement::line(format!("{}t{}", self.side, i), x1, y1, x2, y2));
+        }
+
+        // ---------- ... now ticks labels (text)
+        let offset = self.tics_width + self.font_size * 0.5;  // distance from axis to label baseline
+
+        let text_style = match self.side {
+            AxisSide::TOP => Style::new().text_anchor("middle").dominant_baseline("text-bottom"),
+            AxisSide::BOTTOM => Style::new().text_anchor("middle").dominant_baseline("hanging"),
+            AxisSide::LEFT => Style::new().text_anchor("end").dominant_baseline("middle"),
+            AxisSide::RIGHT => Style::new().text_anchor("start").dominant_baseline("middle"),
+        };
+        for (i, t) in tics.iter().enumerate() {
+            let ts = self.to_screen(t.value);
+
+            let (lab_x, lab_y) = match self.side {
+                AxisSide::BOTTOM => (ts, -offset * dir),
+                AxisSide::TOP    => (ts,  offset * dir),
+                AxisSide::LEFT   => (offset * dir, ts),
+                AxisSide::RIGHT  => (-offset * dir, ts),
+            };
+            elements.push(
+                SvgElement::text(format!("{}l{}", self.side, i), lab_x, lab_y, t.label())
+                    .with_style(text_style.clone().font_size(&format!("{}",self.font_size)))
+            );
+        }
+
+        return SvgElement::group(format!("{}tics", self.side), elements);
     }
 
     fn create_arrowhead(&self) -> SvgElement {
@@ -194,7 +268,7 @@ impl Axis {
                 let bl_y = tip_y + arrow_len * dir;
                 let br_x = tip_x + arrow_w;
                 let br_y = tip_y + arrow_len * dir;
-                let mut tri = SvgElement::polygon(
+                let tri = SvgElement::polygon(
                     format!("{}a", self.side),
                     vec![(tip_x, tip_y), (bl_x, bl_y), (br_x, br_y)],
                 ).with_style(Style::new().fill("#000000"));
@@ -267,7 +341,8 @@ impl AxisBuilder {
                 tics_location: TicsLocation::OUTER,
                 has_arrowhead: false,
                 stroke_width: w,
-                tics_width: w * 10.0
+                tics_width: w * 10.0,
+                font_size: 10.0,
             },
         }
     }
@@ -319,9 +394,9 @@ impl AxisBuilder {
     }
 
     /// Provide explicit major ticks in plot coordinates.
-    pub fn tics(mut self, tics: &[f32]) -> Self {
+    pub fn tics_at_values(mut self, tics: &[f32]) -> Self {
         self.axis.plot_ticks.clear();
-        self.axis.plot_ticks.extend_from_slice(tics);
+        self.axis.plot_ticks.extend(tics.iter().map(|v| Tick::new(*v)));
         self
     }
 
@@ -339,6 +414,11 @@ impl AxisBuilder {
 
     pub fn stroke_width(mut self, width: f32) -> Self {
         self.axis.stroke_width = width;
+        self
+    }
+
+    pub fn font_size(mut self, size: f32) -> Self {
+        self.axis.font_size = size;
         self
     }
 
@@ -583,6 +663,7 @@ impl AxisSetBuilder {
                 .arrowhead(self.has_arrowhead)
                 .stroke_width(shortest_len/400.0)
                 .tics_width(shortest_len/40.0)
+                .font_size(shortest_len/15.0)
                 .build();
 
             axes.push(axis);

@@ -27,7 +27,7 @@ mod test_axes {
     #[test]
     fn draw_axes_box() {
         let axes = AxisSetBuilder::new((25.0,225.0, 25.0, 125.0))
-            .axes("LBTR").arrowheads(false).ntics(5)
+            .axes("LBTR").arrowheads(false).ntics(7)
             .data_range((-1.0, 1.0, -1.0, 1.0)).center(0.0, 0.0).build();
         let mut drawing = SvgDrawing::new(250.0, 150.0);
         drawing.add_element(axes.create_element());
