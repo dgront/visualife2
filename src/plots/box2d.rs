@@ -87,6 +87,28 @@ fn normalize_pair(a: f32, b: f32) -> (f32, f32, bool) {
     }
 }
 
+/// Returns `true` if **any** point `(x[i], y[i])` lies outside `plot_box`.
+///
+/// The function is orientation-agnostic: it correctly handles boxes where
+/// `x_beg > x_end` or `y_beg > y_end`.
+///
+/// # Examples
+/// ```
+/// use visualife::plots::{Box2D, point_outside_box};
+/// let bx = Box2D { x_beg: 0.0, x_end: 10.0, y_beg: 0.0, y_end: 10.0 };
+///
+/// let x = [1.0, 5.0, 9.0];
+/// let y = [1.0, 5.0, 9.0];
+/// assert!(!point_outside_box(&x, &y, &bx));
+///
+/// # let x = [1.0, 12.0];
+/// # let y = [1.0, 5.0];
+/// # assert!(point_outside_box(&x, &y, &bx));
+/// #
+/// // Works even if box coordinates are reversed
+/// let bx_rev = Box2D { x_beg: 10.0, x_end: 0.0, y_beg: 10.0, y_end: 0.0 };
+/// assert!(point_outside_box(&x, &y, &bx_rev));
+/// ```
 pub fn point_outside_box(x: &[f32], y: &[f32], plot_box: &Box2D<f32>) -> bool {
 
     let (xmin, xmax, _flag) = normalize_pair(plot_box.x_beg, plot_box.x_end);
@@ -97,6 +119,27 @@ pub fn point_outside_box(x: &[f32], y: &[f32], plot_box: &Box2D<f32>) -> bool {
         .any(|(&xi, &yi)| xi < xmin || xi > xmax || yi < ymin || yi > ymax)
 }
 
+/// Expands `plot_box` so that **all** points `(x[i], y[i])` are inside it,
+/// preserving the original axis direction (normal or reversed).
+///
+/// If all points already lie inside the box, the original box is returned
+/// unchanged.
+///
+/// # Examples
+/// ```
+/// use visualife::plots::{Box2D, update_plot_box};
+///
+/// let x = [2.0, 12.0];
+/// let y = [-3.0, 5.0];
+/// // Direction is preserved for reversed boxes
+/// let bx_rev = Box2D { x_beg: 10.0, x_end: 0.0, y_beg: 10.0, y_end: 0.0 };
+/// let updated_rev = update_plot_box(&x, &y, &bx_rev);
+///
+/// # assert_eq!(updated_rev.x_beg, 12.0);
+/// # assert_eq!(updated_rev.x_end, 0.0);
+/// # assert_eq!(updated_rev.y_beg, 10.0);
+/// # assert_eq!(updated_rev.y_end, -3.0);
+/// ```
 pub fn update_plot_box(x: &[f32], y: &[f32], plot_box: &Box2D<f32>) -> Box2D<f32> {
 
     let (mut xmin, mut xmax, x_inv) = normalize_pair(plot_box.x_beg, plot_box.x_end);
