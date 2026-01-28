@@ -490,24 +490,24 @@ impl AxisSet {
     /// Returns the primary X axis which is the [`AxisSide::BOTTOM`] one
     ///
     /// If not found, [`AxisSide::TOP`] axis is returned
-    pub fn primary_x_axis(&self) -> Result<&Axis, PlotError> {
+    pub fn primary_x_axis(&self) -> AxisSide {
 
         if let Some(axis) = self.axis(AxisSide::BOTTOM) {
-            return Ok(axis);
+            return AxisSide::BOTTOM;
         } else {
-            return self.axis(AxisSide::TOP).ok_or(NoAxisDefined);
+            return AxisSide::TOP
         }
     }
 
     /// Returns the primary Y axis which is the [`AxisSide::LEFT`] one
     ///
     /// If not found, [`AxisSide::RIGHT`] axis is returned
-    pub fn primary_y_axis(&self) -> Result<&Axis, PlotError>  {
+    pub fn primary_y_axis(&self) -> AxisSide  {
 
         if let Some(axis) = self.axis(AxisSide::LEFT) {
-            return Ok(axis);
+            return AxisSide::LEFT;
         } else {
-            return self.axis(AxisSide::TOP).ok_or(NoAxisDefined);
+            return AxisSide::TOP
         }
     }
 
@@ -521,6 +521,25 @@ impl AxisSet {
             y_beg: self.primary_y_axis()?.screen_from,
             y_end: self.primary_y_axis()?.screen_to
         })
+    }
+
+    /// Plot coordinates range as defined by the primary axes
+    pub fn plot_box(&self) -> Result<Box2D<f32>,PlotError> {
+        Ok(Box2D{
+            x_beg: self.primary_x_axis()?.plot_from,
+            x_end: self.primary_x_axis()?.plot_to,
+            y_beg: self.primary_y_axis()?.plot_from,
+            y_end: self.primary_y_axis()?.plot_to
+        })
+    }
+
+    /// Set the plot coordinates range as defined by the primary axes
+    pub fn set_plot_box(&mut self, range: &Box2D<f32>) -> Result<(),PlotError> {
+        let primary_x = self.primary_x_axis()?.side;
+        self.axis_mut(primary_x).ok_or(NoAxisDefined)?.set_plot_range(range.x_beg, range.x_end);
+        let primary_y = self.primary_y_axis()?.side;
+        self.axis_mut(primary_y).ok_or(NoAxisDefined)?.set_plot_range(range.y_beg, range.y_end);
+        Ok(())
     }
 
     /// Choose which axes act as X and Y for coordinate transforms.

@@ -118,7 +118,7 @@ impl Heatmap {
     /// use visualife::SvgDrawing;
     /// use data_matrix::DataMatrixBuilder;
     /// # use data_matrix::Error;
-    /// # fn main() -> Result<(), data_matrix::Error> {
+    /// # fn main() -> Result<(), Error> {
     /// let dm = DataMatrixBuilder::new()
     ///     .label_columns(0, 1)
     ///     .index_columns(3, 4)
