@@ -20,4 +20,5 @@ thiserror = "1.0"
 anyhow = "1"    # to erase the type of an error returned
 indexmap = "2"  # to draw nodes of a mindmap in the same order as they were added / grown
 # displaydoc = "0.2"
-data-matrix = "0.2.0" # to load data from CSV / column files
+data-matrix = "0.2.0"
+base64 = "0.22.1" # to load data from CSV / column files

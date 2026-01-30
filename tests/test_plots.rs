@@ -1,5 +1,5 @@
 mod test_plots {
-    use visualife::plots::{AxisSetBuilder, linspace, Plot, PlotError, TicsLocation};
+    use visualife::plots::{AxisSetBuilder, linspace, Plot, PlotError, TickDirection};
     use visualife::SvgDrawing;
 
     #[test]
@@ -8,7 +8,7 @@ mod test_plots {
 
         let axes = AxisSetBuilder::new("LBTR",(50.0, 450.0, 50.0, 450.0))
             .data_range((-1.0, 1.0, -1.0, 1.0))
-            .tics_location(TicsLocation::OUTER)
+            .tics_location(TickDirection::OUTER)
             .ntics(4).font_size(12.0).build();
         let mut plot = Plot::new("heatmap",axes);
 

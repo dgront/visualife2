@@ -1,11 +1,12 @@
 use crate::basic_shapes::SvgElement;
 use crate::ElementID;
 use crate::heatmap::Heatmap;
-use crate::plots::{AxisSet, AxisSetBuilder, Box2D, matrix_shape, PlotError, point_outside_box};
+use crate::plots::{AxisIntercept, AxisSet, Box2D, matrix_shape, PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT, PlotError, point_outside_box, update_plot_box};
 use crate::styling::Style;
 
 use std::fmt;
 use std::str::FromStr;
+
 
 /// Marker symbols for scatter plots (subset of Matplotlib markers).
 ///
@@ -109,6 +110,7 @@ impl fmt::Display for MarkerType {
 pub struct Plot {
     pub id: ElementID,
     axes: AxisSet,
+    axes2: Option<AxisSet>,
     screen_x0: f32,
     screen_y0: f32,
     svg_elements: Vec<SvgElement>,
@@ -117,14 +119,34 @@ pub struct Plot {
 
 impl Plot {
     pub fn new(id: impl Into<ElementID>, axes: AxisSet) -> Self {
-        Plot{ id: id.into(), axes, screen_x0: 0.0, screen_y0: 0.0, svg_elements: vec![], scatter_series: vec![] }
+        Plot{ id: id.into(), axes, axes2: None, screen_x0: 0.0, screen_y0: 0.0, svg_elements: vec![], scatter_series: vec![] }
     }
 
-    pub fn cartesian(id: impl Into<ElementID>, plotting_box: Box2D<f32>) -> Self {
-        let axes = AxisSetBuilder::new("LB", plotting_box)
-            .center(0.0, 0.0).arrowheads(true).ntics(5).build();
+    pub fn cartesian(id: impl Into<ElementID>, screen_box: Box2D<f32>) -> Self {
+        let mut axes = AxisSet::new(screen_box);
+        axes.set_intercept_point(0.0, 0.0);
+        axes.has_arrowhead = true;
+        axes.set_intercept_point(0.0, 0.0);
+        axes.set_plot_box((-1.0, 1.0, -1.0, 1.0));
+        axes.x.set_nticks(7);
+        axes.y.set_nticks(7);
 
         return Plot::new(id, axes);
+    }
+
+    pub fn rectangular(id: impl Into<ElementID>, screen_box: Box2D<f32>) -> Self {
+        let mut axes = AxisSet::new(screen_box);
+        axes.set_intercept(AxisIntercept::AutoStart, AxisIntercept::AutoEnd);
+        axes.has_arrowhead = true;
+        axes.set_intercept(AxisIntercept::AutoStart, AxisIntercept::AutoEnd);
+        axes.set_plot_box((-1.0, 1.0, -1.0, 1.0));
+        axes.x.set_nticks(7);
+        axes.y.set_nticks(7);
+
+        let mut plot = Plot::new(id, axes);
+        let axes =
+
+        return plot;
     }
 
     pub fn axes(&mut self) -> &mut AxisSet { &mut self.axes }
@@ -137,11 +159,10 @@ impl Plot {
     pub fn scatter(&mut self, x: &[f32], y: &[f32]) {
         assert_eq!(x.len(), y.len(), "x and y must have the same length");
 
-        let pbox = self.axes.plot_box();
-        if point_outside_box(x, y, pbox) {
-
+        let mut pbox = self.axes.plot_box();
+        if point_outside_box(x, y, &pbox) {
+            self.axes.set_plot_box(update_plot_box(x,y,&pbox));
         }
-        // if point_outside_box(&x, &y, self.pl)
         let data = x.iter()
             .copied()
             .zip(y.iter().copied())
@@ -156,7 +177,7 @@ impl Plot {
         R: IntoIterator<Item = T>,
         T: Into<f64> {
 
-        let screen = self.axes.screen_box()?;
+        let screen = self.axes.screen_box();
 
         let data: Vec<Vec<f64>> = data
             .into_iter()
@@ -192,7 +213,7 @@ impl Plot {
         }
         plot_components.push(self.axes.create_element());
         let mut plot = SvgElement::group(format!("{}", self.id), plot_components)
-            .with_style(Style::new().font_family("'system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif'"));
+            .with_style(Style::new().font_family(PLOT_FONT_FAMILY).font_weight(PLOT_FONT_WEIGHT));
         plot.translate(self.screen_x0, self.screen_y0);
 
         return plot;
