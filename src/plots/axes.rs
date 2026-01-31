@@ -146,7 +146,8 @@ impl Axis {
     /// Update a vector of ticks for this axis if needed.
     pub(crate) fn update_ticks(&mut self) {
 
-        if self.plot_ticks.len()==0 && self.n_ticks > 0 {
+        if self.n_ticks > 0 {
+            self.plot_ticks.clear();
             for v in linspace(self.n_ticks, self.plot_from, self.plot_to, true) {
                 self.plot_ticks.push(Tick::with_label(v, format!("{:.2}", v)));
             }
@@ -215,6 +216,7 @@ pub struct AxisSet {
     pub tics_width: f32,
     /// font size for tics labels
     pub font_size: f32,
+    pub draw_grid: bool,
     pub arrowhead_size: f32,
 }
 
@@ -230,6 +232,7 @@ impl AxisSet {
             stroke_width: shortest_len/400.0,
             tics_width: shortest_len/100.0,
             font_size: shortest_len/30.0,
+            draw_grid: false,
             arrowhead_size: shortest_len/40.0,
         }
     }
@@ -245,7 +248,6 @@ impl AxisSet {
 
     /// Return immutable reference to the Y axis
     pub fn y_axis_mut(&mut self) -> &Axis { &mut self.y }
-
 
     /// Screen coordinates of a rectangle that contains the plotting area.
     ///
@@ -362,6 +364,7 @@ impl AxisSet {
     fn create_x_tics(&self) -> SvgElement {
         // ---------- Prepare ticks
         let tics = &self.x.plot_ticks;
+        let ticks_dist = Self::shortes_ticks_distance(tics);
 
         // ---------- Create SVG elements
         let mut elements = vec![];
@@ -386,10 +389,10 @@ impl AxisSet {
         };
         for (i, t) in tics.iter().enumerate() {
             let x = self.x.to_screen(t.value, false);
-            if self.x.show_ticks {
+            if self.x.show_ticks && !Self::is_tick_masked(t.value, self.intercept_y(), ticks_dist) {
                 elements.push(SvgElement::line(format!("x0t{}", i), x, y, x, y + d));
             }
-            if self.x.show_ticks_labels {
+            if self.x.show_ticks_labels && !Self::is_tick_masked(t.value, self.intercept_y(), ticks_dist) {
                 elements.push(
                     SvgElement::text("x0l", x, y + label_offset, t.label())
                         .with_style(text_style.clone())
@@ -405,6 +408,7 @@ impl AxisSet {
     fn create_y_tics(&self) -> SvgElement {
         // ---------- Prepare ticks
         let tics = &self.y.plot_ticks;
+        let ticks_dist = Self::shortes_ticks_distance(tics);
 
         // ---------- Create SVG elements
         let mut elements = vec![];
@@ -431,10 +435,10 @@ impl AxisSet {
 
         for (i, t) in tics.iter().enumerate() {
             let y = self.y.to_screen(t.value, true);
-            if self.x.show_ticks {
+            if self.y.show_ticks && !Self::is_tick_masked(t.value, self.intercept_x(), ticks_dist) {
                 elements.push(SvgElement::line(format!("y0t{}", i), x, y, x + d, y));
             }
-            if self.x.show_ticks_labels {
+            if self.y.show_ticks_labels && !Self::is_tick_masked(t.value, self.intercept_x(), ticks_dist) {
                 elements.push(
                     SvgElement::text(format!("y0l{}", i), x + label_offset, y, t.label())
                         .with_style(text_style.clone())
@@ -445,6 +449,23 @@ impl AxisSet {
         return SvgElement::group("y0t", elements).with_style(
             Style::new().font_family(PLOT_FONT_FAMILY)
                 .font_weight(PLOT_FONT_WEIGHT).font_size(&format!("{}",self.font_size)));
+    }
+
+    /// Finds the shortest distance between ticks
+    ///
+    /// This is used to skip ticks and labels if they are too close to intercept
+    fn shortes_ticks_distance(ticks: &Vec<Tick>) -> f32 {
+
+        let mut min_step = f32::INFINITY;
+        for w in ticks.windows(2) {
+            let step = (w[1].value- w[0].value).abs();
+            min_step = min_step.min(step);
+        }
+        return min_step;
+    }
+
+    fn is_tick_masked(tick_pos: f32, intercept: f32, min_tick_sep: f32) -> bool {
+        (tick_pos - intercept).abs() < min_tick_sep / 3.0
     }
 }
 

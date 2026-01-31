@@ -2,11 +2,11 @@ use crate::basic_shapes::SvgElement;
 use crate::ElementID;
 use crate::heatmap::Heatmap;
 use crate::plots::{AxisIntercept, AxisSet, Box2D, matrix_shape, PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT, PlotError, point_outside_box, TickDirection, update_plot_box};
-use crate::styling::Style;
+use crate::styling::{darker, Style};
 
 use std::fmt;
 use std::str::FromStr;
-
+use crate::styling::palettes::{ACCENT};
 
 /// Marker symbols for scatter plots (subset of Matplotlib markers).
 ///
@@ -122,6 +122,7 @@ impl Plot {
         Plot{ id: id.into(), axes, axes2: None, screen_x0: 0.0, screen_y0: 0.0, svg_elements: vec![], scatter_series: vec![] }
     }
 
+    /// Cartesian axes that cross at 0,0
     pub fn cartesian<R: Into<Box2D<f32>>>(id: impl Into<ElementID>, screen_box: R) -> Self {
         let mut axes = AxisSet::new(screen_box);
         axes.set_intercept_point(0.0, 0.0);
@@ -183,7 +184,8 @@ impl Plot {
             .copied()
             .zip(y.iter().copied())
             .collect();
-        self.scatter_series.push(DataSeries{ data: data, marker: MarkerType::Circle {} })
+        self.scatter_series.push(
+            DataSeries{ data: data, marker: MarkerType::Circle {}, marker_size: 7.0, color: ACCENT[0] })
     }
 
     /// Plots a heatmap from a rectangular 2D dataset
@@ -213,6 +215,13 @@ impl Plot {
     /// Creates an SVG group element that holds all the graphical elements of this plot
     pub fn create_element(&self) -> SvgElement {
         let mut plot_components = vec![];
+
+        // --- draw axes
+        plot_components.push(self.axes.create_element());
+        if let Some(ax2) = &self.axes2 {
+            plot_components.push(ax2.create_element());
+        }
+
         // --- draw explicit SVG content
         for c in &self.svg_elements {
             plot_components.push(c.clone());
@@ -225,15 +234,12 @@ impl Plot {
                 let (sx,sy) = self.axes.to_screen(*dx, *dy);
                 markers.push(ser.marker.draw(&format!("s1{}", i), sx, sy, size));
             }
+
             let series = SvgElement::group("s1", markers)
-                .with_style(Style::new().stroke("#000000").fill("#000000"));
+                .with_style(Style::new().stroke(&darker(ser.color, 0.1).unwrap()).fill(ser.color));
             plot_components.push(series);
         }
-        // --- draw axes
-        plot_components.push(self.axes.create_element());
-        if let Some(ax2) = &self.axes2 {
-            plot_components.push(ax2.create_element());
-        }
+
         // --- group for the whole plot
         let mut plot = SvgElement::group(format!("{}", self.id), plot_components)
             .with_style(Style::new().font_family(PLOT_FONT_FAMILY).font_weight(PLOT_FONT_WEIGHT));
@@ -245,5 +251,7 @@ impl Plot {
 
 struct DataSeries {
     data: Vec<(f32,f32)>,
-    marker: MarkerType
+    marker: MarkerType,
+    marker_size: f32,
+    color: &'static str
 }
