@@ -1,8 +1,8 @@
-use rand::Rng;
+use rand::{Rng, SeedableRng};
 use clap::{Parser, ArgAction};
 
 use data_matrix::{DataMatrixBuilder};
-
+use rand::prelude::StdRng;
 use visualife::{SvgDrawing};
 use visualife::heatmap::Heatmap;
 
@@ -71,7 +71,7 @@ fn main() -> anyhow::Result<()> {
         }
         None => {
             let n = 30;
-            let mut rng = rand::thread_rng();
+            let mut rng = StdRng::seed_from_u64(0);
             let data: Vec<f64> = (0..n*n).map(|_| rng.random::<f64>()).collect();
             data_source.from_data(&data)
         }

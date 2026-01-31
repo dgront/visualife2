@@ -157,10 +157,14 @@ impl Axis {
 
 /// Compute a "nice" plotting range that encloses [min, max].
 ///
-/// Example:
-///   [0.023, 1.899999] -> [0.0, 2.0]
-///   [12.1, 98.7]      -> [10.0, 100.0]
-fn nice_plot_range(min: f32, max: f32) -> (f32, f32) {
+/// # Examples
+/// ```
+/// use visualife::plots::nice_plot_range;
+/// let (min_x, max_x) = nice_plot_range(0.01, 0.98);
+/// assert!(min_x.abs() < 0.0001);
+/// assert!((max_x - 1.0).abs() < 0.0001);
+/// ```
+pub fn nice_plot_range(min: f32, max: f32) -> (f32, f32) {
     assert!(min.is_finite() && max.is_finite());
     assert!(min < max);
 

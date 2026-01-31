@@ -7,12 +7,15 @@ mod test_plots {
 
     #[test]
     fn plot_heatmap() -> Result<(), PlotError> {
-        let mut drawing = SvgDrawing::new(500.0, 500.0);
-
-        let mut plot = Plot::rectangular("heatmap", (50.0, 450.0, 50.0, 450.0));
-
+        let width = 500.0;
+        let mut drawing = SvgDrawing::new(width, width);
+        let m = 75.0;   // --- plot margin
+        let mut plot = Plot::rectangular("heatmap", (0.0 + m, width - m, 0.0 + m, width - m));
+        plot.set_nticks(5);
         let data = make_grid(15.0, 30);
-        plot.heatmap(data)?;
+        let x = linspace(30, -15.0, 15.0, false);
+        let y = linspace(30, -15.0, 15.0, false);
+        plot.heatmap(&x, &y, data)?;
         drawing.add_element(plot.create_element());
         let fname = "htmp_plot.svg";
         drawing.save_svg(fname)

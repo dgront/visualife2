@@ -21,8 +21,8 @@
 /// Skip endpoints (open interval):
 /// ```
 /// use visualife::plots::linspace;
-/// let v = linspace(5, 0.0, 2.0, true);
-/// let expected = vec![1.0/3.0, 2.0/3.0, 1.0, 4.0/3.0, 5.0/3.0];
+/// let v = linspace(7, 0.0, 2.0, true);
+/// let expected = vec![0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75];
 /// for (a, b) in v.iter().zip(expected.iter()) {
 ///     assert!((a - b).abs() < 1e-6);
 /// }
@@ -58,6 +58,19 @@ pub fn linspace(n: usize, xb: f32, xe: f32, skip_ends: bool) -> Vec<f32> {
     }
 }
 
+/// Generate equally spaced values between `xb` and `xe`, separated by `step`
+pub fn linspace_by(xb: f32, xe: f32, step: f32) -> Vec<f32> {
+
+    let mut data = vec![xb];
+    let mut i = 1;
+    while data[i]< xe {
+        i+=1;
+        data.push(data[i]+step);
+    }
+
+    return data
+}
+
 /// Returns (n_rows, max_cols) of a 2D iterator without consuming the data.
 ///
 /// It works with slices:
@@ -82,4 +95,19 @@ pub fn matrix_shape<R, T>(data: &[R]) -> (usize, usize)  where R: AsRef<[T]> {
     let n_rows = data.len();
     let max_cols = data.iter().map(|row| row.as_ref().len()).max().unwrap_or(0);
     (n_rows, max_cols)
+}
+
+pub fn min_max(values: &[f32]) -> (f32, f32) {
+    let mut iter = values.iter().copied().filter(|v| !v.is_nan());
+
+    let first = iter.next().expect("The provided data slice should not be empty!");
+    let mut min_v = first;
+    let mut max_v = first;
+
+    for v in iter {
+        if v < min_v { min_v = v; }
+        if v > max_v { max_v = v; }
+    }
+
+    return (min_v, max_v);
 }

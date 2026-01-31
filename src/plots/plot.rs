@@ -1,12 +1,13 @@
 use crate::basic_shapes::SvgElement;
 use crate::ElementID;
 use crate::heatmap::Heatmap;
-use crate::plots::{AxisIntercept, AxisSet, Box2D, matrix_shape, PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT, PlotError, point_outside_box, TickDirection, update_plot_box};
+use crate::plots::{AxisIntercept, AxisSet, Box2D, matrix_shape, nice_plot_range, PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT, PlotError, point_outside_box, TickDirection, update_plot_box};
 use crate::styling::{darker, Style};
 
 use std::fmt;
 use std::str::FromStr;
 use crate::styling::palettes::{ACCENT};
+use crate::utils::min_max;
 
 /// Marker symbols for scatter plots (subset of Matplotlib markers).
 ///
@@ -194,7 +195,7 @@ impl Plot {
     pub fn scatter(&mut self, x: &[f32], y: &[f32]) {
         assert_eq!(x.len(), y.len(), "x and y must have the same length");
 
-        let mut pbox = self.axes.plot_box();
+        let pbox = self.axes.plot_box();
         if point_outside_box(x, y, &pbox) {
             self.axes.set_plot_box(update_plot_box(x,y,&pbox));
         }
@@ -206,15 +207,22 @@ impl Plot {
             DataSeries{ data: data, marker: MarkerType::Circle {}, marker_size: 7.0, color: ACCENT[0] })
     }
 
-    /// Plots a heatmap from a rectangular 2D dataset
-    pub fn heatmap<I, R, T>(&mut self, data: I) -> Result<(), PlotError>
+    /// Plots a heatmap from a rectangular 2D dataset.
+    ///
+    /// Given rectangular `data` matrix is plotted as a heatmap; `x` and `y` vectors are used only
+    /// to set up axes properly.
+    pub fn heatmap<I, R, T>(&mut self, x: &[f32], y: &[f32], data: I) -> Result<(), PlotError>
     where
         I: IntoIterator<Item = R>,
         R: IntoIterator<Item = T>,
         T: Into<f64> {
 
         let screen = self.axes.screen_box();
-
+        let (min_x, max_x) = min_max(x);
+        // let (min_x, max_x) = nice_plot_range(min_x, max_x);
+        let (min_y, max_y) = min_max(y);
+        // let (min_y, max_y) = nice_plot_range(min_y, max_y);
+        self.set_plot_box((min_x, max_x, min_y, max_y));
         let data: Vec<Vec<f64>> = data
             .into_iter()
             .map(|row| row.into_iter().map(Into::into).collect())
