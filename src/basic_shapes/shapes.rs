@@ -40,3 +40,54 @@ pub fn triangle_arrow(id: impl Into<ElementID>, x_base: f32, y_base: f32, x_tip:
         SvgElement::polygon(id.into(), vec![(x1, y1), (x2, y2), (x_tip, y_tip)])
     }
 }
+
+/// Create lines that forms a rectangular grid.
+///
+/// # Example
+/// ```
+/// use visualife::basic_shapes::grid_lines;
+/// use visualife::plots::linspace;
+/// use visualife::styling::Style;
+/// use visualife::SvgDrawing;
+/// let xy = linspace(7, 10.0, 70.0, false);
+/// let mut drawing = SvgDrawing::new(80.0, 80.0);
+/// let grid = grid_lines("grid", &xy, &xy, true).with_style(
+///     Style::new().stroke("#000000").stroke_width(0.1));
+/// drawing.add_element(grid);
+/// drawing.save_svg("grid.svg").unwrap()
+/// ```
+pub fn grid_lines(id: &str, x: &[f32], y: &[f32], draw_borderlines: bool) -> SvgElement {
+    // Nothing to draw if we cannot span both directions.
+    if x.len() < 2 || y.len() < 2 {
+        return SvgElement::group(id, Vec::new());
+    }
+
+    let x_min = x[0];
+    let x_max = x[x.len() - 1];
+    let y_min = y[0];
+    let y_max = y[y.len() - 1];
+
+    // Decide which indices to include.
+    let (x_start, x_end_excl) = if draw_borderlines { (0, x.len()) } else { (1, x.len() - 1) };
+    let (y_start, y_end_excl) = if draw_borderlines { (0, y.len()) } else { (1, y.len() - 1) };
+
+    let mut elements = Vec::new();
+
+    // Vertical lines at each x, spanning full y-range.
+    if x_end_excl > x_start {
+        for (i, &xi) in x[x_start..x_end_excl].iter().enumerate() {
+            let line_id = format!("{id}-v-{i}");
+            elements.push(SvgElement::line(&line_id, xi, y_min, xi, y_max));
+        }
+    }
+
+    // Horizontal lines at each y, spanning full x-range.
+    if y_end_excl > y_start {
+        for (j, &yj) in y[y_start..y_end_excl].iter().enumerate() {
+            let line_id = format!("{id}-h-{j}");
+            elements.push(SvgElement::line(&line_id, x_min, yj, x_max, yj));
+        }
+    }
+
+    SvgElement::group(id, elements)
+}
