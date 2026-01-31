@@ -166,7 +166,25 @@ impl Plot {
         return plot;
     }
 
-    pub fn axes(&mut self) -> &mut AxisSet { &mut self.axes }
+    pub fn set_plot_box<R: Into<Box2D<f32>>>(&mut self, range: R)  {
+        let data_box = range.into();
+        if let Some(ax2) = &mut self.axes2 { ax2.set_plot_box(data_box.clone())}
+        self.axes.set_plot_box(data_box);
+    }
+
+    pub fn set_nticks(&mut self, n_ticks: usize)  {
+        if let Some(ax2) = &mut self.axes2 {
+            ax2.x.set_nticks(n_ticks);
+            ax2.y.set_nticks(n_ticks);
+        }
+        self.axes.x.set_nticks(n_ticks);
+        self.axes.y.set_nticks(n_ticks);
+    }
+
+
+    pub fn axes_mut(&mut self) -> &mut AxisSet { &mut self.axes }
+
+    pub fn axes2_mut(&mut self) -> &mut Option<AxisSet> { &mut self.axes2 }
 
     pub fn translate(&mut self, offset_x: f32, offset_y: f32) {
         self.screen_x0 = offset_x;

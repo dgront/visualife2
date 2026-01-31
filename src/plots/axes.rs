@@ -1,7 +1,7 @@
-use std::fmt;
 use std::fmt::Display;
 
-use crate::basic_shapes::{SvgElement, triangle_arrow};
+use crate::basic_shapes::{grid_lines, SvgElement, triangle_arrow};
+use crate::ElementID;
 use crate::plots::box2d::Box2D;
 use crate::plots::{linspace, PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT, PlotError};
 use crate::styling::Style;
@@ -331,6 +331,9 @@ impl AxisSet {
         let arrow_w = self.arrowhead_size * 0.5;
         let arrow_l = self.arrowhead_size;
         let mut axes = vec![];
+        // ---------- grid lines at the bottom
+        if self.draw_grid { axes.push(self.draw_grid("grid")) }
+
         // ---------- X axis
         let mut x_axis = vec![];
         let y = self.y.to_screen(self.intercept_y(), true);
@@ -466,6 +469,29 @@ impl AxisSet {
 
     fn is_tick_masked(tick_pos: f32, intercept: f32, min_tick_sep: f32) -> bool {
         (tick_pos - intercept).abs() < min_tick_sep / 3.0
+    }
+
+    fn draw_grid(&self, id: impl Into<ElementID>) -> SvgElement {
+        let mut x: Vec<f32> = self.x.plot_ticks.iter().map(|t| self.x.to_screen(t.value, false)).collect();
+        let mut y: Vec<f32> = self.x.plot_ticks.iter().map(|t| self.y.to_screen(t.value, true)).collect();
+
+        let x_ticks_sep = Self::shortes_ticks_distance(&self.x.plot_ticks);
+        if (x[0] - self.x.screen_from).abs() > x_ticks_sep / 5.0 {
+            x.insert(0, self.x.screen_from);
+        }
+        if (x[x.len() - 1] - self.x.screen_to).abs() > x_ticks_sep / 5.0 {
+            x.push(self.x.screen_to);
+        }
+        let y_ticks_sep = Self::shortes_ticks_distance(&self.y.plot_ticks);
+        if (y[0] - self.y.screen_to).abs() > y_ticks_sep / 5.0 {
+            y.insert(0, self.y.screen_to);
+        }
+        if (y[y.len() - 1] - self.y.screen_from).abs() > y_ticks_sep / 5.0 {
+            y.push(self.y.screen_from);
+        }
+        grid_lines(id, &x, &y, true).with_style(
+            Style::new().stroke("#000000").stroke_width(self.stroke_width / 3.0)
+        )
     }
 }
 

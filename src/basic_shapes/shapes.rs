@@ -56,7 +56,7 @@ pub fn triangle_arrow(id: impl Into<ElementID>, x_base: f32, y_base: f32, x_tip:
 /// drawing.add_element(grid);
 /// drawing.save_svg("grid.svg").unwrap()
 /// ```
-pub fn grid_lines(id: &str, x: &[f32], y: &[f32], draw_borderlines: bool) -> SvgElement {
+pub fn grid_lines(id: impl Into<ElementID>, x: &[f32], y: &[f32], draw_borderlines: bool) -> SvgElement {
     // Nothing to draw if we cannot span both directions.
     if x.len() < 2 || y.len() < 2 {
         return SvgElement::group(id, Vec::new());
@@ -73,6 +73,7 @@ pub fn grid_lines(id: &str, x: &[f32], y: &[f32], draw_borderlines: bool) -> Svg
 
     let mut elements = Vec::new();
 
+    let id = id.into();
     // Vertical lines at each x, spanning full y-range.
     if x_end_excl > x_start {
         for (i, &xi) in x[x_start..x_end_excl].iter().enumerate() {
