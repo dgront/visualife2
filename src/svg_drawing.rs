@@ -6,13 +6,14 @@ pub struct SvgDrawing {
     width: f32,
     height: f32,
     elements: Vec<SvgElement>,
+    defs: Vec<String>,
 }
 
 impl SvgDrawing {
 
     /// Create a new SVG drawing with the given width and height.
     pub fn new(width: f32, height: f32) -> Self {
-        SvgDrawing { width, height, elements: vec![] }
+        SvgDrawing { width, height, elements: vec![], defs: vec![] }
     }
 
     pub fn width(&self) -> f32 { self.width }
@@ -52,6 +53,14 @@ impl SvgDrawing {
         ));
         out.push_str("\n");
 
+        // --- add definitions
+        out.push_str("<defs>\n");
+        for def in &self.defs {
+            out.push_str(&def);
+            out.push('\n');
+        }
+        out.push_str("</defs>\n");
+
         // Add elements
         for el in &self.elements {
             out.push_str("\t");
@@ -81,6 +90,10 @@ impl SvgDrawing {
     /// ```
     pub fn add_element<E: Into<SvgElement>>(&mut self, e: E) {
         self.elements.push(e.into());
+    }
+
+    pub fn add_definition(&mut self, defin: String) {
+            self.defs.push(defin);
     }
 
     // ---- used by Python API!

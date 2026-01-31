@@ -11,3 +11,6 @@ pub use attributes::*;
 
 mod shapes;
 pub use shapes::*;
+
+mod fonts;
+pub use fonts::*;

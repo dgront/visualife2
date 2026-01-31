@@ -223,7 +223,7 @@ impl AxisSet {
             has_arrowhead: false,
             stroke_width: shortest_len/400.0,
             tics_width: shortest_len/100.0,
-            font_size: shortest_len/40.0,
+            font_size: shortest_len/30.0,
             arrowhead_size: shortest_len/40.0,
         }
     }
@@ -276,8 +276,8 @@ impl AxisSet {
         self.y.update_ticks();
     }
 
-    /// Returns the X coordinate of the intercept point in data/plot coordinates
-    pub fn intercept_x(&self) -> f32 {
+    /// Returns the Y coordinate of the intercept point in data/plot coordinates
+    pub fn intercept_y(&self) -> f32 {
         match self.x.intercept {
             AxisIntercept::AutoStart => {self.y.plot_from}
             AxisIntercept::AutoEnd => {self.y.plot_to}
@@ -285,8 +285,8 @@ impl AxisSet {
         }
     }
 
-    /// Returns the Y coordinate of the intercept point in data/plot coordinates
-    pub fn intercept_y(&self) -> f32 {
+    /// Returns the X coordinate of the intercept point in data/plot coordinates
+    pub fn intercept_x(&self) -> f32 {
         match self.y.intercept {
             AxisIntercept::AutoStart => {self.x.plot_from}
             AxisIntercept::AutoEnd => {self.x.plot_to}
@@ -328,7 +328,7 @@ impl AxisSet {
         let y = self.y.to_screen(self.intercept_y(), true);
         let (x1, x2) = (self.x.screen_from, self.x.screen_to);
         x_axis.push(SvgElement::line("x0l", x1, y, x2, y));
-        x_axis.push(triangle_arrow("x0a", x2, y, x2 + arrow_l, y, arrow_w));
+        if self.has_arrowhead { x_axis.push(triangle_arrow("x0a", x2, y, x2 + arrow_l, y, arrow_w)); }
         // tics and labels
         if self.x.tics_location!=TickDirection::None {
             x_axis.push(self.create_x_tics());
@@ -341,7 +341,7 @@ impl AxisSet {
         // --- Swap Y coordinates!
         let (y1, y2) = (self.y.screen_to, self.y.screen_from);
         y_axis.push(SvgElement::line("y0l", x, y1, x, y2));
-        y_axis.push(triangle_arrow("y0a", x, y2 + arrow_l, x, y2, arrow_w));
+        if self.has_arrowhead { y_axis.push(triangle_arrow("y0a", x, y2 + arrow_l, x, y2, arrow_w)); }
         // tics and labels here
         if self.y.tics_location!=TickDirection::None {
             y_axis.push(self.create_y_tics());
@@ -383,11 +383,13 @@ impl AxisSet {
             elements.push(SvgElement::line(format!("x0t{}", i), x, y, x, y+d));
             elements.push(
                 SvgElement::text("x0l", x, y + label_offset, t.label())
-                    .with_style(text_style.clone().font_size(&format!("{}",self.font_size)))
+                    .with_style(text_style.clone())
             );
         }
 
-        return SvgElement::group(format!("x0t"), elements);
+        return SvgElement::group(format!("x0t"), elements).with_style(
+            Style::new().font_family(PLOT_FONT_FAMILY)
+                .font_weight(PLOT_FONT_WEIGHT).font_size(&format!("{}",self.font_size)));
     }
 
     fn create_y_tics(&self) -> SvgElement {
@@ -422,12 +424,13 @@ impl AxisSet {
             elements.push(SvgElement::line(format!("y0t{}", i), x, y, x+d, y));
             elements.push(
                 SvgElement::text(format!("y0l{}", i), x+label_offset, y, t.label())
-                    .with_style(text_style.clone().font_size(&format!("{}",self.font_size)))
+                    .with_style(text_style.clone())
             );
         }
         
         return SvgElement::group("y0t", elements).with_style(
-            Style::new().font_family(PLOT_FONT_FAMILY).font_weight(PLOT_FONT_WEIGHT));
+            Style::new().font_family(PLOT_FONT_FAMILY)
+                .font_weight(PLOT_FONT_WEIGHT).font_size(&format!("{}",self.font_size)));
     }
 }
 

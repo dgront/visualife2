@@ -136,15 +136,16 @@ impl Plot {
 
     pub fn rectangular(id: impl Into<ElementID>, screen_box: Box2D<f32>) -> Self {
         let mut axes = AxisSet::new(screen_box);
-        axes.set_intercept(AxisIntercept::AutoStart, AxisIntercept::AutoEnd);
-        axes.has_arrowhead = true;
-        axes.set_intercept(AxisIntercept::AutoStart, AxisIntercept::AutoEnd);
+        axes.has_arrowhead = false;
+        axes.set_intercept(AxisIntercept::AutoStart, AxisIntercept::AutoStart);
         axes.set_plot_box((-1.0, 1.0, -1.0, 1.0));
         axes.x.set_nticks(7);
         axes.y.set_nticks(7);
 
         let mut plot = Plot::new(id, axes);
-        let axes =
+        let mut axes2 = AxisSet::new(screen_box);
+        axes2.set_intercept(AxisIntercept::AutoEnd, AxisIntercept::AutoEnd);
+        axes2.has_arrowhead = false;
 
         return plot;
     }

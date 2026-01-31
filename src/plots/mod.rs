@@ -14,7 +14,7 @@ pub use plot::*;
 mod plot_error;
 pub use plot_error::*;
 
-pub(crate) const PLOT_FONT_FAMILY: &str = "font-family:'DejaVu Sans','Liberation Sans',Arial,Helvetica,sans-serif;";
-pub(crate) const PLOT_FONT_WEIGHT: &str = "400";
+pub(crate) const PLOT_FONT_FAMILY: &str = "DejaVuSansRegular,'DejaVu Sans','Liberation Sans',Arial,Helvetica,sans-serif;";
+pub(crate) const PLOT_FONT_WEIGHT: &str = "200";
 
 
