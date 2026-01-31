@@ -26,9 +26,9 @@ mod test_axes {
         axes.set_plot_box((0.0, 10.0, 0.0, 100.0));
         axes.x.set_nticks(7);
         axes.y.set_nticks(4);
-        axes.y.tics_location = TickDirection::UpLeft;
+        axes.y.ticks_location = TickDirection::UpLeft;
         axes.y.label_location = TickDirection::UpLeft;
-        axes.x.tics_location = TickDirection::DownRight;
+        axes.x.ticks_location = TickDirection::DownRight;
         axes.x.label_location = TickDirection::DownRight;
         let mut drawing = SvgDrawing::new(250.0, 150.0);
         drawing.add_element(axes);
@@ -43,9 +43,9 @@ mod test_axes {
         axes.set_plot_box((0.0, 10.0, 0.0, 100.0));
         axes.x.set_nticks(7);
         axes.y.set_nticks(4);
-        axes.y.tics_location = TickDirection::UpLeft;
+        axes.y.ticks_location = TickDirection::UpLeft;
         axes.y.label_location = TickDirection::UpLeft;
-        axes.x.tics_location = TickDirection::DownRight;
+        axes.x.ticks_location = TickDirection::DownRight;
         axes.x.label_location = TickDirection::DownRight;
 
         let mut axes2 = AxisSet::new((25.0,225.0, 25.0, 125.0));
@@ -54,9 +54,11 @@ mod test_axes {
         axes2.set_plot_box((0.0, 10.0, 0.0, 100.0));
         axes2.x.set_nticks(7);
         axes2.y.set_nticks(4);
-        axes2.y.tics_location = TickDirection::DownRight;
+        axes2.y.show_ticks_labels = false;
+        axes2.x.show_ticks_labels = false;
+        axes2.y.ticks_location = TickDirection::DownRight;
         axes2.y.label_location = TickDirection::DownRight;
-        axes2.x.tics_location = TickDirection::UpLeft;
+        axes2.x.ticks_location = TickDirection::UpLeft;
         axes2.x.label_location = TickDirection::UpLeft;
 
         let mut drawing = SvgDrawing::new(250.0, 150.0);

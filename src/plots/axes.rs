@@ -70,8 +70,12 @@ pub struct Axis {
     pub plot_from: f32,
     /// Largest data value plotted by this axis
     pub plot_to: f32,
-    /// How tics should be drawn in respected to their axis
-    pub tics_location: TickDirection,
+    /// How ticks should be drawn in respected to their axis
+    pub ticks_location: TickDirection,
+    /// Should ticks be actually drawn?
+    pub show_ticks: bool,
+    /// Should tick labels be shown as well?
+    pub show_ticks_labels: bool,
     /// How labels should be drawn in respected to their axis
     pub label_location: TickDirection,
     /// Intercept point - given in the data units of the other axis.
@@ -95,7 +99,9 @@ impl Axis {
         Axis{
             plot_from: 0.0,
             plot_to: 0.0,
-            tics_location: TickDirection::DownRight,
+            ticks_location: TickDirection::DownRight,
+            show_ticks: true,
+            show_ticks_labels: true,
             label_location: TickDirection::DownRight,
             intercept: AxisIntercept::AutoStart,
             screen_from,
@@ -330,7 +336,7 @@ impl AxisSet {
         x_axis.push(SvgElement::line("x0l", x1, y, x2, y));
         if self.has_arrowhead { x_axis.push(triangle_arrow("x0a", x2, y, x2 + arrow_l, y, arrow_w)); }
         // tics and labels
-        if self.x.tics_location!=TickDirection::None {
+        if self.x.ticks_location !=TickDirection::None {
             x_axis.push(self.create_x_tics());
         }
         axes.push( SvgElement::group("x0", x_axis));
@@ -343,7 +349,7 @@ impl AxisSet {
         y_axis.push(SvgElement::line("y0l", x, y1, x, y2));
         if self.has_arrowhead { y_axis.push(triangle_arrow("y0a", x, y2 + arrow_l, x, y2, arrow_w)); }
         // tics and labels here
-        if self.y.tics_location!=TickDirection::None {
+        if self.y.ticks_location !=TickDirection::None {
             y_axis.push(self.create_y_tics());
         }
         axes.push(SvgElement::group("y0", y_axis));
@@ -359,13 +365,13 @@ impl AxisSet {
 
         // ---------- Create SVG elements
         let mut elements = vec![];
-        let d = if (self.x.tics_location == TickDirection::DownRight) { self.tics_width } else { -self.tics_width };
+        let d = if (self.x.ticks_location == TickDirection::DownRight) { self.tics_width } else { -self.tics_width };
         let y = self.y.to_screen(self.intercept_y(), true);
         let text_style;
         let label_offset;
         if self.x.label_location == TickDirection::DownRight {
             text_style = Style::new().text_anchor("middle").dominant_baseline("hanging");
-            label_offset = if self.x.tics_location == TickDirection::DownRight {
+            label_offset = if self.x.ticks_location == TickDirection::DownRight {
                 self.tics_width + self.font_size * 0.5
             } else {
                 self.font_size * 0.5
@@ -380,11 +386,15 @@ impl AxisSet {
         };
         for (i, t) in tics.iter().enumerate() {
             let x = self.x.to_screen(t.value, false);
-            elements.push(SvgElement::line(format!("x0t{}", i), x, y, x, y+d));
-            elements.push(
-                SvgElement::text("x0l", x, y + label_offset, t.label())
-                    .with_style(text_style.clone())
-            );
+            if self.x.show_ticks {
+                elements.push(SvgElement::line(format!("x0t{}", i), x, y, x, y + d));
+            }
+            if self.x.show_ticks_labels {
+                elements.push(
+                    SvgElement::text("x0l", x, y + label_offset, t.label())
+                        .with_style(text_style.clone())
+                );
+            }
         }
 
         return SvgElement::group(format!("x0t"), elements).with_style(
@@ -398,7 +408,7 @@ impl AxisSet {
 
         // ---------- Create SVG elements
         let mut elements = vec![];
-        let d = if (self.y.tics_location == TickDirection::DownRight) { self.tics_width } else { -self.tics_width };
+        let d = if (self.y.ticks_location == TickDirection::DownRight) { self.tics_width } else { -self.tics_width };
         let x = self.x.to_screen(self.intercept_x(), false);
         let text_style;
         let label_offset;
@@ -421,11 +431,15 @@ impl AxisSet {
 
         for (i, t) in tics.iter().enumerate() {
             let y = self.y.to_screen(t.value, true);
-            elements.push(SvgElement::line(format!("y0t{}", i), x, y, x+d, y));
-            elements.push(
-                SvgElement::text(format!("y0l{}", i), x+label_offset, y, t.label())
-                    .with_style(text_style.clone())
-            );
+            if self.x.show_ticks {
+                elements.push(SvgElement::line(format!("y0t{}", i), x, y, x + d, y));
+            }
+            if self.x.show_ticks_labels {
+                elements.push(
+                    SvgElement::text(format!("y0l{}", i), x + label_offset, y, t.label())
+                        .with_style(text_style.clone())
+                );
+            }
         }
         
         return SvgElement::group("y0t", elements).with_style(

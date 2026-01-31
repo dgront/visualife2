@@ -1,7 +1,7 @@
 use crate::basic_shapes::SvgElement;
 use crate::ElementID;
 use crate::heatmap::Heatmap;
-use crate::plots::{AxisIntercept, AxisSet, Box2D, matrix_shape, PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT, PlotError, point_outside_box, update_plot_box};
+use crate::plots::{AxisIntercept, AxisSet, Box2D, matrix_shape, PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT, PlotError, point_outside_box, TickDirection, update_plot_box};
 use crate::styling::Style;
 
 use std::fmt;
@@ -122,7 +122,7 @@ impl Plot {
         Plot{ id: id.into(), axes, axes2: None, screen_x0: 0.0, screen_y0: 0.0, svg_elements: vec![], scatter_series: vec![] }
     }
 
-    pub fn cartesian(id: impl Into<ElementID>, screen_box: Box2D<f32>) -> Self {
+    pub fn cartesian<R: Into<Box2D<f32>>>(id: impl Into<ElementID>, screen_box: R) -> Self {
         let mut axes = AxisSet::new(screen_box);
         axes.set_intercept_point(0.0, 0.0);
         axes.has_arrowhead = true;
@@ -134,18 +134,33 @@ impl Plot {
         return Plot::new(id, axes);
     }
 
-    pub fn rectangular(id: impl Into<ElementID>, screen_box: Box2D<f32>) -> Self {
-        let mut axes = AxisSet::new(screen_box);
+    pub fn rectangular<R: Into<Box2D<f32>>>(id: impl Into<ElementID>, screen_box: R) -> Self {
+        let screen_box = screen_box.into();
+        let mut axes = AxisSet::new(screen_box.clone());
         axes.has_arrowhead = false;
         axes.set_intercept(AxisIntercept::AutoStart, AxisIntercept::AutoStart);
         axes.set_plot_box((-1.0, 1.0, -1.0, 1.0));
         axes.x.set_nticks(7);
         axes.y.set_nticks(7);
+        axes.y.ticks_location = TickDirection::UpLeft;
+        axes.y.label_location = TickDirection::UpLeft;
+        axes.x.ticks_location = TickDirection::DownRight;
+        axes.x.label_location = TickDirection::DownRight;
 
         let mut plot = Plot::new(id, axes);
-        let mut axes2 = AxisSet::new(screen_box);
+
+        let mut axes2 = AxisSet::new(screen_box.clone());
         axes2.set_intercept(AxisIntercept::AutoEnd, AxisIntercept::AutoEnd);
         axes2.has_arrowhead = false;
+        axes2.set_plot_box((-1.0, 1.0, -1.0, 1.0));
+        axes2.x.set_nticks(7);
+        axes2.y.set_nticks(7);
+        axes2.y.ticks_location = TickDirection::DownRight;
+        axes2.y.label_location = TickDirection::DownRight;
+        axes2.x.ticks_location = TickDirection::UpLeft;
+        axes2.x.label_location = TickDirection::UpLeft;
+
+        plot.axes2 = Some(axes2);
 
         return plot;
     }
@@ -198,9 +213,11 @@ impl Plot {
     /// Creates an SVG group element that holds all the graphical elements of this plot
     pub fn create_element(&self) -> SvgElement {
         let mut plot_components = vec![];
+        // --- draw explicit SVG content
         for c in &self.svg_elements {
             plot_components.push(c.clone());
         }
+        // --- draw scatter series
         for ser in &self.scatter_series {
             let mut markers = vec![];
             let size = 5.0_f32;
@@ -212,7 +229,12 @@ impl Plot {
                 .with_style(Style::new().stroke("#000000").fill("#000000"));
             plot_components.push(series);
         }
+        // --- draw axes
         plot_components.push(self.axes.create_element());
+        if let Some(ax2) = &self.axes2 {
+            plot_components.push(ax2.create_element());
+        }
+        // --- group for the whole plot
         let mut plot = SvgElement::group(format!("{}", self.id), plot_components)
             .with_style(Style::new().font_family(PLOT_FONT_FAMILY).font_weight(PLOT_FONT_WEIGHT));
         plot.translate(self.screen_x0, self.screen_y0);
