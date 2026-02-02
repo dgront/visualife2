@@ -16,7 +16,14 @@ impl SvgDrawing {
         SvgDrawing { width, height, elements: vec![], defs: vec![] }
     }
 
+    /// Total width of the SVG drawing area
+    ///
+    /// Any element with X coordinate greater than this value will not visible
     pub fn width(&self) -> f32 { self.width }
+
+    /// Total height of the SVG drawing area
+    ///
+    /// Any element with Y coordinate greater than this value will not visible
     pub fn height(&self) -> f32 { self.width }
 
     /// Renders the SVG drawing and returns it as a String.
@@ -34,8 +41,12 @@ impl SvgDrawing {
     ///        .with_style(Style::new().fill("skyblue").stroke("navy"));
     ///     drawing.add_element(circle);
     /// }
+    /// drawing.save_svg("output.svg");
     /// let svg_string = drawing.to_svg();
-    /// std::fs::write("output.svg", svg_string).unwrap();
+    /// // let expected = load_expected_svgs("./tests/expected_drawings/mindmap/", &["pastel_nodes.svg"])?;
+    // drawing.save_svg("pastel_nodes.svg")?;
+    /// assert_eq!(drawing.to_svg(), expected[0]);
+    ///
     /// ```
     pub fn to_svg(&self) -> String {
         // Estimate average line length
@@ -53,14 +64,15 @@ impl SvgDrawing {
         ));
         out.push_str("\n");
 
-        // --- add definitions
-        out.push_str("<defs>\n");
-        for def in &self.defs {
-            out.push_str(&def);
-            out.push('\n');
+        // --- add definitions - only when defined
+        if self.defs.len() > 0 {
+            out.push_str("<defs>\n");
+            for def in &self.defs {
+                out.push_str(&def);
+                out.push('\n');
+            }
+            out.push_str("</defs>\n");
         }
-        out.push_str("</defs>\n");
-
         // Add elements
         for el in &self.elements {
             out.push_str("\t");

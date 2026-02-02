@@ -270,7 +270,7 @@ impl Heatmap {
 }
 
 impl From<&Heatmap> for SvgElement {
-    /// Creates an SVG group that contains all graphical elements for this mindmap
+    /// Creates an SVG group that contains all graphical elements for this heatmap
 
     fn from(h: &Heatmap) -> Self { h.create_element() }
 }

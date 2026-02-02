@@ -1,111 +1,11 @@
 use crate::basic_shapes::SvgElement;
 use crate::ElementID;
 use crate::heatmap::Heatmap;
-use crate::plots::{AxisIntercept, AxisSet, Box2D, matrix_shape, nice_plot_range, PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT, PlotError, point_outside_box, TickDirection, update_plot_box};
+use crate::plots::{AxisIntercept, AxisSet, Box2D, MarkerType, matrix_shape, nice_plot_box, PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT, PlotError, point_outside_box, TickDirection, update_plot_box};
 use crate::styling::{darker, Style};
 
-use std::fmt;
-use std::str::FromStr;
 use crate::styling::palettes::{ACCENT};
 use crate::utils::min_max;
-
-/// Marker symbols for scatter plots (subset of Matplotlib markers).
-///
-/// Supported markers:
-/// - `"+"` : plus
-/// - `"x"` : cross
-/// - `"o"` / `"c"` : empty circle
-/// - `"O"` / `"C"` : filled circle
-/// - `"."` : point
-/// - `"s"` : empty square
-/// - `"s"` : filled square
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum MarkerType {
-    Plus,
-    Cross,
-    Circle,
-    FilledCircle,
-    Point,
-    Square,
-    FilledSquare
-}
-
-impl MarkerType {
-    /// Create SVG elements representing this marker centered at (cx, cy).
-    ///
-    /// `size` is the full marker size in screen units.
-    pub fn draw(&self, id: &str, cx: f32, cy: f32, size: f32) -> SvgElement {
-        let h = size * 0.5;
-
-        match self {
-            MarkerType::Plus => {
-                let mut elems = Vec::new();
-                elems.push(SvgElement::line(format!("{id}_h"), cx - h, cy, cx + h, cy));
-                elems.push(SvgElement::line(format!("{id}_v"), cx, cy - h, cx, cy + h));
-                let grp = SvgElement::group(id, elems);
-                return grp;
-            }
-
-            MarkerType::Cross => {
-                let mut elems = Vec::new();
-                elems.push(SvgElement::line(format!("{id}_d1"), cx - h, cy - h, cx + h, cy + h));
-                elems.push(SvgElement::line(format!("{id}_d2"), cx - h, cy + h, cx + h, cy - h));
-                let grp = SvgElement::group(id, elems);
-                return grp;
-            }
-
-            MarkerType::Circle | MarkerType::FilledCircle => {
-                return SvgElement::circle(format!("{id}_c"), cx, cy, h);
-            }
-
-            MarkerType::Point => {
-                return SvgElement::circle(format!("{id}_p"), cx, cy, h * 0.3);
-            }
-
-            MarkerType::Square | MarkerType::FilledSquare => {
-                return SvgElement::rect(format!("{id}_s"), cx - h, cy - h, size, size);
-            }
-        }
-    }
-}
-
-
-impl FromStr for MarkerType {
-    type Err = String;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use MarkerType::*;
-
-        match s {
-            "+" => Ok(Plus),
-            "x" => Ok(Cross),
-            "." => Ok(Point),
-            "o" | "c" => Ok(Circle),
-            "O" | "C" => Ok(FilledCircle),
-            "s" => Ok(Square),
-            "S" => Ok(FilledSquare),
-            _ => Err(format!("Unknown marker type: '{}'", s)),
-        }
-    }
-}
-
-impl fmt::Display for MarkerType {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        use MarkerType::*;
-
-        let s = match self {
-            Plus => "+",
-            Cross => "x",
-            Point => ".",
-            Circle => "o",
-            FilledCircle => "O",
-            Square  => "s",
-            FilledSquare => "S",
-        };
-
-        write!(f, "{}", s)
-    }
-}
 
 
 pub struct Plot {
@@ -115,12 +15,20 @@ pub struct Plot {
     screen_x0: f32,
     screen_y0: f32,
     svg_elements: Vec<SvgElement>,
-    scatter_series: Vec<DataSeries>
+    scatter_series: Vec<DataSeries>,
+    line_series: Vec<DataSeries>
 }
 
 impl Plot {
     pub fn new(id: impl Into<ElementID>, axes: AxisSet) -> Self {
-        Plot{ id: id.into(), axes, axes2: None, screen_x0: 0.0, screen_y0: 0.0, svg_elements: vec![], scatter_series: vec![] }
+        Plot {
+            id: id.into(),
+            axes, axes2: None,
+            screen_x0: 0.0, screen_y0: 0.0,
+            svg_elements: vec![],
+            scatter_series: vec![],
+            line_series: vec![]
+        }
     }
 
     /// Cartesian axes that cross at 0,0
@@ -192,19 +100,56 @@ impl Plot {
         self.screen_y0 = offset_y;
     }
 
-    pub fn scatter(&mut self, x: &[f32], y: &[f32]) {
+    /// Adds a series of data points to this plot
+    ///
+    /// # Example
+    /// ```
+    /// use visualife::plots::{linspace, Plot};
+    /// use visualife::SvgDrawing;
+    /// let mut plot = Plot::rectangular("scat", (75.0, 525.0, 75.0, 525.0));
+    /// let x = linspace(30, -3.1415, 3.1415, false);
+    /// let ysin: Vec<f32>  = x.iter().map(|x| x.sin()).collect();
+    /// let ycos: Vec<f32>  = x.iter().map(|x| x.cos()).collect();
+    /// plot.set_nticks(3);
+    /// let data = plot.scatter(&x, &ysin);
+    /// data.marker_size = 8.0;
+    /// let data = plot.scatter(&x, &ycos);
+    /// data.marker_size = 5.0;
+    /// let mut drawing = SvgDrawing::new(600.0, 600.0);
+    /// drawing.add_element(&plot);
+    /// drawing.save_svg("scatter.svg").unwrap()
+    /// ```
+    pub fn scatter(&mut self, x: &[f32], y: &[f32]) -> &mut DataSeries {
         assert_eq!(x.len(), y.len(), "x and y must have the same length");
 
         let pbox = self.axes.plot_box();
         if point_outside_box(x, y, &pbox) {
+            let mut box2d = update_plot_box(x,y,&pbox);
+            box2d = nice_plot_box(&box2d);
             self.axes.set_plot_box(update_plot_box(x,y,&pbox));
+        }
+        if let Some(ax2) = &mut self.axes2 {
+            let pbox = ax2.plot_box();
+            if point_outside_box(x, y, &pbox) {
+                let mut box2d = update_plot_box(x,y,&pbox);
+                box2d = nice_plot_box(&box2d);
+                ax2.set_plot_box(update_plot_box(x,y,&pbox));
+            }
         }
         let data = x.iter()
             .copied()
             .zip(y.iter().copied())
             .collect();
+        let n = self.scatter_series.len();
         self.scatter_series.push(
-            DataSeries{ data: data, marker: MarkerType::Circle {}, marker_size: 7.0, color: ACCENT[0] })
+            DataSeries{
+                data: data,
+                marker: MarkerType::by_index(n),
+                marker_size: 7.0,
+                color: ACCENT[ n % ACCENT.len() ],
+                label: format!("scatter {}", n+1)
+            });
+        return &mut self.scatter_series[n];
     }
 
     /// Plots a heatmap from a rectangular 2D dataset.
@@ -255,10 +200,9 @@ impl Plot {
         // --- draw scatter series
         for ser in &self.scatter_series {
             let mut markers = vec![];
-            let size = 5.0_f32;
             for (i,(dx,dy)) in ser.data.iter().enumerate() {
                 let (sx,sy) = self.axes.to_screen(*dx, *dy);
-                markers.push(ser.marker.draw(&format!("s1{}", i), sx, sy, size));
+                markers.push(ser.marker.draw(&format!("s1{}", i), sx, sy, ser.marker_size));
             }
 
             let series = SvgElement::group("s1", markers)
@@ -275,9 +219,17 @@ impl Plot {
     }
 }
 
-struct DataSeries {
-    data: Vec<(f32,f32)>,
-    marker: MarkerType,
-    marker_size: f32,
-    color: &'static str
+impl From<&Plot> for SvgElement {
+    /// Creates an SVG group that contains all graphical elements for this [`Plot`]
+
+    fn from(plot: &Plot) -> Self { plot.create_element() }
+}
+
+/// Data series to be plotted
+pub struct DataSeries {
+    pub data: Vec<(f32,f32)>,
+    pub marker: MarkerType,
+    pub marker_size: f32,
+    pub color: &'static str,
+    pub label: String
 }

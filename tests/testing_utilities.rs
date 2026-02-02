@@ -2,7 +2,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 /// Loads SVG files from the given directory and file list.
-/// Returns a vector of (file_name, file_contents) pairs.
+///
+/// Returns a vector of strings - one string per requested file.
 #[allow(dead_code)]
 pub(crate) fn load_expected_svgs<P: AsRef<Path>>(directory: P, file_names: &[&str]) -> std::io::Result<Vec<String>> {
     let base_path = directory.as_ref();

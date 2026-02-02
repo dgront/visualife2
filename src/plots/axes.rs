@@ -1,9 +1,7 @@
-use std::fmt::Display;
-
 use crate::basic_shapes::{grid_lines, SvgElement, triangle_arrow};
 use crate::ElementID;
 use crate::plots::box2d::Box2D;
-use crate::plots::{linspace, PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT, PlotError};
+use crate::plots::{linspace, PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT};
 use crate::styling::Style;
 
 
@@ -196,6 +194,16 @@ pub fn nice_plot_range(min: f32, max: f32) -> (f32, f32) {
     (nice_min, nice_max)
 }
 
+/// Compute a "nice" plotting box that encloses the given box.
+///
+/// The newly returned box defines a plotting range which looks nice, e.g. axis values start
+/// at round values.
+pub fn nice_plot_box(data_range: &Box2D<f32>) -> Box2D<f32> {
+    let (nx_from, nx_to) = nice_plot_range(data_range.x_beg, data_range.x_end);
+    let (ny_from, ny_to) = nice_plot_range(data_range.y_beg, data_range.y_end);
+
+    return (nx_from, nx_to, ny_from, ny_to).into();
+}
 
 /// Coordinate system defined by two axes.
 ///
@@ -375,7 +383,7 @@ impl AxisSet {
 
         // ---------- Create SVG elements
         let mut elements = vec![];
-        let d = if (self.x.ticks_location == TickDirection::DownRight) { self.tics_width } else { -self.tics_width };
+        let d = if self.x.ticks_location == TickDirection::DownRight { self.tics_width } else { -self.tics_width };
         let y = self.y.to_screen(self.intercept_y(), true);
         let text_style;
         let label_offset;
@@ -419,7 +427,7 @@ impl AxisSet {
 
         // ---------- Create SVG elements
         let mut elements = vec![];
-        let d = if (self.y.ticks_location == TickDirection::DownRight) { self.tics_width } else { -self.tics_width };
+        let d = if self.y.ticks_location == TickDirection::DownRight { self.tics_width } else { -self.tics_width };
         let x = self.x.to_screen(self.intercept_x(), false);
         let text_style;
         let label_offset;
