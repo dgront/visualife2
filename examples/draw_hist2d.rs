@@ -10,19 +10,19 @@ use visualife::SvgDrawing;
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
 struct Args {
-    /// Input file with matrix data (optional)
-    #[arg(short = 'i', long = "input file with histogram values: x_bin_from, y_bin_from, hist_value - the CSV format")]
+    /// Input file with histogram values: x_bin_from, y_bin_from, hist_value - the CSV format (optional)
+    #[arg(short = 'i', long = "input")]
     input: Option<String>,
 
     /// Make matrix symmetric (set both i,j and j,i)
-    #[arg(short = 'm', long = "make-symmetric", action = ArgAction::SetTrue)]
+    #[arg(short = 'm', long = "make-symmetric", action = ArgAction::SetFalse)]
     make_symmetric: bool,
 
     /// skip the header line; note that comment lines starting with '#' are always skipped
     #[arg(long = "skip-header", action = ArgAction::SetTrue)]
     skip_header: bool,
 
-    /// Output SVG file (default: hist2d.svg)
+    /// Output SVG file
     #[arg(short = 'o', long = "output", default_value = "hist2d.svg")]
     output: String,
 }
@@ -51,15 +51,17 @@ fn main() -> anyhow::Result<()> {
     }?;
 
     let mut x: Vec<f32> = dm.col_labels().iter().filter_map(|v| v.parse::<f32>().ok()).collect();
+    let mut y: Vec<f32> = dm.row_labels().iter().filter_map(|v| v.parse::<f32>().ok()).collect();
     // --- we need one extra point to define axis - the end of the data range
     // --- here we assume each box of the heatmap data has the same size
     x.push(x[1] - x[0] + x[x.len() - 1]);
+    y.push(y[1] - y[0] + y[y.len() - 1]);
     let data = dm.data();
     let width = 700.0;
     let m = 75.0;
     let mut plot = Plot::rectangular("hist", (0.0 + m, width - m, 0.0 + m, width - m));
     plot.set_nticks(5);
-    plot.heatmap(&x, &x, data.clone())?;
+    plot.heatmap(&x, &y, data.clone())?;
     let mut drawing = SvgDrawing::new(width, width);
     drawing.add_element(plot.create_element());
     drawing.save_svg(&args.output)?;
