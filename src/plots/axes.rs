@@ -4,7 +4,8 @@ use crate::plots::box2d::Box2D;
 use crate::plots::{linspace, PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT};
 use crate::styling::Style;
 
-
+/// Used by nice_plot_range() to round up plotting range
+const NICE_MULTIPLIERS: &[f32] = &[1.0, 2.0, 3.0, 4.0, 5.0, 8.0, 10.0];
 
 /// Specifies where tick marks are drawn relative to the plot area
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -176,15 +177,11 @@ pub fn nice_plot_range(min: f32, max: f32) -> (f32, f32) {
     let frac = span / base;
 
     // Choose a nice multiplier
-    let nice_frac = if frac <= 1.0 {
-        1.0
-    } else if frac <= 2.0 {
-        2.0
-    } else if frac <= 5.0 {
-        5.0
-    } else {
-        10.0
-    };
+    let nice_frac = NICE_MULTIPLIERS
+        .iter()
+        .copied()
+        .find(|&m| frac <= m)
+        .unwrap_or(*NICE_MULTIPLIERS.last().unwrap());
 
     let nice_step = nice_frac * base;
 

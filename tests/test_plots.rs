@@ -66,9 +66,27 @@ mod test_plots {
         Ok(())
     }
 
+    #[test]
+    fn plot_line_rect() -> Result<(), PlotError> {
+        let mut plot = Plot::rectangular("linpl", (75.0, 525.0, 75.0, 525.0));
+        let x = linspace(30, -3.1415, 3.1415, false);
+        let ysin: Vec<f32>  = x.iter().map(|x| x.sin()).collect();
+        let ycos: Vec<f32>  = x.iter().map(|x| x.cos()).collect();
+        let ysc: Vec<f32>  = x.iter().map(|x| x.cos()*x.sin()).collect();
+        plot.set_nticks(3);
+        plot.line(&x, &ysin);
+        plot.line(&x, &ycos);
+        plot.line(&x, &ysc);
+        let mut drawing = SvgDrawing::new(600.0, 600.0);
+        drawing.add_element(&plot);
+        drawing.save_svg("line_box.svg");
+
+        Ok(())
+    }
+
     /// Build an N×N grid:
     /// x,y in [-15, 15], r = hypot(x,y), value = cos(r) * exp(-r/4).
-    pub fn make_grid(v_max: f64, n: usize) -> Vec<Vec<f64>> {
+    fn make_grid(v_max: f64, n: usize) -> Vec<Vec<f64>> {
         assert!(n >= 2, "N must be >= 2");
         let step = v_max * 2.0 / (n as f64 - 1.0);
 
