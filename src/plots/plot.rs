@@ -1,7 +1,7 @@
 use crate::basic_shapes::SvgElement;
 use crate::ElementID;
 use crate::heatmap::Heatmap;
-use crate::plots::{AxisIntercept, AxisSet, Box2D, MarkerType, matrix_shape, nice_plot_box, PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT, PlotError, point_outside_box, TickDirection, update_plot_box};
+use crate::plots::{AxisIntercept, AxisSet, Box2D, LineType, MarkerType, matrix_shape, nice_plot_box, PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT, PlotError, point_outside_box, TickDirection, update_plot_box};
 use crate::styling::{darker, Style};
 
 use crate::styling::palettes::{ACCENT};
@@ -15,8 +15,7 @@ pub struct Plot {
     screen_x0: f32,
     screen_y0: f32,
     svg_elements: Vec<SvgElement>,
-    scatter_series: Vec<DataSeries>,
-    line_series: Vec<DataSeries>
+    scatter_series: Vec<DataSeries>
 }
 
 impl Plot {
@@ -27,7 +26,6 @@ impl Plot {
             screen_x0: 0.0, screen_y0: 0.0,
             svg_elements: vec![],
             scatter_series: vec![],
-            line_series: vec![]
         }
     }
 
@@ -100,13 +98,13 @@ impl Plot {
         self.screen_y0 = offset_y;
     }
 
-    /// Adds a series of data points to this plot
+    /// Draws a scatter plot
     ///
     /// # Example
     /// ```
     /// use visualife::plots::{linspace, Plot};
     /// use visualife::SvgDrawing;
-    /// let mut plot = Plot::rectangular("scat", (75.0, 525.0, 75.0, 525.0));
+    /// let mut plot = Plot::rectangular("sctpl", (75.0, 525.0, 75.0, 525.0));
     /// let x = linspace(30, -3.1415, 3.1415, false);
     /// let ysin: Vec<f32>  = x.iter().map(|x| x.sin()).collect();
     /// let ycos: Vec<f32>  = x.iter().map(|x| x.cos()).collect();
@@ -126,14 +124,14 @@ impl Plot {
         if point_outside_box(x, y, &pbox) {
             let mut box2d = update_plot_box(x,y,&pbox);
             box2d = nice_plot_box(&box2d);
-            self.axes.set_plot_box(update_plot_box(x,y,&pbox));
+            self.axes.set_plot_box(update_plot_box(x,y,&box2d));
         }
         if let Some(ax2) = &mut self.axes2 {
             let pbox = ax2.plot_box();
             if point_outside_box(x, y, &pbox) {
                 let mut box2d = update_plot_box(x,y,&pbox);
                 box2d = nice_plot_box(&box2d);
-                ax2.set_plot_box(update_plot_box(x,y,&pbox));
+                ax2.set_plot_box(update_plot_box(x,y,&box2d));
             }
         }
         let data = x.iter()
@@ -145,11 +143,39 @@ impl Plot {
             DataSeries{
                 data: data,
                 marker: MarkerType::by_index(n),
+                line: LineType::None,
                 marker_size: 7.0,
                 color: ACCENT[ n % ACCENT.len() ],
                 label: format!("scatter {}", n+1)
             });
         return &mut self.scatter_series[n];
+    }
+
+    /// Draws a line plot
+    ///
+    /// # Example
+    /// ```
+    /// use visualife::plots::{linspace, Plot};
+    /// use visualife::SvgDrawing;
+    /// let mut plot = Plot::rectangular("linpl", (75.0, 525.0, 75.0, 525.0));
+    /// let x = linspace(30, -3.1415, 3.1415, false);
+    /// let ysin: Vec<f32>  = x.iter().map(|x| x.sin()).collect();
+    /// let ycos: Vec<f32>  = x.iter().map(|x| x.cos()).collect();
+    /// plot.set_nticks(3);
+    /// plot.line(&x, &ysin);
+    /// plot.line(&x, &ycos);
+    /// let mut drawing = SvgDrawing::new(600.0, 600.0);
+    /// drawing.add_element(&plot);
+    /// drawing.save_svg("line.svg").unwrap()
+    /// ```
+    pub fn line(&mut self, x: &[f32], y: &[f32]) -> &mut DataSeries {
+        let n = self.scatter_series.len();
+        self.scatter(&x, &y);
+        let ds = &mut self.scatter_series[n];
+        ds.marker = MarkerType::None;
+        ds.line = LineType::Solid;
+
+        return ds;
     }
 
     /// Plots a heatmap from a rectangular 2D dataset.
@@ -197,17 +223,28 @@ impl Plot {
         for c in &self.svg_elements {
             plot_components.push(c.clone());
         }
-        // --- draw scatter series
+        // --- draw scatter & line series
         for ser in &self.scatter_series {
-            let mut markers = vec![];
-            for (i,(dx,dy)) in ser.data.iter().enumerate() {
-                let (sx,sy) = self.axes.to_screen(*dx, *dy);
-                markers.push(ser.marker.draw(&format!("s1{}", i), sx, sy, ser.marker_size));
+            if ser.line != LineType::None {
+                let mut points: Vec<(f32, f32)> = vec![];
+                for (dx, dy) in &ser.data {
+                    points.push(self.axes.to_screen(*dx, *dy));
+                }
+                plot_components.push(SvgElement::polyline("l1", points)
+                    .with_style(Style::new().stroke(&ser.color).fill("none")));
             }
 
-            let series = SvgElement::group("s1", markers)
-                .with_style(Style::new().stroke(&darker(ser.color, 0.1).unwrap()).fill(ser.color));
-            plot_components.push(series);
+            if ser.marker != MarkerType::None {
+                let mut markers = vec![];
+                for (i, (dx, dy)) in ser.data.iter().enumerate() {
+                    let (sx, sy) = self.axes.to_screen(*dx, *dy);
+                    markers.push(ser.marker.draw(&format!("s1{}", i), sx, sy, ser.marker_size));
+                }
+
+                let series = SvgElement::group("s1", markers)
+                    .with_style(Style::new().stroke(&darker(ser.color, 0.1).unwrap()).fill(ser.color));
+                plot_components.push(series);
+            }
         }
 
         // --- group for the whole plot
@@ -229,6 +266,7 @@ impl From<&Plot> for SvgElement {
 pub struct DataSeries {
     pub data: Vec<(f32,f32)>,
     pub marker: MarkerType,
+    pub line: LineType,
     pub marker_size: f32,
     pub color: &'static str,
     pub label: String

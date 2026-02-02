@@ -21,6 +21,7 @@ pub enum MarkerType {
     Point,
     Plus,
     Cross,
+    None
 }
 
 impl MarkerType {
@@ -58,6 +59,9 @@ impl MarkerType {
             MarkerType::Square | MarkerType::FilledSquare => {
                 return SvgElement::rect(format!("{id}_s"), cx - h, cy - h, size, size);
             }
+            _ => { // --- this should never happen: caller should check id the marker is None before calling
+                return SvgElement::circle(format!("{id}_c"), cx, cy, 0.0);
+            }
         }
     }
 
@@ -93,7 +97,7 @@ impl FromStr for MarkerType {
             "O" | "C" => Ok(FilledCircle),
             "s" => Ok(Square),
             "S" => Ok(FilledSquare),
-            _ => Err(format!("Unknown marker type: '{}'", s)),
+            _ => Ok(None),
         }
     }
 }
@@ -110,8 +114,17 @@ impl fmt::Display for MarkerType {
             FilledCircle => "O",
             Square  => "s",
             FilledSquare => "S",
+            None => "",
         };
 
         write!(f, "{}", s)
     }
+}
+
+/// Marker symbols for scatter plots
+///
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum LineType {
+    Solid,
+    None
 }
