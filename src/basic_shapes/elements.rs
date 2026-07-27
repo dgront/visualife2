@@ -209,6 +209,7 @@ impl SvgElement {
     }
 
     /// Returns a mutable reference to the elements in a group, if this element is a group.
+    #[allow(unused)] // This is necessary for PyO3 binding!
     pub(crate) fn group_elements_mut(&mut self) -> Option<&mut Vec<SvgElement>> {
         match &mut self.inner {
             SvgElementKind::Group { elements, .. } => Some(elements),

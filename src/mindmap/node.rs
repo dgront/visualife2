@@ -119,6 +119,7 @@ mod test_node {
     use crate::styling::{Style};
 
     #[test]
+    #[allow(non_snake_case)]
     fn node_to_svg() {
         let (x1, y1, r1)  = (100.0_f32, 100.0_f32, 10.0_f32);
         let mut nodeA = Node::new("n1", "A", x1, y1, r1);

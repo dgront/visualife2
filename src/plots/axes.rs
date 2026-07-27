@@ -206,10 +206,10 @@ pub fn nice_plot_box(data_range: &Box2D<f32>) -> Box2D<f32> {
 ///
 /// # Example
 /// ```
-/// use visualife::plots::AxisSet;
-/// let plot_screen_area = (50.0, 350.0, 50.0, 250.0).into();
+/// use visualife::plots::{AxisSet, Box2D};
+/// let plot_screen_area: Box2D<f32> = (50.0, 350.0, 50.0, 250.0).into();
 /// let mut axes = AxisSet::new(plot_screen_area);
-/// axes.set_plot_box((-1.0, 1.0, -1.0, 1.0).into());
+/// axes.set_plot_box::<Box2D<f32>>((-1.0, 1.0, -1.0, 1.0).into());
 /// axes.set_intercept_point(0.0, 0.0);
 ///
 /// ```

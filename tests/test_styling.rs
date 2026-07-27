@@ -4,7 +4,6 @@ mod test_styling {
     // use std::fs;
     use visualife::basic_shapes::{SvgElement};
     use visualife::styling::{FlushText, DominantBaseline};
-    use visualife::SvgDrawing;
 
     // use crate::testing_utilities::load_expected_svgs;
 

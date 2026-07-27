@@ -12,7 +12,7 @@ fn main() {
     let draw_width = 1000.0;
     let (n_x, n_y) : ( usize,usize) = (100, 100);
     let box_width = 9.0;
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     let mut drawing = SvgDrawing::new(draw_width, draw_width);
     let max_noise: f32 = 0.75;
 
@@ -26,17 +26,17 @@ fn main() {
             let style = Style::new()
                 .stroke(&darker(&fill, 0.3).unwrap())
                 .fill(&fill)
-                .opacity(rng.gen_range(0.6..=1.0))
-                .stroke_width(rng.gen_range(0.25..=3.0));
+                .opacity(rng.random_range(0.6..=1.0))
+                .stroke_width(rng.random_range(0.25..=3.0));
 
-            let noise_x = rng.gen_range(-max_noise..max_noise);
-            let noise_y = rng.gen_range(-max_noise..max_noise) + rng.gen_range(max_drop / 2.0..max_drop);
+            let noise_x = rng.random_range(-max_noise..max_noise);
+            let noise_y = rng.random_range(-max_noise..max_noise) + rng.random_range(max_drop / 2.0..max_drop);
             let x = i as f32 * draw_width / (n_x as f32) + noise_x;
             let y = j as f32 * draw_width / (n_y as f32) + noise_y;
 
             let id_str = format!("el_{i}_{j}");
 
-            let mut element = if rng.gen_range(0.0..1.0) < 0.2 {
+            let mut element = if rng.random_range(0.0..1.0) < 0.2 {
                 let r = box_width / 2.0;
                 SvgElement::circle(id_str, x + r, y + r, r)
             } else {
