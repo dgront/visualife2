@@ -109,7 +109,7 @@ fn normalize_pair(a: f32, b: f32) -> (f32, f32, bool) {
 /// let bx_rev = Box2D { x_beg: 10.0, x_end: 0.0, y_beg: 10.0, y_end: 0.0 };
 /// assert!(point_outside_box(&x, &y, &bx_rev));
 /// ```
-pub fn point_outside_box(x: &[f32], y: &[f32], plot_box: &Box2D<f32>) -> bool {
+pub fn  point_outside_box(x: &[f32], y: &[f32], plot_box: &Box2D<f32>) -> bool {
 
     let (xmin, xmax, _flag) = normalize_pair(plot_box.x_beg, plot_box.x_end);
     let (ymin, ymax, _flag) = normalize_pair(plot_box.y_beg, plot_box.y_end);

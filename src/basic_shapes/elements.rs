@@ -33,37 +33,40 @@ use crate::styling::{Style};
 /// ```
 #[derive(Clone)]
 pub struct SvgElement {
+    id: ElementID,
+    attr: SvgAttributes,
     inner: SvgElementKind,
 }
+
 
 #[derive(Clone)]
 enum SvgElementKind {
     /// Represents an SVG line element, defined by its start (x1, y1) and end (x2, y2) points.
-    Line { id: ElementID, x1: f32, y1: f32, x2: f32, y2: f32, attr: SvgAttributes },
+    Line { x1: f32, y1: f32, x2: f32, y2: f32 },
 
     /// Represents an SVG rectangle element, with its position, width, and height.
-    Rect { id: ElementID, x: f32, y: f32, width: f32, height: f32, attr: SvgAttributes },
+    Rect { x: f32, y: f32, width: f32, height: f32 },
 
     /// Represents an SVG circle element, defined by its center (cx, cy) and radius `r`.
-    Circle { id: ElementID, cx: f32, cy: f32, r: f32, attr: SvgAttributes },
+    Circle { cx: f32, cy: f32, r: f32 },
 
     /// Represents an SVG ellipse element, defined by its center (cx, cy) and radii (rx, ry).
-    Ellipse { id: ElementID, cx: f32, cy: f32, rx: f32, ry: f32, attr: SvgAttributes },
+    Ellipse { cx: f32, cy: f32, rx: f32, ry: f32 },
 
     /// Represents an SVG polygon element, defined by a list of 2D points.
-    Polygon { id: ElementID, points: Vec<(f32, f32)>, attr: SvgAttributes },
+    Polygon { points: Vec<(f32, f32)> },
 
     /// Represents an SVG polyline element, similar to a polygon but not closed.
-    Polyline { id: ElementID, points: Vec<(f32, f32)>, attr: SvgAttributes },
+    Polyline { points: Vec<(f32, f32)> },
 
     /// Represents an SVG path element, defined by a `d` attribute (path data string).
-    Path { id: ElementID, d: String, attr: SvgAttributes },
+    Path { d: String },
 
     /// Represents an SVG text element, placed at (x, y) with the specified string content.
-    Text { id: ElementID, x: f32, y: f32, content: String, attr: SvgAttributes },
+    Text { x: f32, y: f32, content: String },
 
     /// Represents an SVG group element, which can contain multiple child elements.
-    Group { id: ElementID, elements: Vec<SvgElement>, attr: SvgAttributes },
+    Group { elements: Vec<SvgElement> },
 }
 
 // === Public API ===
@@ -71,39 +74,39 @@ enum SvgElementKind {
 impl SvgElement {
 
     pub fn line(id: impl Into<ElementID>, x1: f32, y1: f32, x2: f32, y2: f32) -> Self {
-        Self { inner: SvgElementKind::Line { id: id.into(), x1, y1, x2, y2, attr: SvgAttributes::default() } }
+        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Line { x1, y1, x2, y2 } }
     }
 
     pub fn rect(id: impl Into<ElementID>, x: f32, y: f32, width: f32, height: f32) -> Self {
-        Self { inner: SvgElementKind::Rect { id: id.into(), x, y, width, height, attr: SvgAttributes::default() } }
+        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Rect { x, y, width, height } }
     }
 
     pub fn circle(id: impl Into<ElementID>, cx: f32, cy: f32, r: f32) -> Self {
-        Self { inner: SvgElementKind::Circle { id: id.into(), cx, cy, r, attr: SvgAttributes::default() } }
+        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Circle { cx, cy, r } }
     }
 
     pub fn ellipse(id: impl Into<ElementID>, cx: f32, cy: f32, rx: f32, ry: f32) -> Self {
-        Self { inner: SvgElementKind::Ellipse { id: id.into(), cx, cy, rx, ry, attr: SvgAttributes::default() } }
+        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Ellipse { cx, cy, rx, ry } }
     }
 
     pub fn polygon(id: impl Into<ElementID>, points: Vec<(f32, f32)>) -> Self {
-        Self { inner: SvgElementKind::Polygon { id: id.into(), points, attr: SvgAttributes::default() } }
+        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Polygon { points } }
     }
 
     pub fn polyline(id: impl Into<ElementID>, points: Vec<(f32, f32)>) -> Self {
-        Self { inner: SvgElementKind::Polyline { id: id.into(), points, attr: SvgAttributes::default() } }
+        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Polyline { points } }
     }
 
     pub fn path(id: impl Into<ElementID>, d: impl Into<String>) -> Self {
-        Self { inner: SvgElementKind::Path { id: id.into(), d: d.into(), attr: SvgAttributes::default() } }
+        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Path { d: d.into() } }
     }
 
     pub fn text(id: impl Into<ElementID>, x: f32, y: f32, content: impl Into<String>) -> Self {
-        Self { inner: SvgElementKind::Text { id: id.into(), x, y, content: content.into(), attr: SvgAttributes::default() } }
+        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Text { x, y, content: content.into() } }
     }
 
     pub fn group(id: impl Into<ElementID>, elements: Vec<SvgElement>) -> Self {
-        Self { inner: SvgElementKind::Group { id: id.into(), elements, attr: SvgAttributes::default() } }
+        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Group { elements } }
     }
 
     pub fn with_style(mut self, style: Style) -> Self {
@@ -121,52 +124,40 @@ impl SvgElement {
         self
     }
 
-    pub fn id(&self) -> &ElementID {
-        match &self.inner {
-            SvgElementKind::Line { id, .. }
-            | SvgElementKind::Rect { id, .. }
-            | SvgElementKind::Circle { id, .. }
-            | SvgElementKind::Ellipse { id, .. }
-            | SvgElementKind::Polygon { id, .. }
-            | SvgElementKind::Polyline { id, .. }
-            | SvgElementKind::Path { id, .. }
-            | SvgElementKind::Text { id, .. }
-            | SvgElementKind::Group { id, .. } => id,
-        }
-    }
+    pub fn id(&self) -> &ElementID { &self.id }
 
     /// Converts the element into an SVG XML fragment
     pub fn to_svg(&self) -> String {
-
-        let attr_str = self.attr().to_svg_fragment();
+        let attr_str = self.attr.to_svg_fragment();
+        let id = &self.id;
 
         match &self.inner {
-            SvgElementKind::Line { id, x1, y1, x2, y2, .. } =>
+            SvgElementKind::Line { x1, y1, x2, y2 } =>
                 format!(r#"<line id="{}" x1="{}" y1="{}" x2="{}" y2="{}"{} />"#, id, x1, y1, x2, y2, attr_str),
 
-            SvgElementKind::Rect { id, x, y, width, height, .. } =>
+            SvgElementKind::Rect { x, y, width, height } =>
                 format!(r#"<rect id="{}" x="{}" y="{}" width="{}" height="{}"{} />"#, id, x, y, width, height, attr_str),
 
-            SvgElementKind::Circle { id, cx, cy, r, .. } =>
+            SvgElementKind::Circle { cx, cy, r } =>
                 format!(r#"<circle id="{}" cx="{}" cy="{}" r="{}"{} />"#, id, cx, cy, r, attr_str),
 
-            SvgElementKind::Ellipse { id, cx, cy, rx, ry, .. } =>
+            SvgElementKind::Ellipse { cx, cy, rx, ry } =>
                 format!(r#"<ellipse id="{}" cx="{}" cy="{}" rx="{}" ry="{}"{} />"#, id, cx, cy, rx, ry, attr_str),
 
-            SvgElementKind::Polygon { points, .. }
-            | SvgElementKind::Polyline { points, .. } => {
+            SvgElementKind::Polygon { points }
+            | SvgElementKind::Polyline { points } => {
                 let tag = if matches!(&self.inner, SvgElementKind::Polygon { .. }) { "polygon" } else { "polyline" };
                 let pts = points.iter().map(|(x, y)| format!("{},{}", x, y)).collect::<Vec<_>>().join(" ");
-                format!(r#"<{} points="{}"{} />"#, tag, pts, attr_str)
+                format!(r#"<{} id="{}" points="{}"{} />"#, tag, id, pts, attr_str)
             }
 
-            SvgElementKind::Path { id, d, .. } =>
+            SvgElementKind::Path { d } =>
                 format!(r#"<path id="{}" d="{}"{} />"#, id, d, attr_str),
 
-            SvgElementKind::Text { id, x, y, content, .. } =>
+            SvgElementKind::Text { x, y, content } =>
                 format!(r#"<text id="{}" x="{}" y="{}"{}>{}</text>"#, id, x, y, attr_str, content),
 
-            SvgElementKind::Group { id, elements, .. } => {
+            SvgElementKind::Group { elements } => {
                 let inner = elements.iter().map(|e| e.to_svg()).collect::<Vec<_>>().join("\n");
                 format!("<g id=\"{}\"{} >\n{}\n</g>", id, attr_str, inner)
             }
@@ -194,19 +185,7 @@ impl SvgElement {
     /// Replaces the current transformation defined for this element with a translation by (dx, dy)
     pub fn translate(&mut self, dx: f32, dy: f32)  { self.attr_mut().transform = Some(format!("translate({dx},{dy})"))}
 
-    pub(crate) fn attr_mut(&mut self) -> &mut SvgAttributes {
-        match &mut self.inner {
-            SvgElementKind::Line { attr, .. }
-            | SvgElementKind::Rect { attr, .. }
-            | SvgElementKind::Circle { attr, .. }
-            | SvgElementKind::Ellipse { attr, .. }
-            | SvgElementKind::Polygon { attr, .. }
-            | SvgElementKind::Polyline { attr, .. }
-            | SvgElementKind::Path { attr, .. }
-            | SvgElementKind::Text { attr, .. }
-            | SvgElementKind::Group { attr, .. } => attr,
-        }
-    }
+    pub(crate) fn attr_mut(&mut self) -> &mut SvgAttributes { &mut self.attr }
 
     /// Returns a mutable reference to the elements in a group, if this element is a group.
     #[allow(unused)] // This is necessary for PyO3 binding!
@@ -223,12 +202,14 @@ impl SvgElement {
     /// This method is necessary to have Python API working
     pub(crate) fn add_to_group(&mut self, target_id: &ElementID, element_to_add: SvgElement) -> bool {
 
+        let is_target = &self.id == target_id;
+
         match &mut self.inner {
-            SvgElementKind::Group { id, elements, .. } if id == target_id => {
+            SvgElementKind::Group { elements } if is_target => {
                 elements.push(element_to_add);
                 true
             }
-            SvgElementKind::Group { elements, .. } => {
+            SvgElementKind::Group { elements } => {
                 for child in elements.iter_mut() {
                     if child.add_to_group(target_id, element_to_add.clone()) {
                         return true;
@@ -240,19 +221,7 @@ impl SvgElement {
         }
     }
 
-    fn attr(&self) -> &SvgAttributes {
-        match &self.inner {
-            SvgElementKind::Line { attr, .. }
-            | SvgElementKind::Rect { attr, .. }
-            | SvgElementKind::Circle { attr, .. }
-            | SvgElementKind::Ellipse { attr, .. }
-            | SvgElementKind::Polygon { attr, .. }
-            | SvgElementKind::Polyline { attr, .. }
-            | SvgElementKind::Path { attr, .. }
-            | SvgElementKind::Text { attr, .. }
-            | SvgElementKind::Group { attr, .. } => attr,
-        }
-    }
+    fn attr(&self) -> &SvgAttributes { &self.attr }
 }
 
 /// Roughly estimate the width in pixels of a text element.
