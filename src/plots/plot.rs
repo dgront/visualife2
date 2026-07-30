@@ -1,5 +1,5 @@
 use crate::basic_shapes::SvgElement;
-use crate::ElementID;
+use crate::{ElementID, Point};
 use crate::heatmap::Heatmap;
 use crate::plots::{AxisIntercept, AxisSet, Box2D, LineType, MarkerType, matrix_shape, nice_plot_box, PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT, PlotError, point_outside_box, TickDirection, update_plot_box};
 use crate::styling::{darker, Style};
@@ -32,9 +32,9 @@ impl Plot {
     /// Cartesian axes that cross at 0,0
     pub fn cartesian<R: Into<Box2D<f32>>>(id: impl Into<ElementID>, screen_box: R) -> Self {
         let mut axes = AxisSet::new(screen_box);
-        axes.set_intercept_point(0.0, 0.0);
+        axes.set_intercept_point(Point::default());
         axes.has_arrowhead = true;
-        axes.set_intercept_point(0.0, 0.0);
+        axes.set_intercept_point(Point::default());
         axes.set_plot_box((-1.0, 1.0, -1.0, 1.0));
         axes.x.set_nticks(7);
         axes.y.set_nticks(7);
@@ -228,7 +228,7 @@ impl Plot {
             if ser.line != LineType::None {
                 let mut points: Vec<(f32, f32)> = vec![];
                 for (dx, dy) in &ser.data {
-                    points.push(self.axes.to_screen(*dx, *dy));
+                    points.push(self.axes.to_screen((*dx, *dy).into()).into());
                 }
                 plot_components.push(SvgElement::polyline("l1", points)
                     .with_style(Style::new().stroke(&ser.color).fill("none")));
@@ -237,8 +237,8 @@ impl Plot {
             if ser.marker != MarkerType::None {
                 let mut markers = vec![];
                 for (i, (dx, dy)) in ser.data.iter().enumerate() {
-                    let (sx, sy) = self.axes.to_screen(*dx, *dy);
-                    markers.push(ser.marker.draw(&format!("s1{}", i), sx, sy, ser.marker_size));
+                    let s = self.axes.to_screen((*dx, *dy).into());
+                    markers.push(ser.marker.draw(&format!("s1{}", i), s, ser.marker_size));
                 }
 
                 let series = SvgElement::group("s1", markers)

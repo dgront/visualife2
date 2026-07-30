@@ -1,4 +1,4 @@
-use crate::{ElementID};
+use crate::{ElementID, Point};
 use crate::basic_shapes::SvgAttributes;
 use crate::styling::{Style};
 
@@ -41,29 +41,29 @@ pub struct SvgElement {
 
 #[derive(Clone)]
 enum SvgElementKind {
-    /// Represents an SVG line element, defined by its start (x1, y1) and end (x2, y2) points.
-    Line { x1: f32, y1: f32, x2: f32, y2: f32 },
+    /// Represents an SVG line element, defined by its ``start`` and ``end`` points.
+    Line { start: Point, end: Point },
 
-    /// Represents an SVG rectangle element, with its position, width, and height.
-    Rect { x: f32, y: f32, width: f32, height: f32 },
+    /// Represents an SVG rectangle element, with its ``origin``, `width`, and ``height``.
+    Rect { origin: Point, width: f32, height: f32 },
 
-    /// Represents an SVG circle element, defined by its center (cx, cy) and radius `r`.
-    Circle { cx: f32, cy: f32, r: f32 },
+    /// Represents an SVG circle element, defined by its ``center`` and radius `r`.
+    Circle { center: Point, r: f32 },
 
-    /// Represents an SVG ellipse element, defined by its center (cx, cy) and radii (rx, ry).
-    Ellipse { cx: f32, cy: f32, rx: f32, ry: f32 },
+    /// Represents an SVG ellipse element, defined by its ``center`` and radii (rx, ry).
+    Ellipse { center: Point, rx: f32, ry: f32 },
 
     /// Represents an SVG polygon element, defined by a list of 2D points.
-    Polygon { points: Vec<(f32, f32)> },
+    Polygon { points: Vec<Point> },
 
     /// Represents an SVG polyline element, similar to a polygon but not closed.
-    Polyline { points: Vec<(f32, f32)> },
+    Polyline { points: Vec<Point> },
 
     /// Represents an SVG path element, defined by a `d` attribute (path data string).
     Path { d: String },
 
-    /// Represents an SVG text element, placed at (x, y) with the specified string content.
-    Text { x: f32, y: f32, content: String },
+    /// Represents an SVG text element, placed at ``anchor`` with the specified string content.
+    Text { anchor: Point, content: String },
 
     /// Represents an SVG group element, which can contain multiple child elements.
     Group { elements: Vec<SvgElement> },
@@ -73,38 +73,128 @@ enum SvgElementKind {
 
 impl SvgElement {
 
+    /// Creates an SVG line between two points.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use visualife::basic_shapes::SvgElement;
+    /// let line = SvgElement::line("line", 0.0, 0.0, 10.0, 20.0);
+    ///
+    /// # assert_eq!(line.to_svg(),r#"<line id="line" x1="0" y1="0" x2="10" y2="20" />"#);
+    /// ```
     pub fn line(id: impl Into<ElementID>, x1: f32, y1: f32, x2: f32, y2: f32) -> Self {
-        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Line { x1, y1, x2, y2 } }
+        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Line { start: Point::new(x1, y1), end: Point::new(x2, y2) } }
     }
 
+    /// Creates an SVG rectangle at the specified origin.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use visualife::basic_shapes::SvgElement;
+    /// let rect = SvgElement::rect("rect", 10.0, 20.0, 100.0, 50.0);
+    ///
+    /// # assert_eq!(rect.to_svg(), r#"<rect id="rect" x="10" y="20" width="100" height="50" />"#);
+    /// ```
     pub fn rect(id: impl Into<ElementID>, x: f32, y: f32, width: f32, height: f32) -> Self {
-        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Rect { x, y, width, height } }
+        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Rect { origin: Point::new(x, y), width, height } }
     }
 
+    /// Creates an SVG circle with the specified center and radius.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use visualife::basic_shapes::SvgElement;
+    /// let circle = SvgElement::circle("circle", 10.0, 20.0, 5.0);
+    ///
+    /// # assert_eq!(circle.to_svg(), r#"<circle id="circle" cx="10" cy="20" r="5" />"#);
+    /// ```
     pub fn circle(id: impl Into<ElementID>, cx: f32, cy: f32, r: f32) -> Self {
-        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Circle { cx, cy, r } }
+        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Circle { center: Point::new(cx, cy), r } }
     }
 
+    /// Creates an SVG ellipse with the specified center and radii.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use visualife::basic_shapes::SvgElement;
+    /// let ellipse = SvgElement::ellipse("ellipse", 10.0, 20.0, 8.0, 4.0);
+    ///
+    /// # assert_eq!(ellipse.to_svg(), r#"<ellipse id="ellipse" cx="10" cy="20" rx="8" ry="4" />"#);
+    /// ```
     pub fn ellipse(id: impl Into<ElementID>, cx: f32, cy: f32, rx: f32, ry: f32) -> Self {
-        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Ellipse { cx, cy, rx, ry } }
+        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Ellipse { center: Point::new(cx, cy), rx, ry } }
     }
 
+    /// Creates an SVG polygon from a list of points.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use visualife::basic_shapes::SvgElement;
+    /// let polygon = SvgElement::polygon("polygon", vec![(0.0, 0.0), (10.0, 0.0), (5.0, 10.0)]);
+    ///
+    /// # assert_eq!(polygon.to_svg(), r#"<polygon id="polygon" points="0,0 10,0 5,10" />"#);
+    /// ```
     pub fn polygon(id: impl Into<ElementID>, points: Vec<(f32, f32)>) -> Self {
-        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Polygon { points } }
+        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Polygon { points: points.into_iter().map(Point::from).collect() } }
     }
 
+    /// Creates an SVG polyline from a list of points.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use visualife::basic_shapes::SvgElement;
+    /// let polyline = SvgElement::polyline("polyline", vec![(0.0, 0.0), (10.0, 5.0), (20.0, 0.0)]);
+    ///
+    /// # assert_eq!(polyline.to_svg(), r#"<polyline id="polyline" points="0,0 10,5 20,0" />"#);
+    /// ```
     pub fn polyline(id: impl Into<ElementID>, points: Vec<(f32, f32)>) -> Self {
-        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Polyline { points } }
+        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Polyline { points: points.into_iter().map(Point::from).collect() } }
     }
 
+    /// Creates an SVG path from an SVG path-data string.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use visualife::basic_shapes::SvgElement;
+    /// let path = SvgElement::path("path", "M 0 0 L 10 10");
+    ///
+    /// # assert_eq!(path.to_svg(), r#"<path id="path" d="M 0 0 L 10 10" />"#);
+    /// ```
     pub fn path(id: impl Into<ElementID>, d: impl Into<String>) -> Self {
         Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Path { d: d.into() } }
     }
 
+    /// Creates an SVG text element at the specified anchor point.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use visualife::basic_shapes::SvgElement;
+    /// let text = SvgElement::text("label", 10.0, 20.0, "Example");
+    ///
+    /// # assert_eq!(text.to_svg(), r#"<text id="label" x="10" y="20">Example</text>"#);
+    /// ```
     pub fn text(id: impl Into<ElementID>, x: f32, y: f32, content: impl Into<String>) -> Self {
-        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Text { x, y, content: content.into() } }
+        Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Text { anchor: Point::new(x, y), content: content.into() } }
     }
 
+    /// Creates an SVG group containing the specified child elements.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use visualife::basic_shapes::SvgElement;
+    /// let group = SvgElement::group( "group", vec![SvgElement::circle("circle", 0.0, 0.0, 5.0)]);
+    ///
+    /// # assert_eq!(group.to_svg(), "<g id=\"group\" >\n<circle id=\"circle\" cx=\"0\" cy=\"0\" r=\"5\" />\n</g>");
+    /// ```
     pub fn group(id: impl Into<ElementID>, elements: Vec<SvgElement>) -> Self {
         Self { id: id.into(), attr: SvgAttributes::default(), inner: SvgElementKind::Group { elements } }
     }
@@ -132,30 +222,30 @@ impl SvgElement {
         let id = &self.id;
 
         match &self.inner {
-            SvgElementKind::Line { x1, y1, x2, y2 } =>
-                format!(r#"<line id="{}" x1="{}" y1="{}" x2="{}" y2="{}"{} />"#, id, x1, y1, x2, y2, attr_str),
+            SvgElementKind::Line { start: from, end: to } =>
+                format!(r#"<line id="{}" x1="{}" y1="{}" x2="{}" y2="{}"{} />"#, id, from.x, from.y, to.x, to.y, attr_str),
 
-            SvgElementKind::Rect { x, y, width, height } =>
-                format!(r#"<rect id="{}" x="{}" y="{}" width="{}" height="{}"{} />"#, id, x, y, width, height, attr_str),
+            SvgElementKind::Rect { origin, width, height } =>
+                format!(r#"<rect id="{}" x="{}" y="{}" width="{}" height="{}"{} />"#, id, origin.x, origin.y, width, height, attr_str),
 
-            SvgElementKind::Circle { cx, cy, r } =>
-                format!(r#"<circle id="{}" cx="{}" cy="{}" r="{}"{} />"#, id, cx, cy, r, attr_str),
+            SvgElementKind::Circle { center, r } =>
+                format!(r#"<circle id="{}" cx="{}" cy="{}" r="{}"{} />"#, id, center.x, center.y, r, attr_str),
 
-            SvgElementKind::Ellipse { cx, cy, rx, ry } =>
-                format!(r#"<ellipse id="{}" cx="{}" cy="{}" rx="{}" ry="{}"{} />"#, id, cx, cy, rx, ry, attr_str),
+            SvgElementKind::Ellipse { center, rx, ry } =>
+                format!(r#"<ellipse id="{}" cx="{}" cy="{}" rx="{}" ry="{}"{} />"#, id, center.x, center.y, rx, ry, attr_str),
 
             SvgElementKind::Polygon { points }
             | SvgElementKind::Polyline { points } => {
                 let tag = if matches!(&self.inner, SvgElementKind::Polygon { .. }) { "polygon" } else { "polyline" };
-                let pts = points.iter().map(|(x, y)| format!("{},{}", x, y)).collect::<Vec<_>>().join(" ");
+                let pts = points.iter().map(|point| format!("{},{}", point.x, point.y)).collect::<Vec<_>>().join(" ");
                 format!(r#"<{} id="{}" points="{}"{} />"#, tag, id, pts, attr_str)
             }
 
             SvgElementKind::Path { d } =>
                 format!(r#"<path id="{}" d="{}"{} />"#, id, d, attr_str),
 
-            SvgElementKind::Text { x, y, content } =>
-                format!(r#"<text id="{}" x="{}" y="{}"{}>{}</text>"#, id, x, y, attr_str, content),
+            SvgElementKind::Text { anchor, content } =>
+                format!(r#"<text id="{}" x="{}" y="{}"{}>{}</text>"#, id, anchor.x, anchor.y, attr_str, content),
 
             SvgElementKind::Group { elements } => {
                 let inner = elements.iter().map(|e| e.to_svg()).collect::<Vec<_>>().join("\n");

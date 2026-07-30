@@ -8,7 +8,7 @@ fn main() {
     let draw_width = 1000.0;
     let colors = &TABLEAU10;
     let mut mndmp = mindmap::Mindmap::new("a_mindmap", 50.0);
-    mndmp.place_node("n0", "Center", 250.0, 250.0)
+    mndmp.place_node("n0", "Center", (250.0, 250.0).into())
         .with_style(Style::new().fill("white").stroke("black"))
         .with_text_style(Style::new().font_size("16.0"));
     for i in 1..=5 {

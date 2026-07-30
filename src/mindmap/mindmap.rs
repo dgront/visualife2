@@ -5,6 +5,7 @@ use crate::mindmap::node::Node;
 use crate::mindmap::polar_to_cartesian;
 
 use indexmap::IndexMap;
+use crate::Point;
 
 /// Represents the whole mindmap, with its nodes ans connectors
 pub struct Mindmap {
@@ -46,9 +47,10 @@ impl Mindmap {
     ///
     /// ```rust
     /// # use visualife::mindmap::Mindmap;
+    /// use visualife::Point;
     /// # use visualife::styling::Style;
     /// let mut mndmp = Mindmap::new("a_mindmap", 50.0);
-    /// mndmp.place_node("root", "Root", 120.0, 80.0)
+    /// mndmp.place_node("root", "Root", Point::new(120.0, 80.0))
     ///     .with_style(Style::new().fill("#9A9A9A"));
     ///```
     ///
@@ -61,7 +63,7 @@ impl Mindmap {
     /// for (i, color) in palettes::PASTEL.iter().enumerate() {
     ///     let x = ((i%3) as f32) * 70.0 + 40.0;
     ///     let y = ((i/3) as f32) * 70.0 + 40.0;
-    ///     mndmp.place_node(format!("c{i}"), color, x, y)
+    ///     mndmp.place_node(format!("c{i}"), color, (x, y).into())
     ///         .with_style(Style::new().fill(color).stroke(&darker(color, 0.2)?).stroke_width(2.0))
     ///         .with_text_style(Style::new().fill(&darker(color, 0.8)?));
     /// }
@@ -71,9 +73,9 @@ impl Mindmap {
     ///
     #[doc = include_str!("../../tests/expected_drawings/mindmap/pastel_nodes.svg")]
     ///
-    pub fn place_node(&mut self, id: impl Into<ElementID>, label: &str, x: f32, y: f32) -> &mut Node {
+    pub fn place_node(&mut self, id: impl Into<ElementID>, label: &str, center: Point) -> &mut Node {
         let id = id.into();
-        let node = Node::new(id.clone(), label, x, y, self.max_node_radius);
+        let node = Node::new(id.clone(), label, center, self.max_node_radius);
         self.nodes.insert(id.clone(), node);
         self.nodes.get_mut(&id).unwrap()
     }
@@ -88,7 +90,7 @@ impl Mindmap {
     /// # use visualife::styling::{Style, darker};
     /// # fn main() -> Result<(), anyhow::Error> {
     /// let mut mndmp = Mindmap::new("a_mindmap", 50.0);
-    /// let center_node_id = mndmp.place_node("n0", "Center node", 80.0, 80.0).id.clone();
+    /// let center_node_id = mndmp.place_node("n0", "Center node", (80.0, 80.0).into()).id.clone();
     /// let n_new_nodes = 5;
     /// let mut fill = String::from("#FFFFFF");
     /// for i in 0..n_new_nodes {
@@ -113,9 +115,9 @@ impl Mindmap {
     pub fn grow_node(&mut self, id: impl Into<ElementID>, label: &str, angle_deg: f32, parent_id: impl Into<ElementID>) -> &mut Node {
         let real_parent_id = parent_id.into();
         let parent = self.nodes.get(&real_parent_id).unwrap();
-        let (cx, cy) = polar_to_cartesian(parent.radius * 3.0, angle_deg.to_radians(), parent.cx, parent.cy);
+        let center = polar_to_cartesian(parent.radius * 3.0, angle_deg.to_radians(), &parent.center);
         let id = id.into();
-        let node = Node::new( id.clone(), label, cx, cy, parent.radius * self.node_radius_shrink_factor);
+        let node = Node::new( id.clone(), label, center.into(), parent.radius * self.node_radius_shrink_factor);
         self.nodes.insert(id.clone(), node);
         self.connect_nodes(real_parent_id, id.clone());
         self.nodes.get_mut(&id).unwrap()
@@ -126,8 +128,8 @@ impl Mindmap {
     /// ```
     /// # use visualife::mindmap::{Mindmap, MindmapError};
     /// let mut mndmp = Mindmap::new("a_mindmap", 45.0);
-    /// let node1_id = mndmp.place_node("n1", "Node 1", 100.0, 100.0).id.clone();
-    /// let node2_id = mndmp.place_node("n2", "Node 2", 180.0, 180.0).id.clone();
+    /// let node1_id = mndmp.place_node("n1", "Node 1", (100.0, 100.0).into()).id.clone();
+    /// let node2_id = mndmp.place_node("n2", "Node 2", (180.0, 180.0).into()).id.clone();
     /// mndmp.connect_nodes(node1_id, node2_id);
     /// ```
     pub fn connect_nodes(&mut self, from_id: impl Into<ElementID>, to_id: impl Into<ElementID>) {
@@ -143,7 +145,7 @@ impl Mindmap {
     /// # fn main() -> Result<(), MindmapError> {
     /// # let mut mndmp = Mindmap::new("a_mindmap", 45.0);
     /// # let node_id = ElementID::from("n1");
-    /// # mndmp.place_node(node_id.clone(), "Node 1", 30.0, 30.0);
+    /// # mndmp.place_node(node_id.clone(), "Node 1", (30.0, 30.0).into());
     /// let node_ref = mndmp.node(&node_id).ok_or(MindmapError::node_not_found("n1"))?;
     /// assert_eq!(node_ref.radius, 45.0);
     /// # Ok(())
@@ -162,9 +164,10 @@ impl Mindmap {
     /// # use visualife::mindmap::{Mindmap, MindmapError};
     /// # use visualife::styling::Style;
     /// # fn main() -> Result<(), MindmapError> {
-    /// # let mut mndmp = Mindmap::new("a_mindmap", 45.0);
+    /// # use visualife::Point;
+    /// let mut mndmp = Mindmap::new("a_mindmap", 45.0);
     /// # let node_id = ElementID::from("n1");
-    /// # mndmp.place_node(node_id.clone(), "Node 1", 30.0, 30.0);
+    /// # mndmp.place_node(node_id.clone(), "Node 1", Point::new(30.0, 30.0));
     /// let node_mut = mndmp.node_mut(&node_id).ok_or(MindmapError::node_not_found("n1"))?;
     /// node_mut.with_style( Style::new().fill("#AAAAAA").stroke("black"));
     /// # Ok(())
@@ -182,12 +185,13 @@ impl Mindmap {
     /// ```
     /// # use visualife::mindmap::Mindmap;
     /// # use visualife::SvgDrawing;
+    /// # use visualife::Point;
     /// # use std::fs;
     /// # fn main() -> Result<(), anyhow::Error> {
     /// // --- create a mindmap
     /// let mut mndmp = Mindmap::new("a_mindmap", 45.0);
     /// // --- add some nodes
-    /// mndmp.place_node("n1", "Node 1", 100.0, 100.0);
+    /// mndmp.place_node("n1", "Node 1", Point::new(100.0, 100.0));
     /// // --- create SvgDrawing
     /// let mut drawing = SvgDrawing::new(220.0, 220.0);
     /// // --- create the element for the mindmap and place it in the drawing

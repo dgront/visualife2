@@ -1,3 +1,7 @@
+use std::borrow::Borrow;
+
+use crate::SIGNIFICANT_DIGITS;
+
 /// Generate `n` equally spaced values between `xb` and `xe`.
 ///
 /// If `skip_ends` is `false`, the returned vector includes both endpoints (`xb` and `xe`)
@@ -110,4 +114,32 @@ pub fn min_max(values: &[f32]) -> (f32, f32) {
     }
 
     return (min_v, max_v);
+}
+
+/// Format a float into a string rounding to ``SIGNIFICANT_DIGITS`` decimal places.
+///
+/// ``SIGNIFICANT_DIGITS`` is defined in the main ``lib.rs``
+pub(crate) fn format_significant<T:Borrow<f32>>(value: T) -> String {
+
+    let x = *value.borrow();
+
+    if x == 0.0 || !x.is_finite() {
+        return x.to_string();
+    }
+
+    let exponent = x.abs().log10().floor() as i32;
+    let decimal_places = SIGNIFICANT_DIGITS as i32 - exponent - 1;
+
+    let formatted = if decimal_places > 0 {
+        format!("{:.*}", decimal_places as usize, x)
+    } else {
+        let scale = 10_f32.powi(-decimal_places);
+        format!("{:.0}", (x / scale).round() * scale)
+    };
+
+    if formatted.contains('.') {
+        formatted.trim_end_matches('0').trim_end_matches('.').to_string()
+    } else {
+        formatted
+    }
 }

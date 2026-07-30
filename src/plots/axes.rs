@@ -1,5 +1,5 @@
 use crate::basic_shapes::{grid_lines, SvgElement, triangle_arrow};
-use crate::ElementID;
+use crate::{ElementID, Point};
 use crate::plots::box2d::Box2D;
 use crate::plots::{linspace, PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT};
 use crate::styling::Style;
@@ -207,10 +207,11 @@ pub fn nice_plot_box(data_range: &Box2D<f32>) -> Box2D<f32> {
 /// # Example
 /// ```
 /// use visualife::plots::{AxisSet, Box2D};
+/// use visualife::Point;
 /// let plot_screen_area: Box2D<f32> = (50.0, 350.0, 50.0, 250.0).into();
 /// let mut axes = AxisSet::new(plot_screen_area);
 /// axes.set_plot_box::<Box2D<f32>>((-1.0, 1.0, -1.0, 1.0).into());
-/// axes.set_intercept_point(0.0, 0.0);
+/// axes.set_intercept_point(Point::new(0.0, 0.0));
 ///
 /// ```
 #[derive(Debug, Clone)]
@@ -230,7 +231,7 @@ pub struct AxisSet {
 }
 
 impl AxisSet {
-    
+
     pub fn new<R: Into<Box2D<f32>>>(screen_box: R) -> AxisSet {
         let screen_box = screen_box.into();
         let shortest_len = screen_box.width().min(screen_box.height());
@@ -245,7 +246,7 @@ impl AxisSet {
             arrowhead_size: shortest_len/40.0,
         }
     }
-    
+
     /// Return immutable reference to the X axis
     pub fn x_axis(&self) -> &Axis { &self.x }
 
@@ -311,9 +312,10 @@ impl AxisSet {
         }
     }
 
-    pub fn set_intercept_point(&mut self, cx: f32, cy: f32) {
-        self.x.intercept = AxisIntercept::AtValue(cy);
-        self.y.intercept = AxisIntercept::AtValue(cx);
+    /// Set the intercept point in data/plot coordinates
+    pub fn set_intercept_point(&mut self, point: Point) {
+        self.x.intercept = AxisIntercept::AtValue(point.y);
+        self.y.intercept = AxisIntercept::AtValue(point.x);
     }
 
     pub fn set_intercept(&mut self, cx: AxisIntercept, cy: AxisIntercept) {
@@ -321,18 +323,18 @@ impl AxisSet {
         self.y.intercept = cx;
     }
 
-    /// Convert screen coordinates to plot/data coordinates.
-    pub fn to_plot(&self, x: f32, y: f32) -> (f32, f32) {
-        let px = self.x.to_plot(x);
-        let py = self.y.to_plot(y);
-        (px, py)
+    /// Convert a point from screen coordinates to plot/data coordinates.
+    pub fn to_plot(&self, point: Point) -> Point {
+        let px = self.x.to_plot(point.x);
+        let py = self.y.to_plot(point.y);
+        Point::new(px, py)
     }
 
-    /// Convert plot/data coordinates to screen coordinates.
-    pub fn to_screen(&self, x: f32, y: f32) -> (f32, f32) {
-        let sx = self.x.to_screen(x, false);
-        let sy = self.y.to_screen(y, true);
-        (sx, sy)
+    /// Convert a point from plot/data coordinates to screen coordinates.
+    pub fn to_screen(&self, point: Point) -> Point {
+        let sx = self.x.to_screen(point.x, false);
+        let sy = self.y.to_screen(point.y, true);
+        Point::new(sx, sy)
     }
 
     /// Creates an SVG group element that contains all graphical components representing all axes in this set
@@ -348,7 +350,7 @@ impl AxisSet {
         let y = self.y.to_screen(self.intercept_y(), true);
         let (x1, x2) = (self.x.screen_from, self.x.screen_to);
         x_axis.push(SvgElement::line("x0l", x1, y, x2, y));
-        if self.has_arrowhead { x_axis.push(triangle_arrow("x0a", x2, y, x2 + arrow_l, y, arrow_w)); }
+        if self.has_arrowhead { x_axis.push(triangle_arrow("x0a", Point::new(x2, y), Point::new(x2 + arrow_l, y), arrow_w)); }
         // tics and labels
         if self.x.ticks_location !=TickDirection::None {
             x_axis.push(self.create_x_tics());
@@ -361,7 +363,7 @@ impl AxisSet {
         // --- Swap Y coordinates!
         let (y1, y2) = (self.y.screen_to, self.y.screen_from);
         y_axis.push(SvgElement::line("y0l", x, y1, x, y2));
-        if self.has_arrowhead { y_axis.push(triangle_arrow("y0a", x, y2 + arrow_l, x, y2, arrow_w)); }
+        if self.has_arrowhead { y_axis.push(triangle_arrow("y0a", Point::new(x, y2 + arrow_l), Point::new(x, y2), arrow_w)); }
         // tics and labels here
         if self.y.ticks_location !=TickDirection::None {
             y_axis.push(self.create_y_tics());
@@ -457,7 +459,7 @@ impl AxisSet {
                 );
             }
         }
-        
+
         return SvgElement::group("y0t", elements).with_style(
             Style::new().font_family(PLOT_FONT_FAMILY)
                 .font_weight(PLOT_FONT_WEIGHT).font_size(&format!("{}",self.font_size)));
@@ -511,14 +513,13 @@ impl Into<SvgElement> for AxisSet {
     /// # Example
     /// ```
     /// use visualife::plots::AxisSet;
-    /// use visualife::SvgDrawing;
+    /// use visualife::{Point, SvgDrawing};
     /// let mut axis = AxisSet::new((25.0, 225.0, 25.0, 225.0));
     /// axis.set_plot_box((-1.0, 1.0, -1.0, 1.0));
-    /// axis.set_intercept_point(0.0, 0.0);
+    /// axis.set_intercept_point(Point::new(0.0, 0.0));
     /// let mut drawing = SvgDrawing::new(250.0, 250.0);
     /// drawing.add_element(axis);  // --- Here is where we actually use the Into<SvgElement>
     /// ```
     fn into(self) -> SvgElement { self.create_element() }
 }
-
 

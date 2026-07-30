@@ -27,27 +27,28 @@ enum PathCommand {
 
 impl Display for PathCommand {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        use crate::format_significant as FS;
         match self {
-            PathCommand::MoveTo(x, y) => write!(f, "M {} {}", x, y),
-            PathCommand::LineTo(x, y) => write!(f, "L {} {}", x, y),
-            PathCommand::HorizontalTo(x) => write!(f, "H {}", x),
-            PathCommand::VerticalTo(y) => write!(f, "V {}", y),
-            PathCommand::CurveTo(x1, y1, x2, y2, x, y) => write!(f, "C {} {} {} {} {} {}", x1, y1, x2, y2, x, y),
-            PathCommand::SmoothCurveTo(x2, y2, x, y) => write!(f, "S {} {} {} {}", x2, y2, x, y),
-            PathCommand::QuadraticBezierCurveTo(x1, y1, x, y) => write!(f, "Q {} {} {} {}", x1, y1, x, y),
-            PathCommand::SmoothQuadraticBezierCurveTo(x, y) => write!(f, "T {} {}", x, y),
+            PathCommand::MoveTo(x, y) => write!(f, "M {} {}", FS(x) , FS(y)),
+            PathCommand::LineTo(x, y) => write!(f, "L {} {}", FS(x), FS(y)),
+            PathCommand::HorizontalTo(x) => write!(f, "H {}", FS(x)),
+            PathCommand::VerticalTo(y) => write!(f, "V {}" , FS(y)),
+            PathCommand::CurveTo(x1, y1, x2, y2, x, y) => write!(f, "C {} {} {} {} {} {}", FS(x1), FS(y1), FS(x2), FS(y2), FS(x), FS(y)),
+            PathCommand::SmoothCurveTo(x2, y2, x, y) => write!(f, "S {} {} {} {}", FS(x2), FS(y2), FS(x), FS(y)),
+            PathCommand::QuadraticBezierCurveTo(x1, y1, x, y) => write!(f, "Q {} {} {} {}", FS(x1), FS(y1), FS(x), FS(y)),
+            PathCommand::SmoothQuadraticBezierCurveTo(x, y) => write!(f, "T {} {}", FS(x), FS(y)),
             PathCommand::EllipticalArcTo(rx, ry, x_axis_rotation, large_arc_flag , sweep_flag, x, y)
-            => write!(f, "A {} {} {} {} {} {} {}", rx, ry, x_axis_rotation, (*large_arc_flag as i32), (*sweep_flag as i32), x, y),
+            => write!(f, "A {} {} {} {} {} {} {}", FS(rx), FS(ry), FS(x_axis_rotation), (*large_arc_flag as i32), (*sweep_flag as i32), FS(x), FS(y)),
             PathCommand::Close => { write!(f, "Z") },
-            PathCommand::MoveBy(x, y) => write!(f, "m {} {}", x, y),
-            PathCommand::LineBy(x, y) => write!(f, "l {} {}", x, y),
-            PathCommand::HorizontalBy(x) => write!(f, "h {}", x),
-            PathCommand::VerticalBy(y) => write!(f, "v {}", y),
-            PathCommand::CurveBy(x1, y1, x2, y2, x, y) => write!(f, "c {} {} {} {} {} {}", x1, y1, x2, y2, x, y),
-            PathCommand::SmoothCurveBy(x2, y2, x, y) => write!(f, "s {} {} {} {}", x2, y2, x, y),
-            PathCommand::QuadraticBezierCurveBy(x1, y1, x, y) => write!(f, "q {} {} {} {}", x1, y1, x, y),
+            PathCommand::MoveBy(x, y) => write!(f, "m {} {}", FS(x), FS(y)),
+            PathCommand::LineBy(x, y) => write!(f, "l {} {}", FS(x), FS(y)),
+            PathCommand::HorizontalBy(x) => write!(f, "h {}", FS(x)),
+            PathCommand::VerticalBy(y) => write!(f, "v {}", FS(y)),
+            PathCommand::CurveBy(x1, y1, x2, y2, x, y) => write!(f, "c {} {} {} {} {} {}", FS(x1), FS(y1), FS(x2), FS(y2), FS(x), FS(y)),
+            PathCommand::SmoothCurveBy(x2, y2, x, y) => write!(f, "s {} {} {} {}", FS(x2), FS(y2), FS(x), FS(y)),
+            PathCommand::QuadraticBezierCurveBy(x1, y1, x, y) => write!(f, "q {} {} {} {}", FS(x1), FS(y1), FS(x), FS(y)),
             PathCommand::EllipticalArcBy(rx, ry, x_axis_rotation, large_arc_flag, sweep_flag, x, y)
-            => write!(f, "a {} {} {} {} {} {} {}", rx, ry, x_axis_rotation, (*large_arc_flag as i32), (*sweep_flag as i32), x, y),
+            => write!(f, "a {} {} {} {} {} {} {}", rx, ry, x_axis_rotation, (*large_arc_flag as i32), (*sweep_flag as i32), FS(x), FS(y)),
         }
     }
 }

@@ -23,16 +23,22 @@ pub mod styling;
 pub mod plots;
 
 mod element_id;
-
 pub use element_id::*;
+
+mod point;
+pub use point::Point;
 
 mod svg_drawing;
 pub use svg_drawing::SvgDrawing;
 
 mod errors;
-mod utils;
-
 pub use errors::*;
+
+mod utils;
+pub use utils::*;
+
+// THe number of digits spent on coordinates when SVG element is printed
+const SIGNIFICANT_DIGITS: usize = 4;
 
 /// Normalizes whitespace in a string, replacing all whitespace character blocks with a single space.
 /// This function is used to compare SVG as strings in unit tests.

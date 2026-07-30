@@ -1,6 +1,7 @@
 use std::fmt;
 use std::str::FromStr;
 use crate::basic_shapes::SvgElement;
+use crate::Point;
 
 /// Marker symbols for scatter plots
 ///
@@ -28,39 +29,39 @@ impl MarkerType {
     /// Create SVG elements representing this marker centered at (cx, cy).
     ///
     /// `size` is the full marker size in screen units.
-    pub fn draw(&self, id: &str, cx: f32, cy: f32, size: f32) -> SvgElement {
+    pub fn draw(&self, id: &str, c: Point, size: f32) -> SvgElement {
         let h = size * 0.5;
 
         match self {
             MarkerType::Plus => {
                 let mut elems = Vec::new();
-                elems.push(SvgElement::line(format!("{id}_h"), cx - h, cy, cx + h, cy));
-                elems.push(SvgElement::line(format!("{id}_v"), cx, cy - h, cx, cy + h));
+                elems.push(SvgElement::line(format!("{id}_h"), c.x - h, c.y, c.x + h, c.y));
+                elems.push(SvgElement::line(format!("{id}_v"), c.x, c.y - h, c.x, c.y + h));
                 let grp = SvgElement::group(id, elems);
                 return grp;
             }
 
             MarkerType::Cross => {
                 let mut elems = Vec::new();
-                elems.push(SvgElement::line(format!("{id}_d1"), cx - h, cy - h, cx + h, cy + h));
-                elems.push(SvgElement::line(format!("{id}_d2"), cx - h, cy + h, cx + h, cy - h));
+                elems.push(SvgElement::line(format!("{id}_d1"), c.x - h, c.y - h, c.x + h, c.y + h));
+                elems.push(SvgElement::line(format!("{id}_d2"), c.x - h, c.y + h, c.x + h, c.y - h));
                 let grp = SvgElement::group(id, elems);
                 return grp;
             }
 
             MarkerType::Circle | MarkerType::FilledCircle => {
-                return SvgElement::circle(format!("{id}_c"), cx, cy, h);
+                return SvgElement::circle(format!("{id}_c"), c.x, c.y, h);
             }
 
             MarkerType::Point => {
-                return SvgElement::circle(format!("{id}_p"), cx, cy, h * 0.3);
+                return SvgElement::circle(format!("{id}_p"), c.x, c.y, h * 0.3);
             }
 
             MarkerType::Square | MarkerType::FilledSquare => {
-                return SvgElement::rect(format!("{id}_s"), cx - h, cy - h, size, size);
+                return SvgElement::rect(format!("{id}_s"), c.x - h, c.y - h, size, size);
             }
             _ => { // --- this should never happen: caller should check id the marker is None before calling
-                return SvgElement::circle(format!("{id}_c"), cx, cy, 0.0);
+                return SvgElement::circle(format!("{id}_c"), c.x, c.y, 0.0);
             }
         }
     }

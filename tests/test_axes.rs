@@ -2,14 +2,14 @@ mod test_axes {
     use std::io;
     use visualife::basic_shapes::{embed_vl_font, VlFont};
     use visualife::plots::{AxisIntercept, AxisSet, TickDirection};
-    use visualife::SvgDrawing;
+    use visualife::{Point, SvgDrawing};
 
 
     #[test]
     fn draw_axes_xy_centered() {
         let mut axes = AxisSet::new((25.0,225.0, 25.0, 125.0));
         axes.has_arrowhead = true;
-        axes.set_intercept_point(0.0, 0.0);
+        axes.set_intercept_point(Point::default());
         axes.set_plot_box((-1.0, 1.0, -1.0, 1.0));
         axes.x.set_nticks(5);
         axes.y.set_nticks(5);
