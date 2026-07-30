@@ -1,0 +1,30 @@
+<svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+	<g id="a_mindmap" >
+<g id="na_mindmap" >
+<g id="n0" >
+<circle id="c:n0" cx="250" cy="250" r="50" />
+<text id="t:n0" x="250" y="250" style="text-anchor:middle;dominant-baseline:middle;">Center</text>
+</g>
+<g id="n:1" >
+<circle id="c:n:1" cx="343.5" cy="367.3" r="40" />
+<text id="t:n:1" x="343.5" y="367.3" style="text-anchor:middle;dominant-baseline:middle;">Node 1</text>
+</g>
+<g id="n:2" >
+<circle id="c:n:2" cx="216.6" cy="396.2" r="40" />
+<text id="t:n:2" x="216.6" y="396.2" style="text-anchor:middle;dominant-baseline:middle;">Node 2</text>
+</g>
+</g>
+<g id="ca_mindmap" >
+<g id="cn0:n:1" >
+<path id="fn0:n:1" d="M 300.7 305.5 C 292.9 295.7 286.1 286 290.2 279.7 A 50 50 0 0 1 270 295.8 C 277 293.2 285.1 302 292.9 311.8" />
+<path id="fn:1:n0" d="M 302.2 323.5 C 308.4 331.3 314.6 338.5 311.3 343.5 A 40 40 0 0 1 327.5 330.6 C 321.9 332.7 316.3 325.1 310 317.2" />
+<path id="bn0:n:1" d="M 300.7 305.5 L 310 317.2 L 302.2 323.5 L 292.9 311.8 Z" />
+</g>
+<g id="cn0:n:2" >
+<path id="fn0:n:2" d="M 238.2 324.2 C 241 312 244.4 300.6 251.9 300 A 50 50 0 0 1 226.6 294.2 C 233.1 298.1 231.2 309.8 228.4 322" />
+<path id="fn:2:n0" d="M 225.1 336.6 C 222.9 346.4 221.1 355.7 215.1 356.3 A 40 40 0 0 1 235.3 360.9 C 230.2 357.8 232.6 348.6 234.8 338.9" />
+<path id="bn0:n:2" d="M 238.2 324.2 L 234.8 338.9 L 225.1 336.6 L 228.4 322 Z" />
+</g>
+</g>
+</g>
+</svg>

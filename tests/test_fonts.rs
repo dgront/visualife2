@@ -1,8 +1,12 @@
+mod testing_utilities; // Declare the module
+
+#[cfg(test)]
 mod test_fonts {
     use std::io;
     use visualife::basic_shapes::{embed_font_file, embed_vl_font, SvgElement, VlFont};
     use visualife::styling::Style;
     use visualife::SvgDrawing;
+    use crate::testing_utilities::load_expected_svgs;
 
     #[test]
     fn test_file_embeding() -> io::Result<()> {
@@ -13,7 +17,11 @@ mod test_fonts {
         let txt = SvgElement::text("txt", 20.0, 20.0, "Brown fox")
             .with_style(Style::new().font_family("MyFont").fill("#000000"));
         drawing.add_element(txt);
-        drawing.save_svg("embeded_font.svg")?;
+        // drawing.save_svg("embeded_font.svg")?;
+
+        let expected =
+            load_expected_svgs("./tests/expected_drawings/basic_shapes/", &["embeded_font.svg"])?;
+        assert_eq!(drawing.to_svg(), expected[0]);
 
         Ok(())
     }
@@ -27,7 +35,11 @@ mod test_fonts {
         let txt = SvgElement::text("txt", 20.0, 20.0, "Brown fox")
             .with_style(Style::new().font_family("MyFont").fill("#000000"));
         drawing.add_element(txt);
-        drawing.save_svg("embeded_vl_font.svg")?;
+        // drawing.save_svg("embeded_vl_font.svg")?;
+
+        let expected =
+            load_expected_svgs("./tests/expected_drawings/basic_shapes/", &["embeded_vl_font.svg"])?;
+        assert_eq!(drawing.to_svg(), expected[0]);
 
         Ok(())
     }

@@ -1,0 +1,18 @@
+<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+	<g id="grid" style="stroke:#000000;stroke-width:0.1;" >
+<line id="grid-v-0" x1="10" y1="10" x2="10" y2="70" />
+<line id="grid-v-1" x1="20" y1="10" x2="20" y2="70" />
+<line id="grid-v-2" x1="30" y1="10" x2="30" y2="70" />
+<line id="grid-v-3" x1="40" y1="10" x2="40" y2="70" />
+<line id="grid-v-4" x1="50" y1="10" x2="50" y2="70" />
+<line id="grid-v-5" x1="60" y1="10" x2="60" y2="70" />
+<line id="grid-v-6" x1="70" y1="10" x2="70" y2="70" />
+<line id="grid-h-0" x1="10" y1="10" x2="70" y2="10" />
+<line id="grid-h-1" x1="10" y1="20" x2="70" y2="20" />
+<line id="grid-h-2" x1="10" y1="30" x2="70" y2="30" />
+<line id="grid-h-3" x1="10" y1="40" x2="70" y2="40" />
+<line id="grid-h-4" x1="10" y1="50" x2="70" y2="50" />
+<line id="grid-h-5" x1="10" y1="60" x2="70" y2="60" />
+<line id="grid-h-6" x1="10" y1="70" x2="70" y2="70" />
+</g>
+</svg>

@@ -54,7 +54,6 @@ pub fn triangle_arrow(id: impl Into<ElementID>, base: Point, tip: Point, base_wi
 /// let grid = grid_lines("grid", &xy, &xy, true).with_style(
 ///     Style::new().stroke("#000000").stroke_width(0.1));
 /// drawing.add_element(grid);
-/// drawing.save_svg("grid.svg").unwrap()
 /// ```
 pub fn grid_lines(id: impl Into<ElementID>, x: &[f32], y: &[f32], draw_borderlines: bool) -> SvgElement {
     // Nothing to draw if we cannot span both directions.
