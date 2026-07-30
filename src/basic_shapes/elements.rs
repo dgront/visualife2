@@ -220,19 +220,20 @@ impl SvgElement {
     pub fn to_svg(&self) -> String {
         let attr_str = self.attr.to_svg_fragment();
         let id = &self.id;
+        use crate::utils::format_significant as FS;
 
         match &self.inner {
             SvgElementKind::Line { start: from, end: to } =>
-                format!(r#"<line id="{}" x1="{}" y1="{}" x2="{}" y2="{}"{} />"#, id, from.x, from.y, to.x, to.y, attr_str),
+                format!(r#"<line id="{}" x1="{}" y1="{}" x2="{}" y2="{}"{} />"#, id, FS(from.x), FS(from.y), FS(to.x), FS(to.y), attr_str),
 
             SvgElementKind::Rect { origin, width, height } =>
-                format!(r#"<rect id="{}" x="{}" y="{}" width="{}" height="{}"{} />"#, id, origin.x, origin.y, width, height, attr_str),
+                format!(r#"<rect id="{}" x="{}" y="{}" width="{}" height="{}"{} />"#, id, FS(origin.x), FS(origin.y), FS(width), FS(height), attr_str),
 
             SvgElementKind::Circle { center, r } =>
-                format!(r#"<circle id="{}" cx="{}" cy="{}" r="{}"{} />"#, id, center.x, center.y, r, attr_str),
+                format!(r#"<circle id="{}" cx="{}" cy="{}" r="{}"{} />"#, id, FS(center.x), FS(center.y), FS(r), attr_str),
 
             SvgElementKind::Ellipse { center, rx, ry } =>
-                format!(r#"<ellipse id="{}" cx="{}" cy="{}" rx="{}" ry="{}"{} />"#, id, center.x, center.y, rx, ry, attr_str),
+                format!(r#"<ellipse id="{}" cx="{}" cy="{}" rx="{}" ry="{}"{} />"#, id, FS(center.x), FS(center.y), FS(rx), FS(ry), attr_str),
 
             SvgElementKind::Polygon { points }
             | SvgElementKind::Polyline { points } => {
@@ -245,7 +246,7 @@ impl SvgElement {
                 format!(r#"<path id="{}" d="{}"{} />"#, id, d, attr_str),
 
             SvgElementKind::Text { anchor, content } =>
-                format!(r#"<text id="{}" x="{}" y="{}"{}>{}</text>"#, id, anchor.x, anchor.y, attr_str, content),
+                format!(r#"<text id="{}" x="{}" y="{}"{}>{}</text>"#, id, FS(anchor.x), FS(anchor.y), attr_str, content),
 
             SvgElementKind::Group { elements } => {
                 let inner = elements.iter().map(|e| e.to_svg()).collect::<Vec<_>>().join("\n");

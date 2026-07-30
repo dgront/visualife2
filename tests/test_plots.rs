@@ -2,8 +2,9 @@ mod test_plots {
     use rand::rngs::StdRng;
     use rand::{SeedableRng};
     use rand_distr::{Distribution, Normal};
-    use visualife::plots::{linspace, Plot, PlotError};
+    use visualife::plots::{Plot, PlotError};
     use visualife::SvgDrawing;
+    use visualife::utils::linspace;
 
     #[test]
     fn plot_heatmap() -> Result<(), PlotError> {

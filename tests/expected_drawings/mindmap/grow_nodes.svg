@@ -10,20 +10,20 @@
 <text id="t:n:0" x="230" y="80" style="text-anchor:middle;dominant-baseline:middle;">0°</text>
 </g>
 <g id="n:1" >
-<circle id="c:n:1" cx="218.58192" cy="137.40253" r="40" style="fill:#CECECE;stroke:black;stroke-width:3;stroke-dasharray:15 5;" />
-<text id="t:n:1" x="218.58192" y="137.40253" style="text-anchor:middle;dominant-baseline:middle;">22.5°</text>
+<circle id="c:n:1" cx="218.6" cy="137.4" r="40" style="fill:#CECECE;stroke:black;stroke-width:3;stroke-dasharray:15 5;" />
+<text id="t:n:1" x="218.6" y="137.4" style="text-anchor:middle;dominant-baseline:middle;">22.5°</text>
 </g>
 <g id="n:2" >
-<circle id="c:n:2" cx="186.06601" cy="186.06601" r="40" style="fill:#B9B9B9;stroke:black;stroke-width:3;stroke-dasharray:15 5;" />
-<text id="t:n:2" x="186.06601" y="186.06601" style="text-anchor:middle;dominant-baseline:middle;">45°</text>
+<circle id="c:n:2" cx="186.1" cy="186.1" r="40" style="fill:#B9B9B9;stroke:black;stroke-width:3;stroke-dasharray:15 5;" />
+<text id="t:n:2" x="186.1" y="186.1" style="text-anchor:middle;dominant-baseline:middle;">45°</text>
 </g>
 <g id="n:3" >
-<circle id="c:n:3" cx="137.40251" cy="218.58192" r="40" style="fill:#A6A6A6;stroke:black;stroke-width:3;stroke-dasharray:15 5;" />
-<text id="t:n:3" x="137.40251" y="218.58192" style="text-anchor:middle;dominant-baseline:middle;">67.5°</text>
+<circle id="c:n:3" cx="137.4" cy="218.6" r="40" style="fill:#A6A6A6;stroke:black;stroke-width:3;stroke-dasharray:15 5;" />
+<text id="t:n:3" x="137.4" y="218.6" style="text-anchor:middle;dominant-baseline:middle;">67.5°</text>
 </g>
 <g id="n:4" >
-<circle id="c:n:4" cx="79.99999" cy="230" r="40" style="fill:#959595;stroke:black;stroke-width:3;stroke-dasharray:15 5;" />
-<text id="t:n:4" x="79.99999" y="230" style="text-anchor:middle;dominant-baseline:middle;">90°</text>
+<circle id="c:n:4" cx="80" cy="230" r="40" style="fill:#959595;stroke:black;stroke-width:3;stroke-dasharray:15 5;" />
+<text id="t:n:4" x="80" y="230" style="text-anchor:middle;dominant-baseline:middle;">90°</text>
 </g>
 </g>
 <g id="ca_mindmap" >

@@ -27,7 +27,7 @@ enum PathCommand {
 
 impl Display for PathCommand {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        use crate::format_significant as FS;
+        use crate::utils::format_significant as FS;
         match self {
             PathCommand::MoveTo(x, y) => write!(f, "M {} {}", FS(x) , FS(y)),
             PathCommand::LineTo(x, y) => write!(f, "L {} {}", FS(x), FS(y)),

@@ -49,7 +49,7 @@ mod test_mindmap {
         let svg_el = mndmp.create_element();
         let mut drawing = SvgDrawing::new(300.0, 300.0);
         drawing.add_element(svg_el);
-        drawing.save_svg("two_nodes.svg")?;
+        // drawing.save_svg("two_nodes.svg")?;
         let expected =
             load_expected_svgs("./tests/expected_drawings/mindmap/", &["two_nodes.svg"])?;
         assert_eq!(drawing.to_svg(), expected[0]);
@@ -90,9 +90,13 @@ mod test_mindmap {
             let ni_id = ElementID::from(&format!("n:{i}"));
             mndmp.grow_node(ni_id, &format!("Node {i}"), 360.0 / 7.0 * i as f32, "n0");
         }
-        let mut drawing = SvgDrawing::new(300.0, 300.0);
+        let mut drawing = SvgDrawing::new(500.0, 500.0);
         drawing.add_element(mndmp.create_element());
-        drawing.save_svg("small_mindmap.svg")?;
+        // drawing.save_svg("small_mindmap.svg")?;
+        let expected =
+            load_expected_svgs("./tests/expected_drawings/mindmap/", &["small_mindmap.svg"])?;
+        assert_eq!(drawing.to_svg(), expected[0]);
+
         Ok(())
     }
 }

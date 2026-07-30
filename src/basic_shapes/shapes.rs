@@ -46,7 +46,7 @@ pub fn triangle_arrow(id: impl Into<ElementID>, base: Point, tip: Point, base_wi
 /// # Example
 /// ```
 /// use visualife::basic_shapes::grid_lines;
-/// use visualife::plots::linspace;
+/// use visualife::utils::linspace;
 /// use visualife::styling::Style;
 /// use visualife::SvgDrawing;
 /// let xy = linspace(7, 10.0, 70.0, false);

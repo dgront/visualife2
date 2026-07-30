@@ -34,8 +34,7 @@ pub use svg_drawing::SvgDrawing;
 mod errors;
 pub use errors::*;
 
-mod utils;
-pub use utils::*;
+pub mod utils;
 
 // THe number of digits spent on coordinates when SVG element is printed
 const SIGNIFICANT_DIGITS: usize = 4;

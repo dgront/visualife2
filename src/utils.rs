@@ -17,14 +17,14 @@ use crate::SIGNIFICANT_DIGITS;
 ///
 /// Include endpoints:
 /// ```
-/// use visualife::plots::linspace;
+/// use visualife::utils::linspace;
 /// let v = linspace(5, 0.0, 2.0, false);
 /// assert_eq!(v, vec![0.0, 0.5, 1.0, 1.5, 2.0]);
 /// ```
 ///
 /// Skip endpoints (open interval):
 /// ```
-/// use visualife::plots::linspace;
+/// use visualife::utils::linspace;
 /// let v = linspace(7, 0.0, 2.0, true);
 /// let expected = vec![0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75];
 /// for (a, b) in v.iter().zip(expected.iter()) {
@@ -34,7 +34,7 @@ use crate::SIGNIFICANT_DIGITS;
 ///
 /// Descending interval:
 /// ```
-/// use visualife::plots::linspace;
+/// use visualife::utils::linspace;
 /// let v = linspace(5, 2.0, 0.0, false);
 /// assert_eq!(v, vec![2.0, 1.5, 1.0, 0.5, 0.0]);
 /// ```
@@ -79,7 +79,7 @@ pub fn linspace_by(xb: f32, xe: f32, step: f32) -> Vec<f32> {
 ///
 /// It works with slices:
 /// ```
-/// use visualife::plots::matrix_shape;
+/// use visualife::utils::matrix_shape;
 /// let r1: &[i32] = &[1, 2, 3];
 /// let r2: &[i32] = &[4, 5];
 /// let data = vec![r1, r2];
@@ -88,7 +88,7 @@ pub fn linspace_by(xb: f32, xe: f32, step: f32) -> Vec<f32> {
 ///
 /// ... and with Vec<>. For ragged matrix (rows of different length) provides the maximum size:
 /// ```
-/// use visualife::plots::matrix_shape;
+/// use visualife::utils::matrix_shape;
 /// let m = vec![
 ///     vec![1, 2],
 ///     vec![3, 4, 5, 6],

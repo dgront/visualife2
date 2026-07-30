@@ -5,8 +5,6 @@ pub use axes::*;
 mod box2d;
 pub use box2d::*;
 
-pub use crate::utils::*;
-
 mod plot;
 pub use plot::*;
 

@@ -1,8 +1,9 @@
 use crate::basic_shapes::SvgElement;
 use crate::{ElementID, Point};
 use crate::heatmap::Heatmap;
-use crate::plots::{AxisIntercept, AxisSet, Box2D, LineType, MarkerType, matrix_shape, nice_plot_box, PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT, PlotError, point_outside_box, TickDirection, update_plot_box};
+use crate::plots::{AxisIntercept, AxisSet, Box2D, LineType, MarkerType, nice_plot_box, PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT, PlotError, point_outside_box, TickDirection, update_plot_box};
 use crate::styling::{darker, Style};
+use crate::utils::matrix_shape;
 
 use crate::styling::palettes::{ACCENT};
 use crate::utils::min_max;
@@ -102,7 +103,8 @@ impl Plot {
     ///
     /// # Example
     /// ```
-    /// use visualife::plots::{linspace, Plot};
+    /// use visualife::plots::Plot;
+    /// use visualife::utils::linspace;
     /// use visualife::SvgDrawing;
     /// let mut plot = Plot::rectangular("sctpl", (75.0, 525.0, 75.0, 525.0));
     /// let x = linspace(30, -3.1415, 3.1415, false);
@@ -155,7 +157,8 @@ impl Plot {
     ///
     /// # Example
     /// ```
-    /// use visualife::plots::{linspace, Plot};
+    /// use visualife::plots::Plot;
+    /// use visualife::utils::linspace;
     /// use visualife::SvgDrawing;
     /// let mut plot = Plot::rectangular("linpl", (75.0, 525.0, 75.0, 525.0));
     /// let x = linspace(30, -3.1415, 3.1415, false);

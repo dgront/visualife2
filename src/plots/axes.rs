@@ -1,8 +1,9 @@
 use crate::basic_shapes::{grid_lines, SvgElement, triangle_arrow};
 use crate::{ElementID, Point};
 use crate::plots::box2d::Box2D;
-use crate::plots::{linspace, PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT};
+use crate::plots::{PLOT_FONT_FAMILY, PLOT_FONT_WEIGHT};
 use crate::styling::Style;
+use crate::utils::linspace;
 
 /// Used by nice_plot_range() to round up plotting range
 const NICE_MULTIPLIERS: &[f32] = &[1.0, 2.0, 3.0, 4.0, 5.0, 8.0, 10.0];

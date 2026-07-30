@@ -3,8 +3,9 @@ use clap::ArgAction;
 use data_matrix::DataMatrixBuilder;
 use rand::prelude::StdRng;
 use rand::{Rng, SeedableRng};
-use visualife::plots::{linspace_by, Plot};
+use visualife::plots::{Plot};
 use visualife::SvgDrawing;
+use visualife::utils::linspace_by;
 
 /// Command line app to visualize a 2D histogram as a heatmap
 #[derive(Parser, Debug)]
